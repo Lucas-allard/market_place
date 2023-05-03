@@ -2,9 +2,22 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+
 interface CustomerInterface
 {
+    /**
+     * @return string|null
+     */
     public function getShippingAddress(): ?string;
-    public function getBirthDate(): ?\DateTimeInterface;
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getBirthDate(): ?DateTimeInterface;
+
+    /**
+     * @return OrderInterface[]
+     */
     public function getOrders(): array;
 }

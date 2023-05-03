@@ -15,8 +15,7 @@ class Customer extends User implements CustomerInterface
      */
     private ?DateTimeInterface $birthDate = null;
     /**
-     * @var array
-     * @type array<>
+     * @var OrderInterface[]
      */
     private array $orders = [];
 
@@ -58,7 +57,7 @@ class Customer extends User implements CustomerInterface
     }
 
     /**
-     * @return array
+     * @return OrderInterface[]
      */
     public function getOrders(): array
     {
@@ -66,7 +65,7 @@ class Customer extends User implements CustomerInterface
     }
 
     /**
-     * @param array $orders
+     * @param OrderInterface[] $orders
      * @return Customer
      */
     public function setOrders(array $orders): Customer
@@ -77,7 +76,11 @@ class Customer extends User implements CustomerInterface
         return $this;
     }
 
-    public function addOrder($order): Customer
+    /**
+     * @param OrderInterface $order
+     * @return $this
+     */
+    public function addOrder(OrderInterface $order): Customer
     {
         if (!in_array($order, $this->orders, true)) {
             $this->orders[] = $order;
