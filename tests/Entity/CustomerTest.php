@@ -22,7 +22,7 @@ class CustomerTest extends TestCase
      * @group customer
      * @group customer-default
      */
-    public function testDefault()
+    public function testDefault(): void
     {
         $this->assertEmpty($this->customer->getShippingAddress());
         $this->assertIsString($this->customer->getShippingAddress());
@@ -36,7 +36,7 @@ class CustomerTest extends TestCase
      * @group customer
      * @group customer-set-shipping-address
      */
-    public function testSetShippingAddress()
+    public function testSetShippingAddress(): void
     {
         $this->customer->setShippingAddress("123 Main St");
         $this->assertSame("123 Main St", $this->customer->getShippingAddress());
@@ -47,7 +47,7 @@ class CustomerTest extends TestCase
      * @group customer
      * @group customer-set-birth-date
      */
-    public function testSetBirthDate()
+    public function testSetBirthDate(): void
     {
         $this->customer->setBirthDate(new DateTime());
         $this->assertInstanceOf(DateTimeInterface::class, $this->customer->getBirthDate());
@@ -58,7 +58,7 @@ class CustomerTest extends TestCase
      * @group customer
      * @group customer-set-orders
      */
-    public function testSetOrders()
+    public function testSetOrders(): void
     {
         $this->customer->setOrders([
             'produit 1' => 1,
@@ -74,7 +74,7 @@ class CustomerTest extends TestCase
      * @group customer
      * @group customer-add-order
      */
-    public function testAddOrder()
+    public function testAddOrder(): void
     {
         $this->customer->addOrder([
             "produit 1" => 1,
@@ -90,7 +90,7 @@ class CustomerTest extends TestCase
      * @group customer
      * @group customer-add-order-twice
      */
-    public function testCannotAddSameOrderTwice()
+    public function testCannotAddSameOrderTwice(): void
     {
         $this->customer->addOrder([
             "produit 1" => 1,

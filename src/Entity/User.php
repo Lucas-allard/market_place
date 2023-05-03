@@ -33,8 +33,9 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
      * @var string
      */
     private string $phone = "";
+
     /**
-     * @var array
+     * @var string[]
      *
      */
     private array $roles = [];
@@ -106,7 +107,7 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     }
 
     /**
-     * @param array $roles
+     * @param string[] $roles
      * @return $this
      */
     public function setRoles(array $roles): self
@@ -196,7 +197,7 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials() : ?string
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;

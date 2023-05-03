@@ -16,6 +16,7 @@ class Customer extends User implements CustomerInterface
     private ?DateTimeInterface $birthDate = null;
     /**
      * @var array
+     * @type array<>
      */
     private array $orders = [];
 
