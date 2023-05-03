@@ -6,7 +6,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 #[UniqueEntity('email', message: "Un utilisateur ayant cette adresse email existe déjà !")]
-class User extends AbstractEntity implements EntityInterface, UserInterface, SymfonyUserInterface, PasswordAuthenticatedUserInterface
+abstract class User extends AbstractEntity implements EntityInterface, UserInterface, SymfonyUserInterface, PasswordAuthenticatedUserInterface
 {
 
     /**
@@ -33,8 +33,9 @@ class User extends AbstractEntity implements EntityInterface, UserInterface, Sym
      * @var string
      */
     private string $phone = "";
+
     /**
-     * @var array
+     * @var string[]
      *
      */
     private array $roles = [];
@@ -106,7 +107,7 @@ class User extends AbstractEntity implements EntityInterface, UserInterface, Sym
     }
 
     /**
-     * @param array $roles
+     * @param string[] $roles
      * @return $this
      */
     public function setRoles(array $roles): self
@@ -196,7 +197,7 @@ class User extends AbstractEntity implements EntityInterface, UserInterface, Sym
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials() : ?string
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;

@@ -5,9 +5,7 @@ namespace App\Entity;
 interface CustomerInterface
 {
     public function getShippingAddress(): ?string;
-    public function getDateOfBirth(): ?\DateTimeInterface;
+    public function getBirthDate(): ?\DateTimeInterface;
 
-    /**
-     * @todo Ajout de la méthode getOrders()
-     */
+    public function getOrders(): array;
 }
