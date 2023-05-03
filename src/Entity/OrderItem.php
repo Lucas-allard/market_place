@@ -13,9 +13,9 @@ class OrderItem extends AbstractEntity {
      */
     private ?float $price = 0.0;
     /**
-     * @var null
+     * @var Product|null
      */
-    private $product = null;
+    private ?Product $product = null;
 
     /**
      * @var Order|null
@@ -69,18 +69,18 @@ class OrderItem extends AbstractEntity {
     }
 
     /**
-     * @return null
+     * @return Product|null
      */
-    public function getProduct()
+    public function getProduct(): ?Product
     {
         return $this->product;
     }
 
     /**
-     * @param  $product
+     * @param Product $product
      * @return OrderItem
      */
-    public function setProduct($product): OrderItem
+    public function setProduct(Product $product): OrderItem
     {
         $this->product = $product;
         return $this;

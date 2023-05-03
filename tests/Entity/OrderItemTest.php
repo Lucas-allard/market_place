@@ -4,6 +4,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\Order;
 use App\Entity\OrderItem;
+use App\Entity\Product;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 
@@ -57,7 +58,7 @@ class OrderItemTest extends TestCase
      * @group order-item
      * @group order-item-set-price
      */
-    public function testOrderSetPrice(): void
+    public function testOrderItemSetPrice(): void
     {
         $this->orderItem->setPrice(8.5);
         $this->assertIsFloat($this->orderItem->getPrice());
@@ -69,10 +70,13 @@ class OrderItemTest extends TestCase
      * @group order-item
      * @group order-item-set-product
      */
-    public function testOrderSetProduct(): void
+    public function testOrderItemSetProduct(): void
     {
-        $this->orderItem->setProduct('product');
-        $this->assertEquals('product', $this->orderItem->getProduct());
+
+        $product = new Product();
+        $this->orderItem->setProduct($product);
+        $this->assertEquals($product, $this->orderItem->getProduct());
+        $this->assertInstanceOf(Product::class, $this->orderItem->getProduct());
     }
 
     /**
@@ -97,17 +101,5 @@ class OrderItemTest extends TestCase
     {
         $this->orderItem->setOrder(null);
         $this->assertNull($this->orderItem->getOrder());
-    }
-
-
-    /**
-     * @group entity
-     * @group order-item
-     * @group order-item-set-product
-     */
-    public function testOrderSetProductNull(): void
-    {
-        $this->orderItem->setProduct(null);
-        $this->assertNull($this->orderItem->getProduct());
     }
 }

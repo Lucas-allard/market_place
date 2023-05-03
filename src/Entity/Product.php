@@ -4,10 +4,25 @@ namespace App\Entity;
 
 class Product extends AbstractEntity
 {
+    /**
+     * @var string
+     */
     private string $name = '';
+    /**
+     * @var string
+     */
     private string $description = '';
+    /**
+     * @var float
+     */
     private float $price = 0.0;
+    /**
+     * @var int
+     */
     private int $quantity = 0;
+    /**
+     * @var Category[]|null
+     */
     private ?array $categories = [];
 
     /**
@@ -93,7 +108,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @return array|null
+     * @return Category[]|null
      */
     public function getCategories(): ?array
     {
