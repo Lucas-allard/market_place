@@ -3,6 +3,7 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Category;
+use App\Entity\Product;
 use PHPUnit\Framework\TestCase;
 
 class CategoryTest extends TestCase
@@ -112,8 +113,25 @@ class CategoryTest extends TestCase
      */
     public function testCategorySetProducts(): void
     {
-        $this->category->setProducts(['Product 1', 'Product 2']);
-        $this->assertSame(['Product 1', 'Product 2'], $this->category->getProducts());
+        $products = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $products[] = new Product();
+        }
+        $this->category->setProducts($products);
+        $this->assertSame(2, count($this->category->getProducts()));
+        $this->assertIsArray($this->category->getProducts());
+
+    }
+
+    /**
+     * @group entity
+     * @group category
+     * @group category-add-product
+     */
+    public function testCategoryAddProduct(): void
+    {
+        $this->category->addProduct(new Product());
+        $this->assertSame(1, count($this->category->getProducts()));
         $this->assertIsArray($this->category->getProducts());
     }
 }

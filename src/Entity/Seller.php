@@ -22,13 +22,9 @@ class Seller extends User
      */
     private float $sellerRating = 0.0;
     /**
-     * @var array
+     * @var Product[]
      */
     private array $products = [];
-    /**
-     * @var array
-     */
-    private array $sales = [];
 
     /**
      * @return string|null
@@ -103,7 +99,7 @@ class Seller extends User
     }
 
     /**
-     * @return array|null
+     * @return Product[]|null
      */
     public function getProducts(): ?array
     {
@@ -111,7 +107,7 @@ class Seller extends User
     }
 
     /**
-     * @param array $products
+     * @param Product[] $products
      * @return Seller
      */
     public function setProducts(array $products): Seller
@@ -124,48 +120,14 @@ class Seller extends User
     }
 
     /**
-     * @param $product
+     * @param Product $product
      * @return $this
      */
-    public function addProduct($product): Seller
+    public function addProduct(Product $product): Seller
     {
         if (!in_array($product, $this->products)) {
             $this->products[] = $product;
         }
         return $this;
     }
-
-    /**
-     * @return array|null
-     */
-    public function getSales(): ?array
-    {
-        return $this->sales;
-    }
-
-    /**
-     * @param array $sales
-     * @return Seller
-     */
-    public function setSales(array $sales): Seller
-    {
-        foreach ($sales as $sale) {
-            $this->addSale($sale);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param $sale
-     * @return $this
-     */
-    public function addSale($sale): Seller
-    {
-        if (!in_array($sale, $this->sales)) {
-            $this->sales[] = $sale;
-        }
-        return $this;
-    }
-
 }

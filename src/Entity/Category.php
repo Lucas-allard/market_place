@@ -8,20 +8,24 @@ class Category extends AbstractEntity
      * @var string
      */
     private string $name = '';
+
     /**
      * @var string
      */
     private string $description = '';
+
     /**
      * @var Category|null
      */
     private ?Category $parent = null;
+
     /**
      * @var Category[]
      */
     private array $children = [];
+
     /**
-     * @var array
+     * @var Product[]
      */
     private array $products = [];
 
@@ -112,7 +116,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @return array
+     * @return Product[]
      */
     public function getProducts(): array
     {
@@ -120,7 +124,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @param array $products
+     * @param Product[] $products
      * @return Category
      */
     public function setProducts(array $products): Category
@@ -132,12 +136,12 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @param  $product
+     * @param Product $product
      * @return Category
      */
-    public function addProduct($product): Category
+    public function addProduct(Product $product): Category
     {
-        if (!in_array($product, $this->products)) {
+        if (!in_array($product, $this->products, true)) {
             $this->products[] = $product;
         }
         return $this;
