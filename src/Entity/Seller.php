@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\SellerInterface;
+
 class Seller extends User implements SellerInterface
 {
     /**

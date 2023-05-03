@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\CustomerInterface;
+use App\Entity\Interface\OrderInterface;
 use DateTimeInterface;
 
 class Order extends AbstractEntity implements OrderInterface

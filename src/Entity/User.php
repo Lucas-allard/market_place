@@ -2,9 +2,12 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\EntityInterface;
+use App\Entity\Interface\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
+
 #[UniqueEntity('email', message: "Un utilisateur ayant cette adresse email existe déjà !")]
 abstract class User extends AbstractEntity implements EntityInterface, UserInterface, SymfonyUserInterface, PasswordAuthenticatedUserInterface
 {

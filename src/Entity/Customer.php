@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\CustomerInterface;
+use App\Entity\Interface\OrderInterface;
 use DateTimeInterface;
 
 class Customer extends User implements CustomerInterface
