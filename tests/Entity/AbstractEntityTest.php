@@ -2,13 +2,14 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\AbstractEntity;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
 
 class AbstractEntityTest extends TestCase
 {
-    private $entity;
+    private AbstractEntity $entity;
     private ReflectionClass $reflection;
 
     public function setUp(): void
@@ -22,7 +23,7 @@ class AbstractEntityTest extends TestCase
     /**
      * @throws ReflectionException
      */
-    public function testGetId()
+    public function testGetId() : void
     {
 
         $property = $this->reflection->getProperty('id');
@@ -35,7 +36,7 @@ class AbstractEntityTest extends TestCase
     /**
      * @throws ReflectionException
      */
-    public function testGetCreatedAt()
+    public function testGetCreatedAt() : void
     {
         $property = $this->reflection->getProperty('createdAt');
         $property->setValue($this->entity, new \DateTime());
@@ -47,7 +48,7 @@ class AbstractEntityTest extends TestCase
     /**
      * @throws ReflectionException
      */
-    public function testGetUpdatedAt()
+    public function testGetUpdatedAt() : void
     {
         $property = $this->reflection->getProperty('updatedAt');
         $property->setValue($this->entity, new \DateTime());
