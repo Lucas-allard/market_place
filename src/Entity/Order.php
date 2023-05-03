@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Entity\Interface\CustomerInterface;
-use App\Entity\Interface\OrderInterface;
+
 use DateTimeInterface;
 
-class Order extends AbstractEntity implements OrderInterface
+class Order extends AbstractEntity
 {
     /**
      * @var DateTimeInterface|null
@@ -25,11 +24,11 @@ class Order extends AbstractEntity implements OrderInterface
      */
     private float $totalAmount = 0.0;
     /**
-     * @var CustomerInterface|null
+     * @var Customer|null
      */
-    private ?CustomerInterface $customer = null;
+    private ?Customer $customer = null;
     /**
-     * @var array
+     * @var OrderItem[]
      */
     private array $orderItems = [];
 
@@ -116,25 +115,25 @@ class Order extends AbstractEntity implements OrderInterface
     }
 
     /**
-     * @return CustomerInterface|null
+     * @return Customer|null
      */
-    public function getCustomer(): ?CustomerInterface
+    public function getCustomer(): ?Customer
     {
         return $this->customer;
     }
 
     /**
-     * @param CustomerInterface|null $customer
+     * @param Customer|null $customer
      * @return Order
      */
-    public function setCustomer(?CustomerInterface $customer): Order
+    public function setCustomer(?Customer $customer): Order
     {
         $this->customer = $customer;
         return $this;
     }
 
     /**
-     * @return array
+     * @return OrderItem[]
      */
     public function getOrderItems(): array
     {
@@ -142,13 +141,26 @@ class Order extends AbstractEntity implements OrderInterface
     }
 
     /**
-     * @param array $orderItems
+     * @param OrderItem[] $orderItems
      * @return Order
      */
     public function setOrderItems(array $orderItems): Order
     {
-        $this->orderItems = $orderItems;
+        foreach ($orderItems as $orderItem) {
+            $this->addOrderItem($orderItem);
+        }
         return $this;
     }
 
+    /**
+     * @param OrderItem $orderItem
+     * @return Order
+     */
+    public function addOrderItem(OrderItem $orderItem): Order
+    {
+        if (!in_array($orderItem, $this->orderItems, true)) {
+            $this->orderItems[] = $orderItem;
+        }
+        return $this;
+    }
 }

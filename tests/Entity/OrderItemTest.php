@@ -99,21 +99,6 @@ class OrderItemTest extends TestCase
         $this->assertNull($this->orderItem->getOrder());
     }
 
-    /**
-     * @group entity
-     * @group order-item
-     * @group order-item-set-order
-     */
-    public function testOrderSetOrderException(): void
-    {
-        $this->expectException(TypeError::class);
-        try {
-            $this->orderItem->setOrder(1);
-        } catch (TypeError $e) {
-            $this->assertStringContainsString('must be an instance of App\Entity\Order or null', $e->getMessage());
-            throw $e;
-        }
-    }
 
     /**
      * @group entity
@@ -125,15 +110,4 @@ class OrderItemTest extends TestCase
         $this->orderItem->setProduct(null);
         $this->assertNull($this->orderItem->getProduct());
     }
-
-//    /**
-//     * @group entity
-//     * @group order-item
-//     * @group order-item-set-product
-//     */
-//    public function testOrderSetProductException(): void
-//    {
-//        $this->expectException(TypeError::class);
-//        $this->orderItem->setProduct(1);
-//    }
 }

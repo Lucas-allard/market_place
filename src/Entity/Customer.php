@@ -2,11 +2,9 @@
 
 namespace App\Entity;
 
-use App\Entity\Interface\CustomerInterface;
-use App\Entity\Interface\OrderInterface;
 use DateTimeInterface;
 
-class Customer extends User implements CustomerInterface
+class Customer extends User
 {
     /**
      * @var string|null
@@ -17,7 +15,7 @@ class Customer extends User implements CustomerInterface
      */
     private ?DateTimeInterface $birthDate = null;
     /**
-     * @var OrderInterface[]
+     * @var Order[]
      */
     private array $orders = [];
 
@@ -59,7 +57,7 @@ class Customer extends User implements CustomerInterface
     }
 
     /**
-     * @return OrderInterface[]
+     * @return Order[]
      */
     public function getOrders(): array
     {
@@ -67,7 +65,7 @@ class Customer extends User implements CustomerInterface
     }
 
     /**
-     * @param OrderInterface[] $orders
+     * @param Order[] $orders
      * @return Customer
      */
     public function setOrders(array $orders): Customer
@@ -79,14 +77,15 @@ class Customer extends User implements CustomerInterface
     }
 
     /**
-     * @param OrderInterface $order
+     * @param Order $order
      * @return $this
      */
-    public function addOrder(OrderInterface $order): Customer
+    public function addOrder(Order $order): Customer
     {
         if (!in_array($order, $this->orders, true)) {
             $this->orders[] = $order;
         }
+
         return $this;
     }
 
