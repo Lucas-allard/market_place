@@ -61,13 +61,18 @@ class CustomerTest extends TestCase
     public function testSetOrders(): void
     {
         $this->customer->setOrders([
-            'produit 1' => 1,
-            'produit 2' => 2,
-            'produit 3' => 3,
+            ['produit 1' => 1,],
+            ['produit 2' => 2,],
+            ['produit 3' => 3,],
         ]);
         $this->assertIsArray($this->customer->getOrders());
-        $this->assertSame([1, 2, 3], $this->customer->getOrders());
+        $this->assertSame([
+            ['produit 1' => 1,],
+            ['produit 2' => 2,],
+            ['produit 3' => 3,],
+        ], $this->customer->getOrders());
     }
+
 
     /**
      * @group entity
