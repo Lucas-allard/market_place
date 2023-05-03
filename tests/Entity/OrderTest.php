@@ -3,6 +3,7 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Order;
+use App\Entity\OrderItem;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
@@ -93,18 +94,48 @@ class OrderTest extends TestCase
         $this->assertSame($customer, $this->order->getCustomer());
         $this->assertInstanceOf('App\Entity\Customer', $this->order->getCustomer());
     }
-//
-//    /**
-//     * @group entity
-//     * @group order
-//     * @group order-set-order-items
-//     */
-//    public function testOrderSetOrderItems(): void
-//    {
-//        $orderItem = $this->createMock('App\Entity\OrderItem');
-//        $this->order->setOrderItems([$orderItem]);
-//        $this->assertSame([$orderItem], $this->order->getOrderItems());
-//        $this->assertIsArray($this->order->getOrderItems());
-//        $this->assertInstanceOf('App\Entity\OrderItem', $this->order->getOrderItems()[0]);
-//    }
+
+    /**
+     * @group entity
+     * @group order
+     * @group order-set-order-items
+     */
+    public function testOrderSetOrderItems(): void
+    {
+        $orderItems = [];
+        for ($i = 0; $i < 5; $i++) {
+            $orderItems[] = new OrderItem();
+        }
+        $this->order->setOrderItems($orderItems);
+        $this->assertSame($orderItems, $this->order->getOrderItems());
+        $this->assertIsArray($this->order->getOrderItems());
+        $this->assertInstanceOf('App\Entity\OrderItem', $this->order->getOrderItems()[0]);
+    }
+
+    /**
+     * @group entity
+     * @group order
+     * @group order-add-order-item
+     */
+    public function testOrderAddOrderItem(): void
+    {
+        $orderItem = new OrderItem();
+        $this->order->addOrderItem($orderItem);
+        $this->assertContains($orderItem, $this->order->getOrderItems());
+        $this->assertIsArray($this->order->getOrderItems());
+        $this->assertInstanceOf('App\Entity\OrderItem', $this->order->getOrderItems()[0]);
+    }
+
+    /**
+     * @group entity
+     * @group order
+     * @group order-add-order-item-twice
+     */
+    public function testCannotAddOrderItemTwice(): void
+    {
+        $orderItem = new OrderItem();
+        $this->order->addOrderItem($orderItem);
+        $this->order->addOrderItem($orderItem);
+        $this->assertCount(1, $this->order->getOrderItems());
+    }
 }

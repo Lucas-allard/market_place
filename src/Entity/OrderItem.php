@@ -2,14 +2,25 @@
 
 namespace App\Entity;
 
-use App\Entity\Interface\OrderInterface;
 
-class OrderItem extends AbstractEntity implements Interface\OrderItemInterface
-{
+class OrderItem extends AbstractEntity {
+    /**
+     * @var int|null
+     */
     private ?int $quantity = 0;
+    /**
+     * @var float|null
+     */
     private ?float $price = 0.0;
+    /**
+     * @var null
+     */
     private $product = null;
-    private ?OrderInterface $order = null;
+
+    /**
+     * @var Order|null
+     */
+    private ?Order $order = null;
 
     /**
      * @return int|null
@@ -29,6 +40,10 @@ class OrderItem extends AbstractEntity implements Interface\OrderItemInterface
         return $this;
     }
 
+    /**
+     * @param int $quantity
+     * @return $this
+     */
     public function addQuantity(int $quantity = 1): OrderItem
     {
         $this->quantity += $quantity;
@@ -65,25 +80,25 @@ class OrderItem extends AbstractEntity implements Interface\OrderItemInterface
      * @param  $product
      * @return OrderItem
      */
-    public function setProduct($product)
+    public function setProduct($product): OrderItem
     {
         $this->product = $product;
         return $this;
     }
 
     /**
-     * @return OrderInterface|null
+     * @return Order|null
      */
-    public function getOrder(): ?OrderInterface
+    public function getOrder(): ?Order
     {
         return $this->order;
     }
 
     /**
-     * @param OrderInterface|null $order
+     * @param Order|null $order
      * @return OrderItem
      */
-    public function setOrder(?OrderInterface $order): OrderItem
+    public function setOrder(?Order $order): OrderItem
     {
         $this->order = $order;
         return $this;
