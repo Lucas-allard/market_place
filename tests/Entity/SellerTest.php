@@ -2,6 +2,7 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\Product;
 use App\Entity\Seller;
 use PHPUnit\Framework\TestCase;
 
@@ -32,8 +33,6 @@ class SellerTest extends TestCase
         $this->assertIsFloat($this->seller->getSellerRating());
         $this->assertEmpty($this->seller->getProducts());
         $this->assertIsArray($this->seller->getProducts());
-        $this->assertEmpty($this->seller->getSales());
-        $this->assertIsArray($this->seller->getSales());
     }
 
     /**
@@ -87,16 +86,11 @@ class SellerTest extends TestCase
      */
     public function testSellerSetProducts(): void
     {
-        $this->seller->setProducts([
-            ['produit 1' => 1,],
-            ['produit 2' => 2,],
-            ['produit 3' => 3,],
-        ]);
-        $this->assertSame([
-            ['produit 1' => 1,],
-            ['produit 2' => 2,],
-            ['produit 3' => 3,],
-        ], $this->seller->getProducts());
+        $products = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $products[] = new Product();
+        }
+        $this->assertSame($products, $this->seller->setProducts($products)->getProducts());
     }
 
     /**
@@ -106,10 +100,12 @@ class SellerTest extends TestCase
      */
     public function testSellerAddProduct(): void
     {
-        $this->seller->addProduct(['produit 1' => 1,]);
-        $this->assertSame([
-            ['produit 1' => 1,],
-        ], $this->seller->getProducts());
+        $product = new Product();
+
+        $this->seller->addProduct($product);
+        $this->assertContains($product, $this->seller->getProducts());
+        $this->assertIsArray($this->seller->getProducts());
+        $this->assertInstanceOf(Product::class, $this->seller->getProducts()[0]);
     }
 
     /**
@@ -119,58 +115,11 @@ class SellerTest extends TestCase
      */
     public function testCannotAddSameProductTwice(): void
     {
-        $this->seller->addProduct(['produit 1' => 1,]);
-        $this->seller->addProduct(['produit 1' => 1,]);
-        $this->assertSame([
-            ['produit 1' => 1,],
-        ], $this->seller->getProducts());
+        $product = new Product();
+        $this->seller->addProduct($product);
+        $this->seller->addProduct($product);
         $this->assertCount(1, $this->seller->getProducts());
     }
 
-    /**
-     * @group entity
-     * @group seller
-     * @group seller-set-sales
-     */
-    public function testSellerSetSales(): void
-    {
-        $this->seller->setSales([
-            ['vente 1' => 1,],
-            ['vente 2' => 2,],
-            ['vente 3' => 3,],
-        ]);
-        $this->assertSame([
-            ['vente 1' => 1,],
-            ['vente 2' => 2,],
-            ['vente 3' => 3,],
-        ], $this->seller->getSales());
-    }
 
-    /**
-     * @group entity
-     * @group seller
-     * @group seller-add-sale
-     */
-    public function testSellerAddSale(): void
-    {
-        $this->seller->addSale(['vente 1' => 1,]);
-        $this->assertSame([
-            ['vente 1' => 1,],
-        ], $this->seller->getSales());
-    }
-
-    /**
-     * @group entity
-     * @group seller
-     * @group seller-add-sales-twice
-     */
-    public function testCannotAddSameSaleTwice(): void
-    {
-        $this->seller->addSale(['vente 1' => 1,]);
-        $this->seller->addSale(['vente 1' => 1,]);
-        $this->assertSame([
-            ['vente 1' => 1,],
-        ], $this->seller->getSales());
-        $this->assertCount(1, $this->seller->getSales());
-    }
 }
