@@ -19,7 +19,7 @@ class PaymentProcessor implements PaymentProcessorInterface
     }
 
     /**
-     * @param PaymentInterface $payment
+     * @param Payment $payment
      * @return bool
      */
     public function process(PaymentInterface $payment): bool
@@ -47,7 +47,7 @@ class PaymentProcessor implements PaymentProcessorInterface
     }
 
     /**
-     * @param PaymentInterface $payment
+     * @param Payment $payment
      * @return void
      * @throws Exception
      */
