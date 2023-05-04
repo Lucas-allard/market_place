@@ -2,7 +2,7 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
-  <title>Dashboard for C:\Users\allar\labo\market_place\src\Entity\Interface</title>
+  <title>Dashboard for C:\Users\allar\labo\market_place\src\Service\Payment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../../_css/bootstrap.min.css?v=9.2.26" rel="stylesheet" type="text/css">
   <link href="../../_css/nv.d3.min.css?v=9.2.26" rel="stylesheet" type="text/css">
@@ -17,8 +17,8 @@
       <nav aria-label="breadcrumb">
        <ol class="breadcrumb">
          <li class="breadcrumb-item"><a href="../../index.html">C:\Users\allar\labo\market_place\src</a></li>
-         <li class="breadcrumb-item"><a href="../index.html">Entity</a></li>
-         <li class="breadcrumb-item"><a href="index.html">Interface</a></li>
+         <li class="breadcrumb-item"><a href="../index.html">Service</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Payment</a></li>
          <li class="breadcrumb-item active">(Dashboard)</li>
 
        </ol>
@@ -156,7 +156,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#classCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,0], "Class Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,1], "Class Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -174,7 +174,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#methodCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,0], "Method Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,4], "Method Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -224,7 +224,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Cyclomatic Complexity');
 
     d3.select('#classComplexity svg')
-      .datum(getComplexityData([], 'Class Complexity'))
+      .datum(getComplexityData([[100,8,"<a href=\"PaymentProcessor.php.html#13\">App\\Service\\Payment\\PaymentProcessor<\/a>"]], 'Class Complexity'))
       .transition()
       .duration(500)
       .call(chart);
@@ -248,7 +248,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Method Complexity');
 
     d3.select('#methodComplexity svg')
-      .datum(getComplexityData([], 'Method Complexity'))
+      .datum(getComplexityData([[100,1,"<a href=\"PaymentProcessor.php.html#16\">App\\Service\\Payment\\PaymentProcessor::__construct<\/a>"],[100,2,"<a href=\"PaymentProcessor.php.html#25\">App\\Service\\Payment\\PaymentProcessor::process<\/a>"],[100,2,"<a href=\"PaymentProcessor.php.html#41\">App\\Service\\Payment\\PaymentProcessor::checkPaymentStatus<\/a>"],[100,3,"<a href=\"PaymentProcessor.php.html#53\">App\\Service\\Payment\\PaymentProcessor::chargePayment<\/a>"]], 'Method Complexity'))
       .transition()
       .duration(500)
       .call(chart);

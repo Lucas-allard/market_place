@@ -125,7 +125,7 @@ class Seller extends User
      */
     public function addProduct(Product $product): Seller
     {
-        if (!in_array($product, $this->products)) {
+        if (!in_array($product, $this->products, true)) {
             $this->products[] = $product;
         }
         return $this;
