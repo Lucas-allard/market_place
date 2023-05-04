@@ -27,7 +27,7 @@ interface PaymentInterface
     public function getStatus(): string;
 
     /**
-     * @retutests/Service/Stripe/StripConnexionTest.phprn Order|null
+     * @return Order|null
      */
     public function getOrder(): ?Order;
 
