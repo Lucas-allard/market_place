@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Tests\Service\Stripe;
+namespace App\Service\Stripe;
+
+use Stripe\Stripe;
 
 class StripeConnexion
 {
-    private string $secretKey = "";
-    private string $publicKey = "";
+    private static string $apiKey;
 
-    public function __construct()
+    public static function init(): void
     {
-        $this->secretKey = $_ENV['STRIPE_SECRET'];
-        $this->publicKey = $_ENV['STRIPE_KEY'];
+        self::$apiKey = $_ENV['STRIPE_SECRET_KEY'];
+        Stripe::setApiKey(self::$apiKey);
     }
-
-    
 }
