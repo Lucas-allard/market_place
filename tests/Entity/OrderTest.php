@@ -6,7 +6,9 @@ use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Payment;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
+use Stripe\Collection;
 
 class OrderTest extends TestCase
 {
@@ -31,7 +33,7 @@ class OrderTest extends TestCase
         $this->assertIsFloat($this->order->getTotalAmount());
         $this->assertEquals(0.0, $this->order->getTotalAmount());
         $this->assertNull($this->order->getCustomer());
-        $this->assertIsArray($this->order->getOrderItems());
+        $this->assertContainsOnlyInstancesOf(OrderItem::class, $this->order->getOrderItems());
         $this->assertEmpty($this->order->getOrderItems());
         $this->assertNull($this->order->getPayment());
     }
@@ -104,14 +106,11 @@ class OrderTest extends TestCase
      */
     public function testOrderSetOrderItems(): void
     {
-        $orderItems = [];
-        for ($i = 0; $i < 5; $i++) {
-            $orderItems[] = new OrderItem();
-        }
+        $orderItems = new ArrayCollection();
+        $orderItem = new OrderItem();
+        $orderItems->add($orderItem);
         $this->order->setOrderItems($orderItems);
-        $this->assertSame($orderItems, $this->order->getOrderItems());
-        $this->assertIsArray($this->order->getOrderItems());
-        $this->assertInstanceOf('App\Entity\OrderItem', $this->order->getOrderItems()[0]);
+        $this->assertContains($orderItem, $this->order->getOrderItems());
     }
 
     /**
@@ -124,7 +123,6 @@ class OrderTest extends TestCase
         $orderItem = new OrderItem();
         $this->order->addOrderItem($orderItem);
         $this->assertContains($orderItem, $this->order->getOrderItems());
-        $this->assertIsArray($this->order->getOrderItems());
         $this->assertInstanceOf('App\Entity\OrderItem', $this->order->getOrderItems()[0]);
     }
 
