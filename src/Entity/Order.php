@@ -47,7 +47,7 @@ class Order extends AbstractEntity
     /**
      * @var Collection|null
      */
-    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class)]
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class, cascade: ['persist', 'remove'])]
     private ?Collection $orderItems = null;
 
     /**
@@ -57,7 +57,7 @@ class Order extends AbstractEntity
     private ?Payment $payment = null;
 
     const STATUS_PENDING = 'pending';
-    const STATUS_PAID = 'paid';
+    const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
 
     public function __construct()
