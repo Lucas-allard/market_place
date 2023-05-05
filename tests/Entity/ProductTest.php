@@ -30,6 +30,9 @@ class ProductTest extends TestCase
         $this->assertIsFloat($this->product->getPrice());
         $this->assertEquals(0, $this->product->getQuantity());
         $this->assertIsInt($this->product->getQuantity());
+        $this->assertEmpty($this->product->getCategories());
+        $this->assertIsArray($this->product->getCategories());
+        $this->assertNull($this->product->getSeller());
     }
 
     /**

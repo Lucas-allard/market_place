@@ -2,28 +2,39 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[ORM\Entity]
+#[UniqueEntity('siret', message: "Un vendeur ayant ce numéro de SIRET existe déjà !")]
 class Seller extends User
 {
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $company = '';
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $siret = '';
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $vat = '';
+
     /**
      * @var float
      */
+    #[ORM\Column(type: 'float')]
     private float $sellerRating = 0.0;
     /**
      * @var Product[]
      */
+    #[ORM\OneToMany(mappedBy: 'seller', targetEntity: Product::class)]
     private array $products = [];
 
     /**

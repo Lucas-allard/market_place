@@ -2,31 +2,42 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+#[ORM\Entity]
+#[UniqueEntity('name', message: 'Cette catégorie existe déjà')]
 class Category extends AbstractEntity
 {
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $name = '';
 
     /**
      * @var string
      */
+    #[ORM\Column(type: 'text')]
     private string $description = '';
 
     /**
      * @var Category|null
      */
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Category $parent = null;
 
     /**
      * @var Category[]
      */
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Category::class)]
     private array $children = [];
 
     /**
      * @var Product[]
      */
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
     private array $products = [];
 
     /**

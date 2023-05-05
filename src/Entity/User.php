@@ -4,43 +4,61 @@ namespace App\Entity;
 
 use App\Entity\Interface\EntityInterface;
 use App\Entity\Interface\UserInterface;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 #[UniqueEntity('email', message: "Un utilisateur ayant cette adresse email existe déjà !")]
+#[ORM\Entity]
+#[ORM\Table(name: 'user')]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
+#[ORM\DiscriminatorMap(['customer' => 'Customer', 'seller' => 'Seller'])]
 abstract class User extends AbstractEntity implements EntityInterface, UserInterface, SymfonyUserInterface, PasswordAuthenticatedUserInterface
 {
 
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $firstName = "";
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $lastName = "";
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $email = "";
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $password = "";
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $address = "";
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $phone = "";
 
     /**
      * @var string[]
      *
      */
+    #[ORM\Column]
     private array $roles = [];
 
     /**

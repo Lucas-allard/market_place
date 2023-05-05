@@ -4,6 +4,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\Order;
 use App\Entity\OrderItem;
+use App\Entity\Payment;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
@@ -32,6 +33,7 @@ class OrderTest extends TestCase
         $this->assertNull($this->order->getCustomer());
         $this->assertIsArray($this->order->getOrderItems());
         $this->assertEmpty($this->order->getOrderItems());
+        $this->assertNull($this->order->getPayment());
     }
 
     /**
@@ -137,5 +139,18 @@ class OrderTest extends TestCase
         $this->order->addOrderItem($orderItem);
         $this->order->addOrderItem($orderItem);
         $this->assertCount(1, $this->order->getOrderItems());
+    }
+
+    /**
+     * @group entity
+     * @group order
+     * @group order-set-payment
+     */
+    public function testOrderSetPayment(): void
+    {
+        $payment = new Payment();
+        $this->order->setPayment($payment);
+        $this->assertSame($payment, $this->order->getPayment());
+        $this->assertInstanceOf('App\Entity\Payment', $this->order->getPayment());
     }
 }

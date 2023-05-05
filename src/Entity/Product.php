@@ -2,28 +2,48 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity]
 class Product extends AbstractEntity
 {
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $name = '';
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'text')]
     private string $description = '';
+
     /**
      * @var float
      */
+    #[ORM\Column(type: 'float')]
     private float $price = 0.0;
+
     /**
      * @var int
      */
+    #[ORM\Column(type: 'integer')]
     private int $quantity = 0;
+
     /**
      * @var Category[]|null
      */
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'products')]
+    #[ORM\JoinTable(name: 'product_category')]
     private ?array $categories = [];
+
+    /**
+     * @var Seller|null
+     */
+    #[ORM\ManyToOne(targetEntity: Seller::class, inversedBy: 'products')]
+    private ?Seller $seller = null;
+
 
     /**
      * @return string
@@ -137,6 +157,24 @@ class Product extends AbstractEntity
             $this->categories[] = $category;
         }
 
+        return $this;
+    }
+
+    /**
+     * @return Seller|null
+     */
+    public function getSeller(): ?Seller
+    {
+        return $this->seller;
+    }
+
+    /**
+     * @param Seller|null $seller
+     * @return Product
+     */
+    public function setSeller(?Seller $seller): Product
+    {
+        $this->seller = $seller;
         return $this;
     }
 

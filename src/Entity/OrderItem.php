@@ -2,24 +2,33 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity]
 class OrderItem extends AbstractEntity {
+
     /**
      * @var int|null
      */
+    #[ORM\Column(type: 'integer')]
     private ?int $quantity = 0;
+
     /**
      * @var float|null
      */
+    #[ORM\Column(type: 'float')]
     private ?float $price = 0.0;
+
     /**
      * @var Product|null
      */
+    #[ORM\ManyToOne(targetEntity: Product::class)]
     private ?Product $product = null;
 
     /**
      * @var Order|null
      */
+    #[ORM\ManyToOne(targetEntity: Order::class, cascade: ['persist', 'remove'], inversedBy: 'orderItems')]
     private ?Order $order = null;
 
     /**
