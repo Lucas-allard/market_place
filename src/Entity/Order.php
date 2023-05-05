@@ -3,44 +3,60 @@
 namespace App\Entity;
 
 
+use App\Entity\Interface\PaymentInterface;
 use DateTimeInterface;
 
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity]
 class Order extends AbstractEntity
 {
     /**
      * @var DateTimeInterface|null
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTimeInterface $orderDate = null;
+
     /**
      * @var DateTimeInterface|null
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTimeInterface $deliveryDate = null;
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $orderStatus = '';
+
     /**
      * @var float
      */
+    #[ORM\Column(type: 'float')]
     private float $totalAmount = 0.0;
+
     /**
      * @var Customer|null
      */
+    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'orders')]
     private ?Customer $customer = null;
+
     /**
      * @var OrderItem[]
      */
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class)]
     private array $orderItems = [];
 
-    /**
-     *
-     */
-    const STATUS_PENDING = 'pending';
-    /**
-     *
-     */
-    const STATUS_PAID = 'paid';
 
+    /**
+     * @var Payment|null
+     */
+    #[ORM\OneToOne(inversedBy: 'order', cascade: ['persist', 'remove'])]
+    private ?Payment $payment = null;
+
+    const STATUS_PENDING = 'pending';
+    const STATUS_PAID = 'paid';
+    const STATUS_FAILED = 'failed';
 
     /**
      * @return DateTimeInterface|null
@@ -161,6 +177,24 @@ class Order extends AbstractEntity
         if (!in_array($orderItem, $this->orderItems, true)) {
             $this->orderItems[] = $orderItem;
         }
+        return $this;
+    }
+
+    /**
+     * @return PaymentInterface|null
+     */
+    public function getPayment(): ?PaymentInterface
+    {
+        return $this->payment;
+    }
+
+    /**
+     * @param Payment|null $payment
+     * @return Order
+     */
+    public function setPayment(?Payment $payment): Order
+    {
+        $this->payment = $payment;
         return $this;
     }
 }

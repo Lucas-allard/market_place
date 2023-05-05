@@ -3,36 +3,47 @@
 namespace App\Entity;
 
 use App\Entity\Interface\PaymentInterface;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[ORM\Entity]
+#[UniqueEntity('paymentToken', message: 'Le token de paiement doit être unique')]
 class Payment extends AbstractEntity implements PaymentInterface
 {
     /**
      * @var float
      */
+    #[ORM\Column(type: 'float')]
     private float $amount = 0.0;
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 3)]
     private string $currency = self::CURRENCY_EUR;
 
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $paymentToken = '';
 
     /**
      * @var string
      */
+    #[ORM\Column(type: 'text')]
     private string $description = '';
+
     /**
      * @var string
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $status = '';
 
-    /**
-     * @var Order|null
-     */
+    #[ORM\OneToOne(mappedBy: 'payment', cascade: ['persist', 'remove'])]
+    #[ORM\Column(name: '`order`')]
     private ?Order $order = null;
+
 
     const STATUS_PENDING = 'pending';
     const STATUS_PAID = 'paid';

@@ -3,20 +3,27 @@
 namespace App\Entity;
 
 use DateTimeInterface;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity]
 class Customer extends User
 {
     /**
      * @var string|null
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $shippingAddress = "";
+
     /**
      * @var DateTimeInterface|null
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTimeInterface $birthDate = null;
+
     /**
      * @var Order[]
      */
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Order::class)]
     private array $orders = [];
 
     /**
