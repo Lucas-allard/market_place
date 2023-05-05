@@ -71,8 +71,8 @@ class OrderTest extends TestCase
     {
         $this->order->setOrderStatus(Order::STATUS_PENDING);
         $this->assertSame(Order::STATUS_PENDING, $this->order->getOrderStatus());
-        $this->order->setOrderStatus(Order::STATUS_PAID);
-        $this->assertSame(Order::STATUS_PAID, $this->order->getOrderStatus());
+        $this->order->setOrderStatus(Order::STATUS_COMPLETED);
+        $this->assertSame(Order::STATUS_COMPLETED, $this->order->getOrderStatus());
     }
 
     /**
