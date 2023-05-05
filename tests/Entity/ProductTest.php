@@ -4,6 +4,8 @@ namespace App\Tests\Entity;
 
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\Seller;
+use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class ProductTest extends TestCase
@@ -130,5 +132,18 @@ class ProductTest extends TestCase
         $this->product->addCategory($category);
         $this->assertEquals([$category], $this->product->getCategories());
     }
+
+    /**
+     * @group entity
+     * @group product
+     * @group product-set-seller
+     */
+    public function testProductSetSeller()
+    {
+        $seller = new Seller();
+        $this->product->setSeller($seller);
+        $this->assertEquals($seller, $this->product->getSeller());
+    }
+
 
 }
