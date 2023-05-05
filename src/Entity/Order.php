@@ -189,10 +189,10 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @param PaymentInterface|null $payment
+     * @param Payment|null $payment
      * @return Order
      */
-    public function setPayment(?PaymentInterface $payment): Order
+    public function setPayment(?Payment $payment): Order
     {
         $this->payment = $payment;
         return $this;
