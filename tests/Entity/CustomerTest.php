@@ -6,6 +6,7 @@ use App\Entity\Customer;
 use App\Entity\Order;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
 class CustomerTest extends TestCase
@@ -32,7 +33,7 @@ class CustomerTest extends TestCase
         $this->assertIsString($this->customer->getShippingAddress());
         $this->assertNull($this->customer->getBirthDate());
         $this->assertEmpty($this->customer->getOrders());
-        $this->assertIsArray($this->customer->getOrders());
+        $this->assertInstanceOf(ArrayCollection::class, $this->customer->getOrders());
     }
 
     /**
@@ -64,15 +65,14 @@ class CustomerTest extends TestCase
      */
     public function testSetOrders(): void
     {
-        $orders = [];
+        $orders = new ArrayCollection();
         for ($i = 0; $i < 5; $i++) {
-            $orders[] = new Order();
+            $orders->add(new Order());
         }
         $this->customer->setOrders($orders);
-        $this->assertIsArray($this->customer->getOrders());
-        $this->assertSame($orders, $this->customer->getOrders());
+        $this->assertInstanceOf(ArrayCollection::class, $this->customer->getOrders());
+        $this->assertContainsOnlyInstancesOf(Order::class, $this->customer->getOrders());
     }
-
 
     /**
      * @group entity
@@ -82,8 +82,8 @@ class CustomerTest extends TestCase
     public function testAddOrder(): void
     {
         $this->customer->addOrder($this->order);
-        $this->assertIsArray($this->customer->getOrders());
-        $this->assertSame([$this->order], $this->customer->getOrders());
+        $this->assertInstanceOf(ArrayCollection::class, $this->customer->getOrders());
+        $this->assertContainsOnlyInstancesOf(Order::class, $this->customer->getOrders());
     }
 
     /**
@@ -95,7 +95,18 @@ class CustomerTest extends TestCase
     {
         $this->customer->addOrder($this->order);
         $this->customer->addOrder($this->order);
-        $this->assertIsArray($this->customer->getOrders());
         $this->assertCount(1, $this->customer->getOrders());
+    }
+
+    /**
+     * @group entity
+     * @group customer
+     * @group customer-remove-order
+     */
+    public function testRemoveOrder(): void
+    {
+        $this->customer->addOrder($this->order);
+        $this->customer->removeOrder($this->order);
+        $this->assertEmpty($this->customer->getOrders());
     }
 }

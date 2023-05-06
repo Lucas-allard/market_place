@@ -4,11 +4,14 @@ namespace App\Entity;
 
 
 use App\Entity\Interface\PaymentInterface;
+use App\Repository\OrderRepository;
 use DateTimeInterface;
-
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: OrderRepository::class)]
+#[ORM\Table(name: '`order`')]
 class Order extends AbstractEntity
 {
     /**
@@ -42,21 +45,22 @@ class Order extends AbstractEntity
     private ?Customer $customer = null;
 
     /**
-     * @var OrderItem[]
+     * @var Collection|null
      */
-    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class)]
-    private array $orderItems = [];
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class, cascade: ['persist', 'remove'])]
+    private ?Collection $orderItems;
 
-
-    /**
-     * @var Payment|null
-     */
     #[ORM\OneToOne(inversedBy: 'order', cascade: ['persist', 'remove'])]
     private ?Payment $payment = null;
 
     const STATUS_PENDING = 'pending';
-    const STATUS_PAID = 'paid';
+    const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
+
+    public function __construct()
+    {
+        $this->orderItems = new ArrayCollection();
+    }
 
     /**
      * @return DateTimeInterface|null
@@ -149,18 +153,18 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @return OrderItem[]
+     * @return Collection<OrderItem>
      */
-    public function getOrderItems(): array
+    public function getOrderItems(): Collection
     {
         return $this->orderItems;
     }
 
     /**
-     * @param OrderItem[] $orderItems
+     * @param Collection $orderItems
      * @return Order
      */
-    public function setOrderItems(array $orderItems): Order
+    public function setOrderItems(Collection $orderItems): Order
     {
         foreach ($orderItems as $orderItem) {
             $this->addOrderItem($orderItem);
@@ -174,27 +178,23 @@ class Order extends AbstractEntity
      */
     public function addOrderItem(OrderItem $orderItem): Order
     {
-        if (!in_array($orderItem, $this->orderItems, true)) {
-            $this->orderItems[] = $orderItem;
+        if (!$this->orderItems->contains($orderItem)) {
+            $this->orderItems->add($orderItem);
+            $orderItem->setOrder($this);
         }
+
         return $this;
     }
 
-    /**
-     * @return PaymentInterface|null
-     */
-    public function getPayment(): ?PaymentInterface
+    public function getPayment(): ?Payment
     {
         return $this->payment;
     }
 
-    /**
-     * @param Payment|null $payment
-     * @return Order
-     */
-    public function setPayment(?Payment $payment): Order
+    public function setPayment(?Payment $payment): self
     {
         $this->payment = $payment;
+
         return $this;
     }
 }

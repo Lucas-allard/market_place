@@ -2,9 +2,12 @@
 
 namespace App\Entity;
 
+use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product extends AbstractEntity
 {
     /**
@@ -31,19 +34,18 @@ class Product extends AbstractEntity
     #[ORM\Column(type: 'integer')]
     private int $quantity = 0;
 
-    /**
-     * @var Category[]|null
-     */
-    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'products')]
-    #[ORM\JoinTable(name: 'product_category')]
-    private ?array $categories = [];
 
-    /**
-     * @var Seller|null
-     */
-    #[ORM\ManyToOne(targetEntity: Seller::class, inversedBy: 'products')]
+    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'products')]
+    private Collection $categories;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Seller $seller = null;
 
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     /**
      * @return string
@@ -128,53 +130,41 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @return Category[]|null
+     * @return Collection<int, Category>
      */
-    public function getCategories(): ?array
+    public function getCategories(): Collection
     {
         return $this->categories;
     }
 
-    /**
-     * @param Category[]|null $categories
-     * @return Product
-     */
-    public function setCategories(?array $categories): Product
+    public function addCategory(Category $category): self
     {
-        foreach ($categories as $category) {
-            $this->addCategory($category);
-        }
-        return $this;
-    }
-
-    /**
-     * @param Category $category
-     * @return Product
-     */
-    public function addCategory(Category $category): Product
-    {
-        if (!in_array($category, $this->categories, true)) {
-            $this->categories[] = $category;
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+            $category->addProduct($this);
         }
 
         return $this;
     }
 
-    /**
-     * @return Seller|null
-     */
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->removeElement($category)) {
+            $category->removeProduct($this);
+        }
+
+        return $this;
+    }
+
     public function getSeller(): ?Seller
     {
         return $this->seller;
     }
 
-    /**
-     * @param Seller|null $seller
-     * @return Product
-     */
-    public function setSeller(?Seller $seller): Product
+    public function setSeller(?Seller $seller): self
     {
         $this->seller = $seller;
+
         return $this;
     }
 
