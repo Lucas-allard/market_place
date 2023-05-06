@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product extends AbstractEntity
 {
     /**
@@ -38,7 +39,7 @@ class Product extends AbstractEntity
     private Collection $categories;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Seller $seller = null;
 
     public function __construct()

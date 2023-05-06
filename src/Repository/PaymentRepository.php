@@ -23,17 +23,17 @@ class PaymentRepository extends ServiceEntityRepository
 
     public function save(Payment $payment, bool $flush = true): void
     {
-        $this->_em->persist($payment);
+        $this->getEntityManager()->persist($payment);
         if ($flush) {
-            $this->_em->flush();
+            $this->getEntityManager()->flush();
         }
     }
 
     public function remove(Payment $payment, bool $flush = true): void
     {
-        $this->_em->remove($payment);
+        $this->getEntityManager()->remove($payment);
         if ($flush) {
-            $this->_em->flush();
+            $this->getEntityManager()->flush();
         }
     }
 }
