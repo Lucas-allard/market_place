@@ -31,6 +31,7 @@ class Customer extends User
 
     public function __construct()
     {
+            parent::__construct();
         $this->orders = new ArrayCollection();
     }
 

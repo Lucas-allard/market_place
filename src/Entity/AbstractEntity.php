@@ -17,16 +17,21 @@ abstract class AbstractEntity
     protected ?int $id = null;
 
     /**
-     * @var DateTime|null
+     * @var DateTime
      */
-    #[ORM\Column(type: 'datetime', nullable: true, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected ?DateTime $createdAt;
+    #[ORM\Column(type: 'datetime')]
+    protected DateTime $createdAt;
 
     /**
-     * @var DateTime|null
+     * @var DateTime
      */
     #[ORM\Column(type: 'datetime', nullable: true, options: ['default' => null, 'on update' => 'CURRENT_TIMESTAMP'])]
-    protected ?DateTime $updatedAt;
+    protected DateTime $updatedAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+    }
 
     /**
      * @return int|null

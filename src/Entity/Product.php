@@ -44,6 +44,7 @@ class Product extends AbstractEntity
 
     public function __construct()
     {
+        parent::__construct();
         $this->categories = new ArrayCollection();
     }
 

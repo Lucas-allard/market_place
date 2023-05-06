@@ -59,6 +59,7 @@ class Order extends AbstractEntity
 
     public function __construct()
     {
+        parent::__construct();
         $this->orderItems = new ArrayCollection();
     }
 
