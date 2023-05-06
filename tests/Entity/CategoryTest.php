@@ -4,6 +4,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\Category;
 use App\Entity\Product;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
 class CategoryTest extends TestCase
@@ -28,9 +29,9 @@ class CategoryTest extends TestCase
         $this->assertIsString($this->category->getDescription());
         $this->assertNull($this->category->getParent());
         $this->assertEmpty($this->category->getChildren());
-        $this->assertIsArray($this->category->getChildren());
-        $this->assertSame([], $this->category->getProducts());
-        $this->assertIsArray($this->category->getProducts());
+        $this->assertInstanceOf(ArrayCollection::class, $this->category->getChildren());
+        $this->assertEmpty($this->category->getProducts());
+        $this->assertInstanceOf(ArrayCollection::class, $this->category->getProducts());
     }
 
     /**
@@ -71,26 +72,15 @@ class CategoryTest extends TestCase
     /**
      * @group entity
      * @group category
-     * @group category-set-children
-     */
-    public function testCategorySetChildren(): void
-    {
-        $this->category->setChildren([new Category(), new Category()]);
-        $this->assertSame(2, count($this->category->getChildren()));
-        $this->assertIsArray($this->category->getChildren());
-    }
-
-    /**
-     * @group entity
-     * @group category
      * @group category-add-child
      */
     public function testCategoryAddChild(): void
     {
         $this->category->addChild(new Category());
         $this->assertSame(1, count($this->category->getChildren()));
-        $this->assertIsArray($this->category->getChildren());
+        $this->assertInstanceOf(ArrayCollection::class, $this->category->getChildren());
     }
+
 
     /**
      * @group entity
@@ -103,25 +93,23 @@ class CategoryTest extends TestCase
         $this->category->addChild($child);
         $this->category->addChild($child);
         $this->assertSame(1, count($this->category->getChildren()));
-        $this->assertIsArray($this->category->getChildren());
+        $this->assertInstanceOf(ArrayCollection::class, $this->category->getChildren());
     }
 
     /**
      * @group entity
      * @group category
-     * @group category-set-products
+     * @group category-remove-child
      */
-    public function testCategorySetProducts(): void
+    public function testCategoryRemoveChild(): void
     {
-        $products = [];
-        for ($i = 1; $i <= 2; $i++) {
-            $products[] = new Product();
-        }
-        $this->category->setProducts($products);
-        $this->assertSame(2, count($this->category->getProducts()));
-        $this->assertIsArray($this->category->getProducts());
-
+        $child = new Category();
+        $this->category->addChild($child);
+        $this->category->removeChild($child);
+        $this->assertSame(0, count($this->category->getChildren()));
+        $this->assertInstanceOf(ArrayCollection::class, $this->category->getChildren());
     }
+
 
     /**
      * @group entity
@@ -132,6 +120,34 @@ class CategoryTest extends TestCase
     {
         $this->category->addProduct(new Product());
         $this->assertSame(1, count($this->category->getProducts()));
-        $this->assertIsArray($this->category->getProducts());
+        $this->assertInstanceOf(ArrayCollection::class, $this->category->getProducts());
+    }
+
+    /**
+     * @group entity
+     * @group category
+     * @group category-add-product-twice
+     */
+    public function testCannotAddProductTwice(): void
+    {
+        $product = new Product();
+        $this->category->addProduct($product);
+        $this->category->addProduct($product);
+        $this->assertSame(1, count($this->category->getProducts()));
+        $this->assertInstanceOf(ArrayCollection::class, $this->category->getProducts());
+    }
+
+    /**
+     * @group entity
+     * @group category
+     * @group category-remove-product
+     */
+    public function testCategoryRemoveProduct(): void
+    {
+        $product = new Product();
+        $this->category->addProduct($product);
+        $this->category->removeProduct($product);
+        $this->assertSame(0, count($this->category->getProducts()));
+        $this->assertInstanceOf(ArrayCollection::class, $this->category->getProducts());
     }
 }

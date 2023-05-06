@@ -48,11 +48,8 @@ class Order extends AbstractEntity
      * @var Collection|null
      */
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class, cascade: ['persist', 'remove'])]
-    private ?Collection $orderItems = null;
+    private ?Collection $orderItems;
 
-    /**
-     * @var Payment|null
-     */
     #[ORM\OneToOne(inversedBy: 'order', cascade: ['persist', 'remove'])]
     private ?Payment $payment = null;
 
@@ -189,21 +186,15 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return PaymentInterface|null
-     */
-    public function getPayment(): ?PaymentInterface
+    public function getPayment(): ?Payment
     {
         return $this->payment;
     }
 
-    /**
-     * @param Payment|null $payment
-     * @return Order
-     */
-    public function setPayment(?Payment $payment): Order
+    public function setPayment(?Payment $payment): self
     {
         $this->payment = $payment;
+
         return $this;
     }
 }

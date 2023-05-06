@@ -4,6 +4,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\Product;
 use App\Entity\Seller;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
 class SellerTest extends TestCase
@@ -32,7 +33,7 @@ class SellerTest extends TestCase
         $this->assertEquals(0.0, $this->seller->getSellerRating());
         $this->assertIsFloat($this->seller->getSellerRating());
         $this->assertEmpty($this->seller->getProducts());
-        $this->assertIsArray($this->seller->getProducts());
+        $this->assertInstanceOf(ArrayCollection::class, $this->seller->getProducts());
     }
 
     /**
@@ -82,20 +83,6 @@ class SellerTest extends TestCase
     /**
      * @group entity
      * @group seller
-     * @group seller-set-products
-     */
-    public function testSellerSetProducts(): void
-    {
-        $products = [];
-        for ($i = 1; $i <= 3; $i++) {
-            $products[] = new Product();
-        }
-        $this->assertSame($products, $this->seller->setProducts($products)->getProducts());
-    }
-
-    /**
-     * @group entity
-     * @group seller
      * @group seller-add-product
      */
     public function testSellerAddProduct(): void
@@ -104,8 +91,8 @@ class SellerTest extends TestCase
 
         $this->seller->addProduct($product);
         $this->assertContains($product, $this->seller->getProducts());
-        $this->assertIsArray($this->seller->getProducts());
-        $this->assertInstanceOf(Product::class, $this->seller->getProducts()[0]);
+        $this->assertInstanceOf(ArrayCollection::class, $this->seller->getProducts());
+        $this->assertContainsOnlyInstancesOf(Product::class, $this->seller->getProducts());
     }
 
     /**
@@ -121,5 +108,17 @@ class SellerTest extends TestCase
         $this->assertCount(1, $this->seller->getProducts());
     }
 
+    /**
+     * @group entity
+     * @group seller
+     * @group seller-remove-product
+     */
+    public function testSellerRemoveProduct(): void
+    {
+        $product = new Product();
+        $this->seller->addProduct($product);
+        $this->seller->removeProduct($product);
+        $this->assertNotContains($product, $this->seller->getProducts());
+    }
 
 }

@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\Seller;
 use App\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
 class ProductTest extends TestCase
@@ -33,7 +34,7 @@ class ProductTest extends TestCase
         $this->assertEquals(0, $this->product->getQuantity());
         $this->assertIsInt($this->product->getQuantity());
         $this->assertEmpty($this->product->getCategories());
-        $this->assertIsArray($this->product->getCategories());
+        $this->assertInstanceOf(ArrayCollection::class, $this->product->getCategories());
         $this->assertNull($this->product->getSeller());
     }
 
@@ -93,20 +94,6 @@ class ProductTest extends TestCase
         $this->assertEquals(15, $this->product->getQuantity());
     }
 
-    /**
-     * @group entity
-     * @group product
-     * @group product-set-categories
-     */
-    public function testProductSetCategories()
-    {
-        $categories = [];
-        for ($i = 0; $i < 10; $i++) {
-            $categories[] = new Category();
-        }
-        $this->product->setCategories($categories);
-        $this->assertEquals($categories, $this->product->getCategories());
-    }
 
     /**
      * @group entity
@@ -117,7 +104,8 @@ class ProductTest extends TestCase
     {
         $category = new Category();
         $this->product->addCategory($category);
-        $this->assertEquals([$category], $this->product->getCategories());
+        $this->assertInstanceOf(ArrayCollection::class, $this->product->getCategories());
+        $this->assertContainsOnlyInstancesOf(Category::class, $this->product->getCategories());
     }
 
     /**
@@ -130,7 +118,20 @@ class ProductTest extends TestCase
         $category = new Category();
         $this->product->addCategory($category);
         $this->product->addCategory($category);
-        $this->assertEquals([$category], $this->product->getCategories());
+        $this->assertCount(1, $this->product->getCategories());
+    }
+
+    /**
+     * @group entity
+     * @group product
+     * @group product-remove-category
+     */
+    public function testProductRemoveCategory()
+    {
+        $category = new Category();
+        $this->product->addCategory($category);
+        $this->product->removeCategory($category);
+        $this->assertCount(0, $this->product->getCategories());
     }
 
     /**

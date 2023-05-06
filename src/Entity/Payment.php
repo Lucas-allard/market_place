@@ -41,9 +41,7 @@ class Payment extends AbstractEntity implements PaymentInterface
     private string $status = '';
 
     #[ORM\OneToOne(mappedBy: 'payment', cascade: ['persist', 'remove'])]
-    #[ORM\Column(name: '`order`')]
     private ?Order $order = null;
-
 
     const STATUS_PENDING = 'pending';
     const STATUS_PAID = 'paid';
@@ -143,21 +141,25 @@ class Payment extends AbstractEntity implements PaymentInterface
         return $this;
     }
 
-    /**
-     * @return Order|null
-     */
     public function getOrder(): ?Order
     {
         return $this->order;
     }
 
-    /**
-     * @param Order $order
-     * @return Payment
-     */
-    public function setOrder(Order $order): Payment
+    public function setOrder(?Order $order): self
     {
+        // unset the owning side of the relation if necessary
+        if ($order === null && $this->order !== null) {
+            $this->order->setPayment(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($order !== null && $order->getPayment() !== $this) {
+            $order->setPayment($this);
+        }
+
         $this->order = $order;
+
         return $this;
     }
 }

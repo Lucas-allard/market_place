@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
+use App\Repository\SellerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: SellerRepository::class)]
 #[UniqueEntity('siret', message: "Un vendeur ayant ce numéro de SIRET existe déjà !")]
 class Seller extends User
 {
@@ -31,11 +34,16 @@ class Seller extends User
      */
     #[ORM\Column(type: 'float')]
     private float $sellerRating = 0.0;
-    /**
-     * @var Product[]
-     */
-    #[ORM\OneToMany(mappedBy: 'seller', targetEntity: Product::class)]
-    private array $products = [];
+
+    #[ORM\OneToMany(mappedBy: 'seller', targetEntity: Product::class, orphanRemoval: true)]
+    private Collection $products;
+
+
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     /**
      * @return string|null
@@ -110,35 +118,34 @@ class Seller extends User
     }
 
     /**
-     * @return Product[]|null
+     * @return Collection<int, Product>
      */
-    public function getProducts(): ?array
+    public function getProducts(): Collection
     {
         return $this->products;
     }
 
-    /**
-     * @param Product[] $products
-     * @return Seller
-     */
-    public function setProducts(array $products): Seller
+    public function addProduct(Product $product): self
     {
-        foreach ($products as $product) {
-            $this->addProduct($product);
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setSeller($this);
         }
 
         return $this;
     }
 
-    /**
-     * @param Product $product
-     * @return $this
-     */
-    public function addProduct(Product $product): Seller
+    public function removeProduct(Product $product): self
     {
-        if (!in_array($product, $this->products, true)) {
-            $this->products[] = $product;
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getSeller() === $this) {
+                $product->setSeller(null);
+            }
         }
+
         return $this;
     }
+
+
 }

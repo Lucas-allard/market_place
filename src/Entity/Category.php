@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity]
-#[UniqueEntity('name', message: 'Cette catégorie existe déjà')]
 class Category extends AbstractEntity
 {
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     private string $name = '';
 
     /**
@@ -21,24 +21,21 @@ class Category extends AbstractEntity
     #[ORM\Column(type: 'text')]
     private string $description = '';
 
-    /**
-     * @var Category|null
-     */
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'children')]
+    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'categories')]
+    private Collection $products;
+
+    #[ORM\ManyToOne(targetEntity: self::class, cascade: ['persist', 'remove'], inversedBy: 'children')]
     #[ORM\JoinColumn(nullable: true)]
-    private ?Category $parent = null;
+    private ?self $parent = null;
 
-    /**
-     * @var Category[]
-     */
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Category::class)]
-    private array $children = [];
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'], orphanRemoval: true)]
+    private Collection $children;
 
-    /**
-     * @var Product[]
-     */
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
-    private array $products = [];
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+        $this->children = new ArrayCollection();
+    }
 
     /**
      * @return string
@@ -77,84 +74,68 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @return Category|null
+     * @return Collection<int, Product>
      */
-    public function getParent(): ?Category
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param Category $parent
-     * @return $this
-     */
-    public function setParent(Category $parent): Category
-    {
-        $this->parent = $parent;
-        return $this;
-    }
-
-    /**
-     * @return Category[]
-     */
-    public function getChildren(): array
-    {
-        return $this->children;
-    }
-
-    /**
-     * @param Category[] $children
-     * @return Category
-     */
-    public function setChildren(array $children): Category
-    {
-        foreach ($children as $child) {
-            $this->addChild($child);
-        }
-        return $this;
-    }
-
-    /**
-     * @param Category $child
-     * @return Category
-     */
-    public function addChild(Category $child): Category
-    {
-        if (!in_array($child, $this->children, true)) {
-            $this->children[] = $child;
-        }
-        return $this;
-    }
-
-    /**
-     * @return Product[]
-     */
-    public function getProducts(): array
+    public function getProducts(): Collection
     {
         return $this->products;
     }
 
-    /**
-     * @param Product[] $products
-     * @return Category
-     */
-    public function setProducts(array $products): Category
+    public function addProduct(Product $product): self
     {
-        foreach ($products as $product) {
-            $this->addProduct($product);
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
         }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        $this->products->removeElement($product);
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
         return $this;
     }
 
     /**
-     * @param Product $product
-     * @return Category
+     * @return Collection<int, self>
      */
-    public function addProduct(Product $product): Category
+    public function getChildren(): Collection
     {
-        if (!in_array($product, $this->products, true)) {
-            $this->products[] = $product;
+        return $this->children;
+    }
+
+    public function addChild(self $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children->add($child);
+            $child->setParent($this);
         }
+
+        return $this;
+    }
+
+    public function removeChild(self $child): self
+    {
+        if ($this->children->removeElement($child)) {
+            // set the owning side to null (unless already changed)
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
+            }
+        }
+
         return $this;
     }
 }

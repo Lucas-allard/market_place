@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
+use App\Repository\OrderItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: OrderItemRepository::class)]
 class OrderItem extends AbstractEntity {
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -21,10 +23,15 @@ class Customer extends User
     private ?DateTimeInterface $birthDate = null;
 
     /**
-     * @var Order[]
+     * @var Collection|null
      */
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Order::class)]
-    private array $orders = [];
+    private ?Collection $orders;
+
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+    }
 
     /**
      * @return string|null
@@ -64,18 +71,18 @@ class Customer extends User
     }
 
     /**
-     * @return Order[]
+     * @return Collection
      */
-    public function getOrders(): array
+    public function getOrders(): Collection
     {
         return $this->orders;
     }
 
     /**
-     * @param Order[] $orders
+     * @param Collection $orders
      * @return Customer
      */
-    public function setOrders(array $orders): Customer
+    public function setOrders(Collection $orders): Customer
     {
         foreach ($orders as $order) {
             $this->addOrder($order);
@@ -89,11 +96,27 @@ class Customer extends User
      */
     public function addOrder(Order $order): Customer
     {
-        if (!in_array($order, $this->orders, true)) {
-            $this->orders[] = $order;
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setCustomer($this);
         }
 
         return $this;
     }
 
+    /**
+     * @param Order $order
+     * @return $this
+     */
+    public function removeOrder(Order $order): Customer
+    {
+        if ($this->orders->contains($order)) {
+            $this->orders->removeElement($order);
+            if ($order->getCustomer() === $this) {
+                $order->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
 }
