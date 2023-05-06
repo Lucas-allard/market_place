@@ -119,6 +119,46 @@ class PaymentTest extends TestCase
     /**
      * @group entity
      * @group payment
+     * @group payment-set-order-null
+     */
+    public function testSetOrderWithNull()
+    {
+        $payment = new Payment();
+        $order = new Order();
+        $payment->setOrder($order);
+
+        $this->assertEquals($order, $payment->getOrder());
+
+        $payment->setOrder(null);
+
+        $this->assertEquals(null, $payment->getOrder());
+    }
+
+    /**
+     * @group entity
+     * @group payment
+     * @group payment-set-order-existing
+     */
+    public function testSetOrderWithExistingOrder()
+    {
+        $payment = new Payment();
+        $order = new Order();
+        $payment->setOrder($order);
+
+        $this->assertEquals($order, $payment->getOrder());
+
+        $newOrder = new Order();
+        $newOrder->setPayment(new Payment());
+        $payment->setOrder($newOrder);
+
+        $this->assertEquals($newOrder, $payment->getOrder());
+        $this->assertEquals($payment, $order->getPayment());
+    }
+
+
+    /**
+     * @group entity
+     * @group payment
      * @group payment-set-payment-token
      */
     public function testPaymentSetPaymentToken(): void

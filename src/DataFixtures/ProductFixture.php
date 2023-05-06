@@ -2,7 +2,9 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\Seller;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -14,7 +16,7 @@ class ProductFixture extends Fixture implements DependentFixtureInterface
     /**
      * @inheritDoc
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager) : void
     {
         $faker = Faker\Factory::create();
 
@@ -24,9 +26,15 @@ class ProductFixture extends Fixture implements DependentFixtureInterface
             $product->setDescription($faker->text);
             $product->setPrice($faker->randomFloat(2, 0, 1000));
             $product->setQuantity($faker->numberBetween(0, 1000));
-            $product->setSeller($this->getReference('seller_' . $faker->numberBetween(0, 19)));
-            $product->addCategory($this->getReference('cat_' . $faker->numberBetween(0, 6)));
-            $product->addCategory($this->getReference('sub_cat_' . $faker->numberBetween(0, 30)));
+            /** @var Seller $seller */
+            $seller = $this->getReference('seller_' . $faker->numberBetween(0, 19));
+            $product->setSeller($seller);
+            /** @var Category $category */
+            $category = $this->getReference('cat_' . $faker->numberBetween(0, 6));
+            /** @var Category $subCategory */
+            $subCategory = $this->getReference('sub_cat_' . $faker->numberBetween(0, 30));
+            $product->addCategory($category);
+            $product->addCategory($subCategory);
             $manager->persist($product);
 
             $this->addReference('product_' . $i, $product);

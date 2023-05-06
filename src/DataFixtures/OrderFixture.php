@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Customer;
 use App\Entity\Order;
 use App\Entity\Seller;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -22,7 +23,9 @@ class OrderFixture extends Fixture implements DependentFixtureInterface
             $order->setDeliveryDate($faker->dateTimeBetween('now', '+1 year'));
             $order->setOrderStatus(Order::STATUS_PENDING);
             $order->setTotalAmount($faker->randomFloat(2, 0, 1000));
-            $order->setCustomer($this->getReference('customer_' . $faker->numberBetween(0, 99)));
+            /** @var Customer $customer */
+            $customer = $this->getReference('customer_' . $faker->numberBetween(0, 99));
+            $order->setCustomer($customer);
 
             $manager->persist($order);
 

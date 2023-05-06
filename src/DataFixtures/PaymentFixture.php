@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Order;
 use App\Entity\Payment;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -14,12 +15,16 @@ class PaymentFixture extends Fixture implements DependentFixtureInterface
     /**
      * @inheritDoc
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager) : void
     {
         $faker = Faker\Factory::create();
 
         for ($i = 0; $i < 50; $i++) {
             $payment = new Payment();
+
+            /**
+             * @var Order $order
+             */
             $order = $this->getReference('order_' . $i);
             $payment->setDescription($faker->text);
             $payment->setAmount($order->getTotalAmount());
@@ -34,6 +39,9 @@ class PaymentFixture extends Fixture implements DependentFixtureInterface
 
         for ($i = 50; $i < 100; $i++) {
             $payment = new Payment();
+            /**
+             * @var Order $order
+             */
             $order = $this->getReference('order_' . $i);
             $payment->setDescription($faker->text);
             $payment->setAmount($order->getTotalAmount());

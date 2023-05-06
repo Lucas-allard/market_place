@@ -22,7 +22,7 @@ class CustomerFixture extends Fixture
     /**
      * @inheritDoc
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager) : void
     {
         $faker = Faker\Factory::create('fr_FR');
 

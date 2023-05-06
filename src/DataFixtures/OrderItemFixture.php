@@ -2,7 +2,9 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Order;
 use App\Entity\OrderItem;
+use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -14,7 +16,7 @@ class OrderItemFixture extends Fixture implements DependentFixtureInterface
     /**
      * @inheritDoc
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager) : void
     {
         $faker = Faker\Factory::create();
 
@@ -22,8 +24,19 @@ class OrderItemFixture extends Fixture implements DependentFixtureInterface
             $orderItem = new OrderItem();
             $orderItem->setQuantity($faker->numberBetween(1, 10));
             $orderItem->setPrice($faker->randomFloat(2, 0, 1000));
-            $orderItem->setProduct($this->getReference('product_' . $faker->numberBetween(0, 99)));
-            $orderItem->setOrder($this->getReference('order_' . $faker->numberBetween(0, 99)));
+
+            /**
+             * @var Product $product
+             */
+            $product = $this->getReference('product_' . $faker->numberBetween(0, 99));
+
+            /**
+             * @var Order $order
+             */
+            $order = $this->getReference('order_' . $faker->numberBetween(0, 99));
+
+            $orderItem->setProduct($product);
+            $orderItem->setOrder($order);
             $manager->persist($orderItem);
         }
 
