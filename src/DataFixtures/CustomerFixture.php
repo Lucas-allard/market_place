@@ -11,6 +11,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class CustomerFixture extends Fixture
 {
 
+    const CUSTOMER_COUNT = 100;
     private UserPasswordHasherInterface $passwordHasher;
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
@@ -25,7 +26,7 @@ class CustomerFixture extends Fixture
     {
         $faker = Faker\Factory::create('fr_FR');
 
-        for ($i = 0; $i <= 100; $i++) {
+        for ($i = 0; $i <= self::CUSTOMER_COUNT; $i++) {
             $customer = new Customer();
             $customer->setFirstName($faker->firstName);
             $customer->setLastName($faker->lastName);
