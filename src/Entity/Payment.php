@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use App\Entity\Interface\PaymentInterface;
+use App\Repository\PaymentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: PaymentRepository::class)]
 #[UniqueEntity('paymentToken', message: 'Le token de paiement doit être unique')]
 class Payment extends AbstractEntity implements PaymentInterface
 {
