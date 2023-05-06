@@ -2,7 +2,6 @@
 
 namespace App\Tests\Repository;
 
-use App\DataFixtures\SellerFixture;
 use App\Entity\Seller;
 use App\Repository\SellerRepository;
 use Doctrine\DBAL\Exception;
