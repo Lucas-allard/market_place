@@ -2,12 +2,12 @@
 
 namespace App\Tests\Repository;
 
+use App\DataFixtures\OrderFixture;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\NotSupported;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class OrderRepositoryTest extends KernelTestCase
@@ -53,7 +53,7 @@ class OrderRepositoryTest extends KernelTestCase
         $this->assertIsArray($orders);
         $this->assertNotEmpty($orders);
         $this->assertInstanceOf(Order::class, $orders[0]);
-        $this->assertCount(10, $orders);
+        $this->assertCount(OrderFixture::ORDER_COUNT, $orders);
     }
 
     /**
@@ -91,7 +91,7 @@ class OrderRepositoryTest extends KernelTestCase
         $this->assertIsArray($orders);
         $this->assertNotEmpty($orders);
         $this->assertInstanceOf(Order::class, $orders[0]);
-        $this->assertCount(10, $orders);
+        $this->assertCount(OrderFixture::ORDER_COUNT, $orders);
         $this->assertEquals(1, $orders[0]->getId());
     }
 
