@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Repository;
+namespace App\Tests\Functionnal\Repository;
 
 use App\Entity\Payment;
 use App\Repository\PaymentRepository;

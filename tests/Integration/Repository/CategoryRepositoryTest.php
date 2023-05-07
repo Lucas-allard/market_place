@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Repository;
+namespace App\Tests\Functionnal\Repository;
 
 use App\Entity\Category;
 use App\Repository\CategoryRepository;

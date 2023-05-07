@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Tests\Repository;
+namespace App\Tests\Functionnal\Repository;
 
-use _PHPStan_532094bc1\Nette\Neon\Entity;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManager;
