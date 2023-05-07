@@ -39,12 +39,20 @@ class UserTest extends TestCase
         $this->assertEmpty($this->user->getEmail());
         $this->assertIsString($this->user->getPassword());
         $this->assertEmpty($this->user->getPassword());
-        $this->assertIsString($this->user->getAddress());
-        $this->assertEmpty($this->user->getAddress());
+        $this->assertIsString($this->user->getCity());
+        $this->assertEmpty($this->user->getCity());
+        $this->assertIsString($this->user->getStreet());
+        $this->assertEmpty($this->user->getStreet());
+        $this->assertIsString($this->user->getStreetNumber());
+        $this->assertEmpty($this->user->getStreetNumber());
+        $this->assertIsString($this->user->getPostalCode());
+        $this->assertEmpty($this->user->getPostalCode());
         $this->assertIsString($this->user->getPhone());
         $this->assertEmpty($this->user->getPhone());
         $this->assertIsArray($this->user->getRoles());
         $this->assertEmpty($this->user->getRoles());
+        $this->assertIsBool($this->user->isVerified());
+        $this->assertFalse($this->user->isVerified());
     }
 
     /**
@@ -86,13 +94,49 @@ class UserTest extends TestCase
     /**
      * @group entity
      * @group user
-     * @group user-set-address
+     * @group user-set-city
      */
-    public function testSetAddress(): void
+    public function testSetCity(): void
     {
-        $this->user->setAddress("1 rue de la Paix");
+        $this->user->setCity("Paris");
 
-        $this->assertSame("1 rue de la Paix", $this->user->getAddress());
+        $this->assertSame("Paris", $this->user->getCity());
+    }
+
+    /**
+     * @group entity
+     * @group user
+     * @group user-set-street
+     */
+    public function testSetStreet(): void
+    {
+        $this->user->setStreet("Rue de la Paix");
+
+        $this->assertSame("Rue de la Paix", $this->user->getStreet());
+    }
+
+    /**
+     * @group entity
+     * @group user
+     * @group user-set-street-number
+     */
+    public function testSetStreetNumber(): void
+    {
+        $this->user->setStreetNumber("1");
+
+        $this->assertSame("1", $this->user->getStreetNumber());
+    }
+
+    /**
+     * @group entity
+     * @group user
+     * @group user-set-postal-code
+     */
+    public function testSetPostalCode(): void
+    {
+        $this->user->setPostalCode("75000");
+
+        $this->assertSame("75000", $this->user->getPostalCode());
     }
 
     /**
@@ -162,4 +206,17 @@ class UserTest extends TestCase
     {
         $this->assertNull($this->user->eraseCredentials());
     }
+
+    /**
+     * @group entity
+     * @group user
+     * @group user-set-is-verified
+     */
+    public function testSetIsVerified(): void
+    {
+        $this->user->setIsVerified(true);
+
+        $this->assertTrue($this->user->isVerified());
+    }
+
 }
