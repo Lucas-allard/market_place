@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap(['customer' => 'Customer', 'seller' => 'Seller'])]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 abstract class User extends AbstractEntity implements EntityInterface, UserInterface, SymfonyUserInterface, PasswordAuthenticatedUserInterface
 {
 
@@ -47,7 +48,25 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
      * @var string
      */
     #[ORM\Column(type: 'string', length: 255)]
-    private string $address = "";
+    private string $city = "";
+
+    /**
+     * @var string
+     */
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $street = "";
+
+    /**
+     * @var string
+     */
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $streetNumber = "";
+
+    /**
+     * @var string
+     */
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $postalCode = "";
 
     /**
      * @var string
@@ -61,6 +80,9 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
      */
     #[ORM\Column]
     private array $roles = [];
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isVerified = false;
 
     /**
      * @return string|null
@@ -161,20 +183,75 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     /**
      * @return string|null
      */
-    public function getAddress(): ?string
+    public function getCity(): ?string
     {
-        return $this->address;
+        return $this->city;
     }
 
     /**
-     * @param string $address
+     * @param string $city
      * @return User
      */
-    public function setAddress(string $address): User
+    public function setCity(string $city): User
     {
-        $this->address = $address;
+        $this->city = $city;
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getStreet(): ?string
+    {
+        return $this->street;
+    }
+
+    /**
+     * @param string $street
+     * @return User
+     */
+    public function setStreet(string $street): User
+    {
+        $this->street = $street;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStreetNumber(): ?string
+    {
+        return $this->streetNumber;
+    }
+
+    /**
+     * @param string $streetNumber
+     * @return User
+     */
+    public function setStreetNumber(string $streetNumber): User
+    {
+        $this->streetNumber = $streetNumber;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    /**
+     * @param string $postalCode
+     * @return User
+     */
+    public function setPostalCode(string $postalCode): User
+    {
+        $this->postalCode = $postalCode;
+        return $this;
+    }
+
 
     /**
      * @return string|null
@@ -224,5 +301,17 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
         return null;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
     }
 }

@@ -23,3 +23,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    Symfony\Component\Security\Csrf\CsrfTokenManagerInterface: '@security.csrf.token_manager'
+
+
+    App\EventListener\NavbarListener:
+        arguments:
+            $twig: '@twig'
+            $categoryRepository: '@App\Repository\CategoryRepository'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

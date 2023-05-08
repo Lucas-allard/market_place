@@ -39,4 +39,45 @@ class CategoryRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function getParentCategories(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.parent IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getChildrenCategories(Category $category): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.parent = :category')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getParentsAndChildrenCategoriesInSeparatedArrays(): array
+    {
+//        SELECT parent.name AS parent_category, child.name AS child_category
+//FROM category AS parent
+//LEFT JOIN category AS child ON child.parent_id = parent.id
+//WHERE parent.parent_id IS NULL
+//ORDER BY parent_category
+
+        $qb = $this->createQueryBuilder('parent');
+        $qb->select('parent.name AS parent_category, child.name AS child_category')
+            ->leftJoin('parent.children', 'child')
+            ->where('parent.parent IS NULL')
+            ->orderBy('parent.id', 'ASC');
+
+        $result = $qb->getQuery()->getResult();
+
+        $categories = [];
+        foreach ($result as $row) {
+            $categories[$row['parent_category']][] = $row['child_category'];
+        }
+        return $categories;
+
+    }
 }

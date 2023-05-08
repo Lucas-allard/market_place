@@ -36,7 +36,10 @@ class SellerFixture extends Fixture
             $seller->setLastName($faker->lastName);
             $seller->setEmail($faker->email);
             $seller->setPhone($faker->phoneNumber);
-            $seller->setAddress($faker->address);
+            $seller->setCity($faker->city);
+            $seller->setStreet($faker->city);
+            $seller->setStreetNumber($faker->city);
+            $seller->setPostalCode($faker->city);
             $seller->setCompany($faker->company);
             $seller->setSiret($faker->numerify('##############'));
             $seller->setVat($faker->numerify('FR###########'));

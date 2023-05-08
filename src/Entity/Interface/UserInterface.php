@@ -2,8 +2,15 @@
 
 namespace App\Entity\Interface;
 
-interface UserInterface
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
+interface UserInterface extends PasswordAuthenticatedUserInterface
 {
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int;
+
     /**
      * @return string|null
      */
@@ -22,10 +29,43 @@ interface UserInterface
     /**
      * @return string|null
      */
-    public function getAddress(): ?string;
+    public function getCity(): ?string;
+
+    /**
+     * @return string|null
+     */
+    public function getStreet(): ?string;
+
+    /**
+     * @return string|null
+     */
+    public function getStreetNumber(): ?string;
+
+    /**
+     * @return string|null
+     */
+    public function getPostalCode(): ?string;
 
     /**
      * @return string|null
      */
     public function getPhone(): ?string;
+
+    /**
+     * @return bool|null
+     */
+    public function isVerified(): ?bool;
+
+    public function setIsVerified(bool $isVerified): self;
+
+    /**
+     * @return string|null
+     */
+    public function getPassword(): ?string;
+
+    /**
+     * @param string $password
+     * @return $this
+     */
+    public function setPassword(string $password): self;
 }

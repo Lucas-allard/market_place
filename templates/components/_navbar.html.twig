@@ -1,0 +1,31 @@
+<header class="sticky top-0">
+    <div class="container mx-auto">
+       <div class="flex-flex-col justify-between">
+           <div>
+               <a href="{{ path('app_home') }}"
+                  class="flex flex-row"
+               >
+                   <img src="{{ asset('images/logo.png') }}" alt="logo" class="h-16">
+                   <p class="text-2xl font-bold text-gray-800">Boutique</p>
+               </a>
+           </div>
+       </div>
+    </div>
+</header>
+
+
+
+
+
+{#<ul#}
+{#    {% for category, childrenCat in categories %}#}
+{#        <li>{{ category }}</li>#}
+{#        {% if childrenCat is not empty %}#}
+{#        <ul>#}
+{#            {% for childCat in childrenCat %}#}
+{#                <li>{{ childCat }}</li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#        {% endif %}#}
+{#    {% endfor %}#}
+{#</ul>#}

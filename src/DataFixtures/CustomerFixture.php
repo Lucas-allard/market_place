@@ -32,7 +32,10 @@ class CustomerFixture extends Fixture
             $customer->setLastName($faker->lastName);
             $customer->setEmail($faker->email);
             $customer->setPhone($faker->phoneNumber);
-            $customer->setAddress($faker->address);
+            $customer->setCity($faker->city);
+            $customer->setStreet($faker->city);
+            $customer->setStreetNumber($faker->city);
+            $customer->setPostalCode($faker->city);
             $customer->setBirthDate($faker->dateTime);
             $customer->setShippingAddress($faker->address);
             $customer->setPassword($this->passwordHasher->hashPassword($customer, 'password'));

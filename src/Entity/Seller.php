@@ -39,7 +39,6 @@ class Seller extends User
     private Collection $products;
 
 
-
     public function __construct()
     {
         parent::__construct();
