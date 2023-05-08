@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functionnal\Controller;
+namespace App\Tests\Functional\Controller;
 
 use App\Controller\RegistrationController;
 use App\Entity\Customer;
@@ -36,6 +36,8 @@ class RegistrationControllerTest extends WebTestCase
         $this->registrationController = new RegistrationController($this->emailVerifier);
         $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
         $this->entityManager->getConnection()->beginTransaction();
+
+
     }
 
     /**
@@ -105,6 +107,7 @@ class RegistrationControllerTest extends WebTestCase
         $seller = $this->entityManager->getRepository(Seller::class)->findOneBy(['email' => 'register-seller@mail.com']);
 
         $this->assertNotNull($seller);
+
     }
 
     /**
@@ -119,42 +122,6 @@ class RegistrationControllerTest extends WebTestCase
 
         $this->assertResponseRedirects('/');
     }
-
-//    /**
-//     * @group registration
-//     * @group registration-controller
-//     * @group registration-controller-verify-email
-//     * @group registration-controller-verify-email-with-granting
-//     * @throws NotSupported
-//     * @throws ORMException
-//     * @throws TransportExceptionInterface
-//     */
-//    public function testVerifyUserEmail()
-//    {
-//        // Crée un nouvel utilisateur
-//        $user = new Customer();
-//        $user->setEmail('verify-email@test.com');
-//        $user->setPassword('password');
-//        $this->entityManager->persist($user);
-//        $this->entityManager->flush();
-//
-//        // Connecte l'utilisateur
-//        $this->client->loginUser($user);
-//
-//        // Envoie l'e-mail de confirmation
-//        $email = (new TemplatedEmail())
-//            ->to($user->getEmail())
-//            ->subject('Please Confirm your Email')
-//            ->htmlTemplate('registration/confirmation_email.html.twig')
-//            ->context([
-//                'user' => $user,
-//                'signedUrl' => 'http://localhost/verification/email?expires=1620000000&signature=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
-//            ]);
-//
-//        // send this email
-//        $this->emailVerifier->sendEmailConfirmation('registration_verify_email', $user, $email);
-//    }
-
 
     /**
      * @throws Exception

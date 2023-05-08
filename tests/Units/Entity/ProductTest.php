@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Tests\Entity;
+namespace App\Tests\Units\Entity;
 
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\Seller;
-use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 

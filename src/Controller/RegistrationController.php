@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Customer;
+use App\Entity\Interface\UserInterface;
 use App\Entity\Seller;
 use App\Form\Registration\CustomerRegistrationType;
 use App\Form\Registration\SellerRegistrationType;
@@ -13,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -48,7 +50,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    public function createFormType($type): FormInterface
+    public function createFormType(string $type): FormInterface
     {
         if ($type === 'customer') {
             return $this->createForm(CustomerRegistrationType::class, new Customer());
@@ -64,7 +66,7 @@ class RegistrationController extends AbstractController
         return $form->isSubmitted() && $form->isValid();
     }
 
-    public function encodePassword($user, $plainPassword, $userPasswordHasher)
+    public function encodePassword(UserInterface $user, string $plainPassword,UserPasswordHasherInterface $userPasswordHasher): void
     {
         $user->setPassword(
             $userPasswordHasher->hashPassword(
@@ -74,13 +76,16 @@ class RegistrationController extends AbstractController
         );
     }
 
-    public function persistUser($user, $entityManager)
+    public function persistUser(UserInterface $user,EntityManagerInterface $entityManager): void
     {
         $entityManager->persist($user);
         $entityManager->flush();
     }
 
-    public function sendEmailConfirmation($user)
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function sendEmailConfirmation(UserInterface $user): void
     {
         $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
             (new TemplatedEmail())
@@ -98,12 +103,13 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
+        /** @var UserInterface $user */
+        $user = $this->getUser();
         // validate email confirmation link, sets User::isVerified=true and persists
         try {
-            $this->emailVerifier->handleEmailConfirmationRequest($request, $this->getUser());
+            $this->emailVerifier->handleEmailConfirmationRequest($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
-dd($exception->getReason());
             return $this->redirectToRoute('app_home');
         }
 

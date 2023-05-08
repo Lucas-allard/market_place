@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Tests\Entity;
+namespace App\Tests\Units\Entity;
 
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 class UserTest extends TestCase
 {

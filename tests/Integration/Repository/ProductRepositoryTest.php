@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functionnal\Repository;
+namespace App\Tests\Functional\Repository;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;

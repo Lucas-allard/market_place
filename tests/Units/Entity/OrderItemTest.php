@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Tests\Entity;
+namespace App\Tests\Units\Entity;
 
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Product;
 use PHPUnit\Framework\TestCase;
-use TypeError;
 
 class OrderItemTest extends TestCase
 {

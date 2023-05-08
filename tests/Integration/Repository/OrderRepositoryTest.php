@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functionnal\Repository;
+namespace App\Tests\Functional\Repository;
 
 use App\DataFixtures\OrderFixture;
 use App\Entity\Order;

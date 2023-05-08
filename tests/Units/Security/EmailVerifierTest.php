@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Tests\Security;
+namespace App\Tests\Units\Security;
 
 use App\Entity\Interface\UserInterface;
-use App\Entity\User;
 use App\Security\EmailVerifier;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailSignatureComponents;
@@ -40,6 +40,7 @@ class EmailVerifierTest extends TestCase
      * @group email
      * @group email-verifier
      * @group email-verifier-send-email-confirmation
+     * @throws TransportExceptionInterface
      */
     public function testSendEmailConfirmation(): void
     {

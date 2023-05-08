@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service\Payment;
+namespace App\Tests\Units\Service\Payment;
 
 use App\Entity\Payment;
 use App\Service\Payment\PaymentProcessor;
