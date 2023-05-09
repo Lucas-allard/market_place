@@ -66,17 +66,40 @@ class CategoryRepository extends ServiceEntityRepository
 //ORDER BY parent_category
 
         $qb = $this->createQueryBuilder('parent');
-        $qb->select('parent.name AS parent_category, child.name AS child_category')
+        $qb->select('parent.name AS parent_category, child.name AS child_category, parent.slug AS parent_slug, child.slug AS child_slug')
             ->leftJoin('parent.children', 'child')
             ->where('parent.parent IS NULL')
             ->orderBy('parent.id', 'ASC');
 
         $result = $qb->getQuery()->getResult();
-
         $categories = [];
+//        foreach ($result as $row) {
+////            $categories[$row['parent_category']][] = $row['child_category'];
+//            // add the parent cat & parent slug to array and same for child
+//
+//        }
         foreach ($result as $row) {
-            $categories[$row['parent_category']][] = $row['child_category'];
+            $parent_category = $row['parent_category'];
+            $child_category = $row['child_category'];
+            $parent_slug = $row['parent_slug'];
+            $child_slug = $row['child_slug'];
+
+            if (!isset($categories[$parent_category])) {
+                $categories[$parent_category] = [
+                    'name' => $parent_category,
+                    'slug' => $parent_slug,
+                    'children' => []
+                ];
+            }
+
+            if ($child_category !== null) {
+                $categories[$parent_category]['children'][] = [
+                    'name' => $child_category,
+                    'slug' => $child_slug
+                ];
+            }
         }
+
         return $categories;
 
     }
