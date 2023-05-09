@@ -1,21 +1,21 @@
 <header class="bg-gray-50 sticky top-0 w-full h-[50px] border-b border-gray-300 z-50 lg:h-[80px] relative">
     <div class="flex flex-row items-center w-full justify-between right-0 h-[50px] lg:h-[80px]">
-        <label for="dropdownCategoriesMobileInput"
-               class="mx-4  block left-0 z-50">
+        <label for="dropdownCategoriesInput"
+               class="mx-4 cursor-pointer block left-0 z-50">
             <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
                  xmlns="http://www.w3.org/2000/svg"
-                 aria-hidden="true" class="w-6 h-6 text-gray-400 hover:text-orange-400">
+                 aria-hidden="true" class="w-6 h-6 text-custom-blue hover:text-orange-400">
                 <path stroke-linecap="round" stroke-linejoin="round"
                       d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path>
             </svg>
         </label>
         <div class="mx-4">
-            <a href="{{ path('app_home') }}" class="hover:text-orange-400">Discountopia</a>
+            <a href="{{ path('app_home') }}" class="font-dm-sans font-bold text-custom-blue hover:text-orange-400">Discountopia</a>
         </div>
         <div class="flex-1 flex flex-row mx-4 hidden lg:block">
             <form class="flex flex-row w-full">
                 <select name="category" id="category"
-                        class="border-r-0 border-orange-400 rounded-l-lg text-xs focus:border-orange-400 focus:ring-0">
+                        class="font-dm-sans border-r-0 border-custom-blue rounded-l-lg text-xs text-custom-blue focus:border-custom-blue focus:ring-0">
                     <option value="all" selected>Toutes les catégories</option>
                     {% for category, childrenCat in categories %}
                         <option value="{{ category }}">{{ category }}</option>
@@ -32,7 +32,7 @@
                         </svg>
                     </div>
                     <input type="search" id="default-search"
-                           class="block w-full p-4 pl-10 text-xs text-gray-900 border-l-0 border-orange-400 rounded-r-lg focus:border-orange-400 focus:ring-0"
+                           class="block w-full p-4 pl-10 text-xs border-custom-blue text-custom-blue focus:border-custom-blue rounded-r-lg focus:ring-0"
                            placeholder="Rechercher un produit" required>
                 </div>
             </form>
@@ -40,16 +40,16 @@
         <nav class="flex-1 mx-4 hidden md:block">
             <ul class="flex flex-row justify-between">
                 <li class="px-2 mx-2">
-                    <a href="#" class="hover:text-orange-400">Accueil</a>
+                    <a href="#" class="hover:text-orange-400 text-custom-blue font-dm-sans ">Accueil</a>
                 </li>
                 <li class="px-2 mx-2">
-                    <a href="#" class="hover:text-orange-400">Boutique</a>
+                    <a href="#" class="hover:text-orange-400 text-custom-blue font-dm-sans ">Boutique</a>
                 </li>
                 <li class="px-2 mx-2">
-                    <a href="#" class="hover:text-orange-400">Vendeurs</a>
+                    <a href="#" class="hover:text-orange-400 text-custom-blue font-dm-sans ">Vendeurs</a>
                 </li>
                 <li class="px-2 mx-2">
-                    <a href="#" class="hover:text-orange-400">Contact</a>
+                    <a href="#" class="hover:text-orange-400 text-custom-blue font-dm-sans ">Contact</a>
                 </li>
             </ul>
         </nav>
@@ -58,7 +58,7 @@
                     class="mx-2">
                 <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
                      xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                     class="w-6 h-6 text-gray-600 hover:text-orange-400">
+                     class="w-6 h-6 text-custom-blue hover:text-orange-400">
                     >
                     <path stroke-linecap="round" stroke-linejoin="round"
                           d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -67,7 +67,7 @@
             {% if app.user %}
                 <div id="dropdownAccount"
                      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                    <ul class="py-2 text-sm text-custom-blue"
                         aria-labelledby="dropdownDefaultButton">
                         <li>
                             <a href="#"
@@ -92,7 +92,7 @@
             {% else %}
                 <div id="dropdownAccount"
                      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                    <ul class="py-2 text-sm text-custom-blue"
                         aria-labelledby="dropdownDefaultButton">
                         <li>
                             <a href="{{ path('app_register') }}"
@@ -108,46 +108,54 @@
             <a href="#" class="mx-2">
                 <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
                      xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                     class="w-6 h-6 text-gray-600 hover:text-orange-400"
+                     class="w-6 h-6 text-custom-blue hover:text-orange-400"
                 >
                     <path stroke-linecap="round" stroke-linejoin="round"
                           d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"></path>
                 </svg>
             </a>
-            <button id="dropdownMenuButton" data-dropdown-toggle="dropdownMenu"
-                    class="mx-2 block md:hidden">
+            <label for="dropdownMenuInput"
+                   class="mx-2 block md:hidden">
                 <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
                      xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                      class="w-6 h-6 text-gray-600 hover:text-orange-400">
                     <path stroke-linecap="round" stroke-linejoin="round"
                           d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"></path>
                 </svg>
-            </button>
+            </label>
         </div>
     </div>
-
+    <input type="checkbox" id="dropdownMenuInput" class="hidden">
+    <div id="dropdownMenu"
+         class="block fixed top-[50px] right-[-1000px] w-[90%] bg-white shadow-lg transition-transform lg:hidden">
+        <label for="dropdownMenuInput"
+               class="absolute top-0 right-0 m-6">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="#FF8A4C"
+                 class="w-6 h-6">
+                <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+            </svg>
+        </label>
+        <ul class="pt-16 text-gray-700 flex flex-col items-center h-screen"
+            aria-labelledby="dropdownDefaultButton">
+            <li class="p-4 w-full text-center hover:bg-gray-100">
+                <a href="#"
+                   class="block px-4 py-2 text-2xl hover:bg-gray-100 hover:text-orange-400">Accueil</a>
+            </li>
+            <li class="p-4  w-full text-center hover:bg-gray-100">
+                <a href="#"
+                   class="block px-4 py-2 text-2xl hover:bg-gray-100 hover:text-orange-400">Boutique</a>
+            </li>
+            <li class="p-4 w-full text-center hover:bg-gray-100">
+                <a href="#"
+                   class="block px-4 py-2 text-2xl hover:bg-gray-100 hover:text-orange-400">Vendeurs</a>
+            </li>
+            <li class="p-4 w-full text-center hover:bg-gray-100">
+                <a href="#"
+                   class="block px-4 py-2 text-2xl hover:bg-gray-100 hover:text-orange-400">Contact</a>
+            </li>
+        </ul>
+    </div>
 </header>
 
-{# mobile nav #}
-{#<div id="dropdownMenu"#}
-{#     class="z-10 hidden bg-white shadow w-full top-0 right-0">#}
-{#    <ul class="pt-16 text-gray-700 flex flex-col items-center h-screen"#}
-{#        aria-labelledby="dropdownDefaultButton">#}
-{#        <li class="p-4 w-full text-center hover:bg-gray-100">#}
-{#            <a href="#"#}
-{#               class="block px-4 py-2 text-2xl hover:bg-gray-100 hover:text-orange-400">Accueil</a>#}
-{#        </li>#}
-{#        <li class="p-4  w-full text-center hover:bg-gray-100">#}
-{#            <a href="#"#}
-{#               class="block px-4 py-2 text-2xl hover:bg-gray-100 hover:text-orange-400">Boutique</a>#}
-{#        </li>#}
-{#        <li class="p-4 w-full text-center hover:bg-gray-100">#}
-{#            <a href="#"#}
-{#               class="block px-4 py-2 text-2xl hover:bg-gray-100 hover:text-orange-400">Vendeurs</a>#}
-{#        </li>#}
-{#        <li class="p-4 w-full text-center hover:bg-gray-100">#}
-{#            <a href="#"#}
-{#               class="block px-4 py-2 text-2xl hover:bg-gray-100 hover:text-orange-400">Contact</a>#}
-{#        </li>#}
-{#    </ul>#}
-{#</div>#}
+

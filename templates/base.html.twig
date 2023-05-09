@@ -15,21 +15,24 @@
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
 </head>
-<body>
+<body class="bg-gray-50">
 
 
-<!-- Header  -->
-<div class="flex justify-between items-center sticky top-0">
-    {{ include('components/_navbar.html.twig') }}
-    {{ include('components/_sidebar.html.twig') }}
-
-</div>
+<!-- Header & Sidebar -->
+{{ include('components/_navbar.html.twig') }}
+{{ include('components/_sidebar.html.twig') }}
+<!-- End Header & Sidebar -->
 
 
 <!-- Body -->
-<div class="flex-grow p-4">
+<main class="ml-14 border-l border-gray-300">
     {% block body %}{% endblock %}
-</div>
+</main>
+<!-- End Body -->
+
+<!-- Footer -->
+{{ include('components/_footer.html.twig') }}
+<!-- End Footer -->
 
 
 </body>
