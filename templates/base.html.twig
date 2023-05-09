@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
     <title>{% block title %}Welcome!{% endblock %}</title>
     <link rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
@@ -16,7 +17,20 @@
 </head>
 <body>
 
-{{ include('components/_navbar.html.twig') }}
-{% block body %}{% endblock %}
+
+<!-- Header  -->
+<div class="flex justify-between items-center sticky top-0">
+    {{ include('components/_navbar.html.twig') }}
+    {{ include('components/_sidebar.html.twig') }}
+
+</div>
+
+
+<!-- Body -->
+<div class="flex-grow p-4">
+    {% block body %}{% endblock %}
+</div>
+
+
 </body>
 </html>

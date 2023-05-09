@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Additional css navbar */
+
+/* set display block to the backdrop when the input is checked */
+#dropdownCategoriesMobileInput:checked ~ #dropdownCategoriesMobile {
+  display: block;
+}

@@ -32,11 +32,22 @@ class Category extends AbstractEntity
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $children;
 
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $categoryIcon = null;
+
     public function __construct()
     {
         parent::__construct();
         $this->products = new ArrayCollection();
         $this->children = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 
     /**
@@ -137,6 +148,30 @@ class Category extends AbstractEntity
                 $child->setParent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getCategoryIcon(): ?string
+    {
+        return $this->categoryIcon;
+    }
+
+    public function setCategoryIcon(?string $categoryIcon): self
+    {
+        $this->categoryIcon = $categoryIcon;
 
         return $this;
     }

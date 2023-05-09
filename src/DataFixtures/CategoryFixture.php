@@ -73,7 +73,8 @@ class CategoryFixture extends Fixture
             $category = new Category();
             $category->setName($categoryName);
             $category->setDescription($faker->text(200));
-
+            $slug = $this->slugify($categoryName);
+            $category->setSlug($slug);
             $this->addReference('cat_' . $i, $category);
 
             $manager->persist($category);
@@ -83,7 +84,8 @@ class CategoryFixture extends Fixture
                 $subCategory->setName($subCategoryName);
                 $subCategory->setDescription($faker->text(200));
                 $subCategory->setParent($category);
-
+                $slug = $this->slugify($subCategoryName);
+                $subCategory->setSlug($slug);
 
                 $this->addReference('sub_cat_' . $j, $subCategory);
 
@@ -95,4 +97,37 @@ class CategoryFixture extends Fixture
 
         $manager->flush();
     }
+    function slugify($string): string
+    {
+        // Conversion en minuscules et suppression des espaces avant et après
+        $string = mb_strtolower(trim($string));
+
+
+        // Tableau de correspondance pour les caractères spéciaux
+        $char_map = array(
+            // Lettres avec accents
+            'à' => 'a', 'â' => 'a', 'ä' => 'a', 'á' => 'a', 'å' => 'a', 'æ' => 'ae', 'ç' => 'c',
+            'è' => 'e', 'ê' => 'e', 'ë' => 'e', 'é' => 'e', 'ï' => 'i', 'î' => 'i', 'ì' => 'i',
+            'í' => 'i', 'ñ' => 'n', 'ô' => 'o', 'ö' => 'o', 'ò' => 'o', 'ó' => 'o', 'œ' => 'oe',
+            'ß' => 'ss', 'ù' => 'u', 'û' => 'u', 'ü' => 'u', 'ú' => 'u',
+            // Caractères spéciaux
+            '&' => 'et', '@' => 'at', '%' => 'pourcent',
+        );
+
+        // Remplacement des caractères spéciaux
+        $string = str_replace(array_keys($char_map), $char_map, $string);
+
+        // Remplacement des caractères non alpha-numériques par un tiret
+        $string = preg_replace('/[^a-z0-9-]/', '-', $string);
+
+        // Remplacement des tirets consécutifs par un seul tiret
+        $string = preg_replace('/-+/', '-', $string);
+
+        // Suppression des tirets en début et fin de chaîne
+        $string = trim($string, '-');
+
+        return $string;
+    }
+
+
 }
