@@ -7,6 +7,12 @@ module.exports = {
 
   ],
   theme: {
+    fontFamily: {
+        'dm-sans': ['DM Sans', 'sans-serif'],
+    },
+    colors: {
+      'custom-blue': '#5C74A6'
+    },
     extend: {},
   },
   plugins: [
