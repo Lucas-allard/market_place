@@ -1,17 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+@import 'nav.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Additional css navbar */
-
-/* set display block to the backdrop when the input is checked */
-#dropdownCategoriesInput:checked ~ #dropdownCategories {
-  transform: translateX(80px);
-}
-
-#dropdownMenuInput:checked ~ #dropdownMenu {
-  display: block;
-  transform: translateX(-1000px); /* Déplacer l'élément vers la gauche */
-}

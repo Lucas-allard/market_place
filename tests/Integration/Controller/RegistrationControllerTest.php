@@ -7,16 +7,12 @@ use App\Entity\Customer;
 use App\Entity\Seller;
 use App\Form\Registration\CustomerRegistrationType;
 use App\Form\Registration\SellerRegistrationType;
-use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManager;
 use Exception;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class RegistrationControllerTest extends KernelTestCase
 {

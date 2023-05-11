@@ -21,16 +21,14 @@ class OrderItem extends AbstractEntity {
     private ?float $price = 0.0;
 
     /**
-     * @var Product|null
-     */
-    #[ORM\ManyToOne(targetEntity: Product::class)]
-    private ?Product $product = null;
-
-    /**
      * @var Order|null
      */
     #[ORM\ManyToOne(targetEntity: Order::class, cascade: ['persist', 'remove'], inversedBy: 'orderItems')]
     private ?Order $order = null;
+
+    #[ORM\ManyToOne(inversedBy: 'orderItems')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Product $product = null;
 
     /**
      * @return int|null
@@ -78,23 +76,6 @@ class OrderItem extends AbstractEntity {
         return $this;
     }
 
-    /**
-     * @return Product|null
-     */
-    public function getProduct(): ?Product
-    {
-        return $this->product;
-    }
-
-    /**
-     * @param Product $product
-     * @return OrderItem
-     */
-    public function setProduct(Product $product): OrderItem
-    {
-        $this->product = $product;
-        return $this;
-    }
 
     /**
      * @return Order|null
@@ -111,6 +92,18 @@ class OrderItem extends AbstractEntity {
     public function setOrder(?Order $order): OrderItem
     {
         $this->order = $order;
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
+
         return $this;
     }
 

@@ -1,0 +1,8 @@
+#dropdownCategoriesInput:checked ~ #dropdownCategories {
+    transform: translateX(80px);
+}
+
+#dropdownMenuInput:checked ~ #dropdownMenu {
+    display: block;
+    transform: translateX(-1000px); /* Déplacer l'élément vers la gauche */
+}

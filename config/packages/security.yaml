@@ -20,6 +20,9 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+            remember_me:
+                secret: '%kernel.secret%' # required
+                lifetime: 604800 # 1 week in seconds
             logout:
                 # "app_logout" is the name of the route created previously
                 path: app_logout

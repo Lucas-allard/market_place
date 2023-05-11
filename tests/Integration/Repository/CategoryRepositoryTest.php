@@ -44,6 +44,7 @@ class CategoryRepositoryTest extends KernelTestCase
     {
         $category = new Category();
         $category->setName('Category 1');
+        $category->setSlug('category-1');
         $this->categoryRepository->save($category, true);
         $this->assertNotNull($category->getId());
     }
@@ -57,6 +58,8 @@ class CategoryRepositoryTest extends KernelTestCase
     {
         $category = new Category();
         $category->setName('Category 1');
+        $category->setSlug('category-1');
+
         $this->categoryRepository->save($category, true);
         $this->assertNotNull($category->getId());
 

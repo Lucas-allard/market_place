@@ -11,29 +11,28 @@
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
 
-    {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
-    {% endblock %}
+
 </head>
 <body class="bg-gray-50">
-
 
 <!-- Header & Sidebar -->
 {{ include('components/_navbar.html.twig') }}
 {{ include('components/_sidebar.html.twig') }}
 <!-- End Header & Sidebar -->
 
-
 <!-- Body -->
-<main class="ml-14 border-l border-gray-300">
-    {% block body %}{% endblock %}
+<main class="lg:ml-14 border-l border-gray-300">
+    <div class="px-2 md:px-8 lg:px-16 py-8">
+            {% block body %}{% endblock %}
+    </div>
 </main>
 <!-- End Body -->
 
 <!-- Footer -->
 {{ include('components/_footer.html.twig') }}
 <!-- End Footer -->
-
-
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
 </body>
 </html>
