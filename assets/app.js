@@ -13,3 +13,6 @@ import './bootstrap';
 
 // Import Flowbite
 import 'flowbite';
+
+import './js/topProduct.js';
+import './js/SwiperSlider.js';

@@ -2,8 +2,8 @@
 
 namespace App\Tests\Units\Security;
 
+use App\DataFixtures\Security\EmailVerifier;
 use App\Entity\Interface\UserInterface;
-use App\Security\EmailVerifier;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;

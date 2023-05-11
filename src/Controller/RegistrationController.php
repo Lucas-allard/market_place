@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
+use App\Security\EmailVerifier;
 use App\Entity\Customer;
 use App\Entity\Interface\UserInterface;
 use App\Entity\Seller;
 use App\Form\Registration\CustomerRegistrationType;
 use App\Form\Registration\SellerRegistrationType;
-use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,8 +30,15 @@ class RegistrationController extends AbstractController
         $this->emailVerifier = $emailVerifier;
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     #[Route('/inscription', name: 'app_register', requirements: ['type' => 'customer|seller'], methods: ['GET', 'POST'])]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface $entityManager,
+    ): Response
     {
         $userType = $request->get('type') ?? 'customer';
         $form = $this->createFormType($userType);
@@ -42,6 +49,7 @@ class RegistrationController extends AbstractController
             $this->encodePassword($user, $form->get('plainPassword')->getData(), $userPasswordHasher);
             $this->persistUser($user, $entityManager);
             $this->sendEmailConfirmation($user);
+
             return $this->redirectToRoute('app_home');
         }
 
@@ -83,7 +91,6 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @throws TransportExceptionInterface
      */
     public function sendEmailConfirmation(UserInterface $user): void
     {
@@ -99,7 +106,8 @@ class RegistrationController extends AbstractController
     #[Route('/verification/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
     {
-        if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
+
             return $this->redirectToRoute('app_home');
         }
 
@@ -107,7 +115,7 @@ class RegistrationController extends AbstractController
         $user = $this->getUser();
         // validate email confirmation link, sets User::isVerified=true and persists
         try {
-            $this->emailVerifier->handleEmailConfirmationRequest($request, $user);
+            $this->emailVerifier->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
             return $this->redirectToRoute('app_home');

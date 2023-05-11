@@ -3,8 +3,8 @@
 namespace App\Tests\Units\Controller;
 
 use App\Controller\RegistrationController;
+use App\DataFixtures\Security\EmailVerifier;
 use App\Entity\Customer;
-use App\Security\EmailVerifier;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;

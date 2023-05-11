@@ -26,7 +26,7 @@ class Category extends AbstractEntity
     private Collection $products;
 
     #[ORM\ManyToOne(targetEntity: self::class, cascade: ['persist', 'remove'], inversedBy: 'children')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'], orphanRemoval: true)]
@@ -34,9 +34,6 @@ class Category extends AbstractEntity
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $categoryIcon = null;
 
     public function __construct()
     {
@@ -160,18 +157,6 @@ class Category extends AbstractEntity
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
-
-        return $this;
-    }
-
-    public function getCategoryIcon(): ?string
-    {
-        return $this->categoryIcon;
-    }
-
-    public function setCategoryIcon(?string $categoryIcon): self
-    {
-        $this->categoryIcon = $categoryIcon;
 
         return $this;
     }

@@ -62,9 +62,6 @@ class CategoryFixture extends Fixture
                 'Equipements',
                 'Accessoires',
             ],
-            'Autres' => [
-                'Autres',
-            ],
         ];
         $i = 0;
         $j= 0;

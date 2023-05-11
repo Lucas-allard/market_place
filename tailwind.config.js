@@ -11,7 +11,8 @@ module.exports = {
         'dm-sans': ['DM Sans', 'sans-serif'],
     },
     colors: {
-      'custom-blue': '#5C74A6'
+      'custom-blue': '#5C74A6',
+      'custom-blue-darker': '#3F4F7F'
     },
     extend: {},
   },

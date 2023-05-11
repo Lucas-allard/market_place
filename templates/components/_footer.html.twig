@@ -1,6 +1,6 @@
-<footer class="ml-14 border-l border-gray-300">
+<footer class="lg:ml-14 border-l border-gray-300">
     <div class="bg-gray-100  px-16 py-8  flex flex-col lg:flex-row justify-center lg:justify-between">
-        <div class="flex-1">
+        <div class="flex-1 font-dm-sans">
             <h4 class="text-2xl font-dm-sans font-bold py-8">Contact</h4>
             <ul>
                 <li class="py-2 text-custom-blue">
@@ -40,7 +40,7 @@
                 </li>
             </ul>
         </div>
-        <div class="flex-1">
+        <div class="flex-1 font-dm-sans">
             <h4 class="text-2xl font-dm-sans font-bold py-8">Vendez vos produits</h4>
             <ul>
                 <li class="py-2"><a href="#" class="text-custom-blue hover:text-orange-400">Comment ça marche ?</a></li>
@@ -52,7 +52,7 @@
                 <li class="py-2"><a href="#" class="text-custom-blue hover:text-orange-400">Contactez-nous</a></li>
             </ul>
         </div>
-        <div class="flex-1">
+        <div class="flex-1 font-dm-sans">
             <h4 class="text-2xl font-dm-sans font-bold py-8">Mon compte</h4>
             <ul>
                 <li class="py-2"><a href="#" class="text-custom-blue hover:text-orange-400">Mon compte</a></li>
@@ -61,8 +61,8 @@
                 <li class="py-2"><a href="#" class="text-custom-blue hover:text-orange-400">Mes informations</a></li>
             </ul>
         </div>
-        <div class="flex-1">
-            <h4 class="text-2xl font-dm-sans font-bold py-8">Paiement</h4>
+        <div class="flex-1 font-dm-sans">
+            <h4 class="text-2xl font-bold py-8">Paiement</h4>
             <p class="py-2 text-custom-blue">Téléchargez l'application Discountopia pour bénéficier de 10% de réduction
                 sur votre première commande.</p>
             <div class="flex flex-col">
@@ -75,7 +75,7 @@
     </div>
     <div class="bg-gray-50 px-16 py-8 flex flex-col flex-wrap lg:flex-row">
         {% for category in categories %}
-            <div class="w-full lg:w-1/2 flex flex-col lg:flex-row py-4">
+            <div class="w-full lg:w-1/2 flex flex-col lg:flex-row py-4 ">
                 <div class="py-4">
                     <h4 class="text-xl font-dm-sans font-bold pr-2">
                         <a href="">{{ category.name }}:</a>
@@ -83,7 +83,7 @@
                 </div>
                 <div class="lg:py-4">
                     {% for subcategory in category.children %}
-                        <a href="#" class="text-sm text-custom-blue hover:text-orange-400">{{ subcategory.name }}</a>
+                        <a href="#" class="font-dm-sans text-sm text-custom-blue hover:text-orange-400">{{ subcategory.name }}</a>
                         {% if not loop.last %}|{% endif %}
                     {% endfor %}
                 </div>

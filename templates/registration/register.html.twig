@@ -1,21 +1,111 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block body %}
     {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
 
-    <h1>Register</h1>
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">S'inscrire</button>
-    {{ form_end(registrationForm) }}
+    <div class="mt-16 font-dm-sans text-custom-blue flex flex-col lg:flex-row">
+        <div class="flex-1 px-12">
+            <h1 class="text-3xl font-bold">Insciption</h1>
+            <p class="text-sm">Vous avez déjà un compte ?
+                <a href="{{ path('app_login') }}"
+                   class="text-custom-blue underline hover:text-orange-400">
+                    Se connecter
+                </a>
+            </p>
+            <div class="w-full max-w-xs my-8">
+                {{ form_start(registrationForm) }}
+                <div class="mb-6">
+                    {{ form_label(registrationForm.firstname,
+                        'Prénom',
+                        {
+                            label_attr: {
+                            class: 'block mb-2 text-sm font-medium'
+                        }
+                        }
+                    ) }}
+                    {{ form_widget(registrationForm.firstname, {
+                        attr: {
+                            class: 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md rounded-md border-custom-blue focus:border-custom-blue focus:ring-0 block w-full p-2.5'
+                        }
+                    }) }}
+                </div>
+                <div class="mb-6">
+                    {{ form_label(registrationForm.lastname,
+                        'Nom',
+                        {
+                            label_attr: {
+                            class: 'block mb-2 text-sm font-medium'
+                        }
+                        }
+                    ) }}
+                    {{ form_widget(registrationForm.lastname, {
+                        attr: {
+                            class: 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md rounded-md border-custom-blue focus:border-custom-blue focus:ring-0 block w-full p-2.5'
+                        }
+                    }) }}
+                </div>
+                <div class="mb-6">
+                    {{ form_label(registrationForm.email,
+                        'Email',
+                        {
+                            label_attr: {
+                            class: 'block mb-2 text-sm font-medium'
+                        }
+                        }
+                    ) }}
+                    {{ form_widget(registrationForm.email, {
+                        attr: {
+                            class: 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md rounded-md border-custom-blue focus:border-custom-blue focus:ring-0 block w-full p-2.5'
+                        }
+                    }) }}
+                </div>
+                <div class="mb-6">
+                    {{ form_label(registrationForm.plainPassword,
+                        'Mot de passe',
+                        {
+                            label_attr: {
+                            class: 'block mb-2 text-sm font-medium'
+                        }
+                        }
+                    ) }}
+                    {{ form_widget(registrationForm.plainPassword, {
+                        attr: {
+                            class: 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md rounded-md border-custom-blue focus:border-custom-blue focus:ring-0 block w-full p-2.5'
+                        }
+                    }) }}
+                </div>
+                <div class="mb-6 flex flex-col lg:flex-row lg:justify-between lg:items-center">
+                    <div class="my-2">
+                        {{ form_widget(registrationForm.agreeTerms, {
+                            attr: {
+                                class: 'rounded-md checked:bg-custom-blue focus:ring-0 text-custom-blue'
+                            }
+                        }) }}
+                        {{ form_label(registrationForm.agreeTerms,
+                            'J\'accepte les conditions d\'utilisation',
+                            {
+                                label_attr: {
+                                class: 'text-sm font-medium'
+                            }
+                            }
+                        ) }}
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <button type="submit"
+                            class="bg-custom-blue text-white text-sm font-medium rounded-md px-4 py-2.5 hover:bg-orange-400 focus:outline-none focus:ring-0">
+                        S'inscrire
+                    </button>
+                </div>
+                <p class="text-sm">Pensez à vérifier vos spams si vous ne recevez pas l'email de confirmation</p>
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+        <div class="hidden lg:block flex-1">
+            <img src="{{ asset('images/welcome.svg') }}" alt="login" class="h-auto max-w-full w-2/3" draggable="false">
+        </div>
+    </div>
 {% endblock %}
