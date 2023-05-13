@@ -28,8 +28,8 @@ class ProductService
         return $this->productRepository->findOneBy(['slug' => $slug]);
     }
 
-    public function getTopProductsWithCategories(bool $isParentCategory, int $maxResults): array
+    public function getTopProductsWithCategories(int $maxResults): array
     {
-        return $this->productRepository->findTopProductsWithCategories($isParentCategory, $maxResults);
+        return $this->productRepository->findTopProductsWithCategories($maxResults);
     }
 }

@@ -3,7 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Category;
+use App\Entity\OrderItem;
+use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -59,12 +63,6 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function getParentsAndChildrenCategoriesInSeparatedArrays(): array
     {
-//        SELECT parent.name AS parent_category, child.name AS child_category
-//FROM category AS parent
-//LEFT JOIN category AS child ON child.parent_id = parent.id
-//WHERE parent.parent_id IS NULL
-//ORDER BY parent_category
-
         $qb = $this->createQueryBuilder('parent');
         $qb->select('parent.name AS parent_category, child.name AS child_category, parent.slug AS parent_slug, child.slug AS child_slug')
             ->leftJoin('parent.children', 'child')
@@ -73,11 +71,7 @@ class CategoryRepository extends ServiceEntityRepository
 
         $result = $qb->getQuery()->getResult();
         $categories = [];
-//        foreach ($result as $row) {
-////            $categories[$row['parent_category']][] = $row['child_category'];
-//            // add the parent cat & parent slug to array and same for child
-//
-//        }
+
         foreach ($result as $row) {
             $parent_category = $row['parent_category'];
             $child_category = $row['child_category'];
@@ -102,5 +96,50 @@ class CategoryRepository extends ServiceEntityRepository
 
         return $categories;
 
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public function findCategoriesHavingMostProductsAndBestProduct(int $maxResults = 28): array
+    {
+        $rawSql = <<<SQL
+SELECT c.name,
+       c.slug,
+       SUM(p.quantity) AS total_products,
+       (SELECT p.name
+        FROM product p
+                 INNER JOIN category_product cp ON p.id = cp.product_id
+                 INNER JOIN order_item oi ON p.id = oi.product_id
+        WHERE cp.category_id = c.id
+          AND oi.quantity > 0
+        GROUP BY p.id
+        ORDER BY SUM(oi.quantity) DESC
+        LIMIT 1)       AS best_selling_product,
+       (SELECT pi.path
+        FROM product p
+                 INNER JOIN category_product cp ON p.id = cp.product_id
+                 INNER JOIN order_item oi ON p.id = oi.product_id
+                 INNER JOIN picture pi ON p.id = pi.product_id
+        WHERE cp.category_id = c.id
+          AND oi.quantity > 0
+        GROUP BY p.id
+        ORDER BY SUM(oi.quantity) DESC
+        LIMIT 1)       AS best_selling_product_picture
+FROM category c
+         INNER JOIN category_product cp ON c.id = cp.category_id
+         INNER JOIN product p ON cp.product_id = p.id
+WHERE c.parent_id IS NOT NULL
+GROUP BY c.id
+HAVING total_products > 0
+   AND best_selling_product IS NOT NULL
+ORDER BY total_products DESC
+LIMIT 24;
+SQL;
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
+
+        return $stmt->executeQuery()->fetchAllAssociative();
     }
 }

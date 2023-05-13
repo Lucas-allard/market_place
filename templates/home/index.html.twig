@@ -1,9 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Hello HomeController!{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('homePage') }}
+{% endblock %}
 
 {% block body %}
     {{ include('home/_categories.html.twig') }}
     {{ include('home/_top_selling_products.html.twig') }}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('homePage') }}
+{% endblock %}

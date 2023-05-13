@@ -39,16 +39,15 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
-    public function findTopProductsWithCategories(bool $isParentCategory = true, int $maxResults = 9)
+    public function findTopProductsWithCategories(int $maxResults = 9)
     {
 
         $qb = $this->createQueryBuilder('p');
 
-        $qb->select('c2.name as parent_category,c2.slug as parent_slug, c.name as children_category, c.slug as children_slug, p.name, p.slug, p.description, p.price')
-            ->innerJoin('p.categories', 'c')
-            ->innerJoin('c.parent', 'c2')
+        $qb->select('p.name, p.slug, p.description, p.price, b.name as brand, b.slug as brand_slug')
             ->innerJoin('p.orderItems', 'oi')
             ->innerJoin('oi.order', 'o')
+            ->innerJoin('p.brand', 'b')
             ->where('o.createdAt >= :oneMonthAgo')
             ->groupBy('p.id')
             ->orderBy('MAX(oi.quantity)', 'DESC')

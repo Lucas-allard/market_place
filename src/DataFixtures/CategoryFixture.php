@@ -55,7 +55,6 @@ class CategoryFixture extends Fixture
                 'Jeux et jouets',
                 'Bricolage',
                 'Jardin',
-                'Bricolage',
             ],
             'Auto-Moto' => [
                 'Pièces détachées',
