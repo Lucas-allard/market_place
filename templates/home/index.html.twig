@@ -1,9 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Hello HomeController!{% endblock %}
-
-{% block body %}
-    {{ include('home/_categories.html.twig') }}
-    {{ include('home/_top_selling_products.html.twig') }}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('homePage') }}
 {% endblock %}
 
+{% block body %}
+    {{ include('home/_hero.html.twig') }}
+    {{ include('home/_categories.html.twig') }}
+    {{ include('home/_top_selling_products.html.twig') }}
+    {{ include('home/_cta.html.twig') }}
+    {{ include('home/_top_brands.html.twig') }}
+    {{ include('home/_features.html.twig') }}
+    {{ include('home/_newsletter.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('homePage') }}
+{% endblock %}

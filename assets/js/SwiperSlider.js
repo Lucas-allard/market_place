@@ -7,7 +7,7 @@ Swiper.use([Autoplay, Navigation]);
 
 export default class SwiperSlider {
     constructor(selector, options) {
-        this.selector = '.swiper';
+        this.selector = selector;
         this.options = {
             direction: 'horizontal',
             slidesPerView: 1,

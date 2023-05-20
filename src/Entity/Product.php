@@ -48,11 +48,27 @@ class Product extends AbstractEntity
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderItem::class, orphanRemoval: true)]
     private Collection $orderItems;
 
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private ?Brand $brand = null;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class, orphanRemoval: true)]
+
+    private Collection $pictures;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $discount = null;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Caracteristic::class, orphanRemoval: true)]
+    private Collection $caracteristics;
+
     public function __construct()
     {
         parent::__construct();
         $this->categories = new ArrayCollection();
         $this->orderItems = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
+        $this->caracteristics = new ArrayCollection();
     }
 
     /**
@@ -155,6 +171,14 @@ class Product extends AbstractEntity
         return $this;
     }
 
+    public function setCategories(Collection $categories): self
+    {
+        foreach ($categories as $category) {
+            $this->addCategory($category);
+        }
+        return $this;
+    }
+
     public function removeCategory(Category $category): self
     {
         if ($this->categories->removeElement($category)) {
@@ -212,6 +236,98 @@ class Product extends AbstractEntity
             // set the owning side to null (unless already changed)
             if ($orderItem->getProduct() === $this) {
                 $orderItem->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getBrand(): ?Brand
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(?Brand $brand): self
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Picture>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Picture $picture): self
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures->add($picture);
+            $picture->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function setPictures(Collection $pictures): self
+    {
+        foreach ($pictures as $picture) {
+            $this->addPicture($picture);
+        }
+        return $this;
+    }
+
+    public function removePicture(Picture $picture): self
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getProduct() === $this) {
+                $picture->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDiscount(): ?int
+    {
+        return $this->discount;
+    }
+
+    public function setDiscount(?int $discount): self
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Caracteristic>
+     */
+    public function getCaracteristics(): Collection
+    {
+        return $this->caracteristics;
+    }
+
+    public function addCaracteristic(Caracteristic $caracteristic): self
+    {
+        if (!$this->caracteristics->contains($caracteristic)) {
+            $this->caracteristics->add($caracteristic);
+            $caracteristic->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCaracteristic(Caracteristic $caracteristic): self
+    {
+        if ($this->caracteristics->removeElement($caracteristic)) {
+            // set the owning side to null (unless already changed)
+            if ($caracteristic->getProduct() === $this) {
+                $caracteristic->setProduct(null);
             }
         }
 

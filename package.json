@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "flowbite": "^1.6.5",
+        "particlesjs": "^2.2.3",
         "swiper": "^9.3.1"
     }
 }

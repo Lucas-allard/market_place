@@ -50,11 +50,31 @@ abstract class AbstractEntity
     }
 
     /**
+     * @param DateTime $createdAt
+     * @return $this
+     */
+    public function setCreatedAt(DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    /**
      * @return DateTime|null
      */
     public function getUpdatedAt() : ?DateTime
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param DateTime $updatedAt
+     * @return $this
+     */
+    public function setUpdatedAt(DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
     }
 
 }

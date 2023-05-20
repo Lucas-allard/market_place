@@ -17,7 +17,7 @@
                     {% set svg_file = 'svg/' ~ category.slug ~ '.html.twig' %}
                     {% include svg_file %}
                 </div>
-                <ul class="group-hover:block hidden absolute left-[56px] px-6 z-50 w-[200px] top-[44px] lg:top-[16px] h-screen bg-gray-50 border-l border-r border-gray-300 py-4 text-custom-blue font-bold">
+                <ul class="group-hover:block hidden absolute left-[56px] px-6 z-100 w-[200px] top-[44px] lg:top-[16px] h-screen bg-gray-50 border-l border-r border-gray-300 py-4 text-custom-blue font-bold">
                     {% for child in category.children %}
                         <li class="py-2">
                             <a href="#"
