@@ -3,6 +3,8 @@
 namespace App\Service\Product;
 
 use App\Repository\ProductRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 class ProductService
 {
@@ -28,8 +30,19 @@ class ProductService
         return $this->productRepository->findOneBy(['slug' => $slug]);
     }
 
-    public function getTopProductsWithCategories(int $maxResults): array
+
+    public function getNewsArrivalsProducts(int $maxResults, ?int $offset = null): array
     {
-        return $this->productRepository->findTopProductsWithCategories($maxResults);
+        return $this->productRepository->findNewsArrivalsProducts($maxResults, $offset);
+    }
+
+    public function getTopProductsOrdered(int $maxResults): array
+    {
+        return $this->productRepository->findTopProductsOrdered($maxResults);
+    }
+
+    public function getSellsProductsHasDiscount(int $maxResults): array
+    {
+        return $this->productRepository->findSellsProductsHasDiscount($maxResults);
     }
 }

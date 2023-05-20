@@ -18,14 +18,14 @@ class Brand
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Product::class)]
+    #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Product::class, cascade: ['persist', 'remove'])]
     private Collection $products;
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Picture $picture = null;
 
     public function __construct()

@@ -1,4 +1,4 @@
-<section class="pb-8">
+<section class="px-2 md:px-8 lg:px-16 pt-8 pb-8">
     <div class="flex flex-row justify-between pb-6">
         <div class="flex flex-col text-custom-blue-darker">
             <h2 class="text-3xl font-semibold pb-2">Meilleures catégories</h2>
@@ -25,9 +25,9 @@
     <div class="swiper best-categories__slider">
         <div class="swiper-wrapper">
             <div class="swiper-slide">
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 pt-8">
                 {% for category in bestCategories|slice(0,12) %}
-                        <div class="col-span-1 flex flex-row border border-gray-400 rounded-lg">
+                        <div class="group col-span-1 flex flex-row bg-white  border border-gray-200 hover:border-custom-blue rounded-md hover:translate-y-[-5px] transition-all shadow-sm">
                             <a href="#" class="block w-full">
                                 <div class="flex flex-col items-center justify-center">
                                     <div class="flex flex-col items-center justify-center">
@@ -36,7 +36,7 @@
                                                  class="h-[80px]">
                                         </div>
                                         <div class="pt-2 pb-4">
-                                            <p class="text-xl text-custom-blue-darker font-semibold text-center">{{ category.name }}</p>
+                                            <p class="text-xl text-custom-blue-darker group-hover:text-orange-400 transition-all  font-semibold text-center">{{ category.name }}</p>
                                             <p class="text-md text-custom-blue text-center">{{ category.total_products }} produits</p>
                                         </div>
                                     </div>
@@ -47,9 +47,9 @@
                 </div>
             </div>
             <div class="swiper-slide">
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 pt-8">
                     {% for category in bestCategories|slice(12,24) %}
-                        <div class="col-span-1 flex flex-row border border-gray-400 rounded-lg">
+                        <div class="group col-span-1 flex flex-row bg-white border border-gray-200 hover:border-custom-blue rounded-md hover:translate-y-[-5px] transition-all shadow-sm">
                             <a href="#" class="block w-full">
                                 <div class="flex flex-col items-center justify-center">
                                     <div class="flex flex-col items-center justify-center">
@@ -58,7 +58,7 @@
                                                  class="h-[80px]">
                                         </div>
                                         <div class="pt-2 pb-4">
-                                            <p class="text-xl text-custom-blue-darker font-semibold text-center">{{ category.name }}</p>
+                                            <p class="text-xl text-custom-blue-darker group-hover:text-orange-400 transition-all font-semibold text-center">{{ category.name }}</p>
                                             <p class="text-md text-custom-blue text-center">{{ category.total_products }} produits</p>
                                         </div>
                                     </div>

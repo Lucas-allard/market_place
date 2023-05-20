@@ -11,7 +11,6 @@ use Doctrine\Persistence\ObjectManager;
 use Faker;
 class OrderItemFixture extends Fixture implements DependentFixtureInterface
 {
-    const ORDER_ITEM_COUNT = 100;
 
     /**
      * @inheritDoc
@@ -20,7 +19,7 @@ class OrderItemFixture extends Fixture implements DependentFixtureInterface
     {
         $faker = Faker\Factory::create();
 
-        for ($i = 0; $i < self::ORDER_ITEM_COUNT; $i++) {
+        for ($i = 0; $i < 1000; $i++) {
             $orderItem = new OrderItem();
             $orderItem->setQuantity($faker->numberBetween(1, 10));
             $orderItem->setPrice($faker->randomFloat(2, 0, 1000));
@@ -28,16 +27,30 @@ class OrderItemFixture extends Fixture implements DependentFixtureInterface
             /**
              * @var Product $product
              */
-            $product = $this->getReference('product_' . $faker->numberBetween(0, 99));
+            $product = $this->getReference('product_' . $faker->numberBetween(0, 999));
 
-            /**
-             * @var Order $order
-             */
-            $order = $this->getReference('order_' . $faker->numberBetween(0, 99));
 
             $orderItem->setProduct($product);
-            $orderItem->setOrder($order);
             $manager->persist($orderItem);
+
+            $this->addReference('order_item_' . $i, $orderItem);
+        }
+
+        for ($i = 1000; $i < 2000; $i++) {
+            $orderItem = new OrderItem();
+            $orderItem->setQuantity($faker->numberBetween(1, 10));
+            $orderItem->setPrice($faker->randomFloat(2, 0, 1000));
+
+            /**
+             * @var Product $product
+             */
+            $product = $this->getReference('product_' . $faker->numberBetween(0, 999));
+
+
+            $orderItem->setProduct($product);
+            $manager->persist($orderItem);
+
+            $this->addReference('order_item_' . $i, $orderItem);
         }
 
         $manager->flush();
@@ -51,7 +64,6 @@ class OrderItemFixture extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            OrderFixture::class,
             ProductFixture::class
         ];
     }

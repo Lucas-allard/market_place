@@ -3,8 +3,8 @@
         <label for="dropdownCategoriesInput"
                class="mx-4 cursor-pointer block left-0 z-50">
             <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
-                 xmlns="http://www.w3.org/2000/svg"
-                 aria-hidden="true" class="w-6 h-6 text-orange-400 hover:text-orange-400">
+                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                 class="w-6 h-6 text-orange-400 hover:text-orange-400">
                 <path stroke-linecap="round" stroke-linejoin="round"
                       d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path>
             </svg>
@@ -59,7 +59,6 @@
                 <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
                      xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                      class="w-6 h-6 text-custom-blue hover:text-orange-400">
-                    >
                     <path stroke-linecap="round" stroke-linejoin="round"
                           d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
@@ -68,7 +67,7 @@
                 <div id="dropdownAccount"
                      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                     <ul class="py-2 text-sm text-custom-blue"
-                        aria-labelledby="dropdownDefaultButton">
+                        aria-labelledby="dropdownAccountButton">
                         <li>
                             <a href="#"
                                class="block px-4 py-2 hover:bg-gray-100 ">Mon
@@ -93,7 +92,7 @@
                 <div id="dropdownAccount"
                      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                     <ul class="py-2 text-sm text-custom-blue"
-                        aria-labelledby="dropdownDefaultButton">
+                        aria-labelledby="dropdownAccountButton">
                         <li>
                             <a href="{{ path('app_register') }}"
                                class="block px-4 py-2 hover:bg-gray-100 ">Inscription</a>
@@ -136,8 +135,7 @@
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
             </svg>
         </label>
-        <ul class="pt-16 text-gray-700 flex flex-col items-center h-screen"
-            aria-labelledby="dropdownDefaultButton">
+        <ul class="pt-16 text-gray-700 flex flex-col items-center h-screen">
             <li class="p-4 w-full text-center hover:bg-gray-100">
                 <a href="#"
                    class="block px-4 py-2 text-2xl hover:bg-gray-100 hover:text-orange-400">Accueil</a>

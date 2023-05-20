@@ -57,6 +57,8 @@ class Order extends AbstractEntity
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
 
+    const STATUS_DELIVERED = 'delivered';
+
     public function __construct()
     {
         parent::__construct();

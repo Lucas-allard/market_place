@@ -107,7 +107,7 @@ class CategoryRepository extends ServiceEntityRepository
         $rawSql = <<<SQL
 SELECT c.name,
        c.slug,
-       SUM(p.quantity) AS total_products,
+       COUNT(p.id) AS total_products,
        (SELECT p.name
         FROM product p
                  INNER JOIN category_product cp ON p.id = cp.product_id

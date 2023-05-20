@@ -20,6 +20,7 @@ class Picture
     private ?string $alt = null;
 
     #[ORM\ManyToOne(inversedBy: 'pictures')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Product $product = null;
 
     public function getId(): ?int

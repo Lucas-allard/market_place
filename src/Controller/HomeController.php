@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\Brand\BrandService;
 use App\Service\Category\CategoryService;
 use App\Service\Product\ProductService;
 use Doctrine\DBAL\Exception;
@@ -16,15 +17,19 @@ class HomeController extends AbstractController
      */
     #[Route('/', name: 'app_home')]
     public function index(
-        ProductService $productService,
-        CategoryService $categoryService
+        ProductService  $productService,
+        CategoryService $categoryService,
+        BrandService    $brandService
     ): Response
     {
-        $topProducts = $productService->getTopProductsWithCategories( 18);
-        $bestCategories = $categoryService->getCategoriesHavingMostProductsAndBestProduct();
+
         return $this->render('home/index.html.twig', [
-            'bestCategories' => $bestCategories,
-            'topProducts' => $topProducts,
+            'newProducts' => $productService->getNewsArrivalsProducts(4),
+            'discountProducts' => $productService->getSellsProductsHasDiscount(10),
+            'brands' => $brandService->getBrandsWithPictures(),
+            'topBrands' => $brandService->getTopBrands(16),
+            'bestCategories' => $categoryService->getCategoriesHavingMostProductsAndBestProduct(),
+            'topProducts' => $productService->getTopProductsOrdered(18),
         ]);
     }
 }

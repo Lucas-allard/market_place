@@ -39,28 +39,32 @@ class BrandRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Brand[] Returns an array of Brand objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findBrandsWithPictures(): ?array
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.picture IS NOT NULL')
+            ->innerJoin('b.picture', 'p')
+            ->addSelect('p')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Brand
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findTopBrands(int $limit = 16): ?array
+    {
+        $queryBuilder = $this->createQueryBuilder('b')
+            ->select('b, p, pp')
+            ->innerJoin('b.products', 'p')
+            ->innerJoin('p.orderItems', 'oi')
+            ->innerJoin('oi.order', 'o')
+            ->innerJoin('p.pictures', 'pp')
+            ->where('o.createdAt >= :createdAt')
+            ->groupBy('b.id')
+            ->orderBy('COUNT(oi.id)', 'DESC')
+            ->addOrderBy('p.discount', 'DESC')
+            ->setParameter('createdAt', new \DateTime('-2 months'))
+            ->setMaxResults($limit);
+
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

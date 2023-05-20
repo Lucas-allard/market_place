@@ -22,7 +22,7 @@ class ProductFixture extends Fixture implements DependentFixtureInterface
     {
         $faker = Faker\Factory::create();
 
-        for ($i = 0; $i < 300; $i++) {
+        for ($i = 0; $i < 1000; $i++) {
             $productPictures = new ArrayCollection();
             for ($j = 0; $j < 3; $j++) {
                 $picture = new Picture();
@@ -32,20 +32,24 @@ class ProductFixture extends Fixture implements DependentFixtureInterface
                 $productPictures[] = $picture;
             }
             $product = new Product();
+
+            for($k = 0; $k < 100; $k++) {
+                $product->setDiscount($faker->numberBetween(0, 100));
+            }
+
             $product->setName($faker->words(3, true));
             $product->setSlug($faker->slug);
             $product->setDescription($faker->text);
+            $product->setCreatedAt($faker->dateTimeBetween('-1 year'));
             $product->setPrice($faker->randomFloat(2, 0, 1000));
             $product->setQuantity($faker->numberBetween(0, 1000));
             /** @var Seller $seller */
             $seller = $this->getReference('seller_' . $faker->numberBetween(0, 19));
             $product->setSeller($seller);
-            /** @var Category $category */
-            $category = $this->getReference('cat_' . $faker->numberBetween(0, 5));
             /** @var Category $subCategory */
             $subCategory = $this->getReference('sub_cat_' . $faker->numberBetween(0, 29));
-            $product->addCategory($category);
             $product->addCategory($subCategory);
+            $product->addCategory($subCategory->getParent());
             $product->setBrand($this->getReference('brand_' . $faker->numberBetween(0, 49)));
             $product->setPictures($productPictures);
             $manager->persist($product);

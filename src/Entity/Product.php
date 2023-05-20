@@ -49,10 +49,18 @@ class Product extends AbstractEntity
     private Collection $orderItems;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Brand $brand = null;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class, orphanRemoval: true)]
+
     private Collection $pictures;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $discount = null;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Caracteristic::class, orphanRemoval: true)]
+    private Collection $caracteristics;
 
     public function __construct()
     {
@@ -60,6 +68,7 @@ class Product extends AbstractEntity
         $this->categories = new ArrayCollection();
         $this->orderItems = new ArrayCollection();
         $this->pictures = new ArrayCollection();
+        $this->caracteristics = new ArrayCollection();
     }
 
     /**
@@ -277,6 +286,48 @@ class Product extends AbstractEntity
             // set the owning side to null (unless already changed)
             if ($picture->getProduct() === $this) {
                 $picture->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDiscount(): ?int
+    {
+        return $this->discount;
+    }
+
+    public function setDiscount(?int $discount): self
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Caracteristic>
+     */
+    public function getCaracteristics(): Collection
+    {
+        return $this->caracteristics;
+    }
+
+    public function addCaracteristic(Caracteristic $caracteristic): self
+    {
+        if (!$this->caracteristics->contains($caracteristic)) {
+            $this->caracteristics->add($caracteristic);
+            $caracteristic->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCaracteristic(Caracteristic $caracteristic): self
+    {
+        if ($this->caracteristics->removeElement($caracteristic)) {
+            // set the owning side to null (unless already changed)
+            if ($caracteristic->getProduct() === $this) {
+                $caracteristic->setProduct(null);
             }
         }
 
