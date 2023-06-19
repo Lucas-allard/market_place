@@ -24,6 +24,7 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('swiperSlider', './assets/js/SwiperSlider.js')
     .addEntry('homePage', './assets/js/homePage.js')
+    .addEntry('productsPage', './assets/js/productsPage.js')
 
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
@@ -60,8 +61,11 @@ Encore
         config.corejs = '3.23';
     })
 
+    // add support for PostCSS
+    .enablePostCssLoader()
+
     // enables Sass/SCSS support
-    //.enableSassLoader()
+    .enableSassLoader()
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
@@ -76,8 +80,6 @@ Encore
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
 
-    // add support for PostCSS
-    .enablePostCssLoader()
 
 ;
 

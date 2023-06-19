@@ -66,6 +66,7 @@ class CategoryFixture extends Fixture
         $j= 0;
         foreach ($categories as $categoryName => $subCategories) {
 
+
             $category = new Category();
             $category->setName($categoryName);
             $category->setDescription($faker->text(200));
@@ -120,9 +121,7 @@ class CategoryFixture extends Fixture
         $string = preg_replace('/-+/', '-', $string);
 
         // Suppression des tirets en début et fin de chaîne
-        $string = trim($string, '-');
-
-        return $string;
+        return trim($string, '-');
     }
 
 

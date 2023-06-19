@@ -1,0 +1,17 @@
+.top-header {
+  background-color: rgb(249 250 251);
+  position: sticky;
+  top: 0;
+  height: 50px;
+  width: 100%;
+  border-bottom: 1px solid rgb(209 213 219);
+  z-index: 100;
+}
+
+
+@media (min-width: 640px) {
+  .top-header {
+    height: 60px;
+  }
+}
+

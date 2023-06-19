@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <section class="products-page-section">
+        {{ include('components/_nested_nav.html.twig') }}
+        <div class="products-page-container">
+            <aside class="products-page-aside">
+                {{ include('product/_products_sidebar.html.twig') }}
+            </aside>
+            <section class="products-page-section">
+                <div class="products-filters">
+                    <p>{{ products.data|length }} produits trouvés sur {{ products.totalItems }}</p>
+                    <form class="form-filter" name="form_request_filter">
+                        <div class="form-row">
+                            <label for="filter_order">Trié par</label>
+                            <select name="form_request_filter_order" id="filter_order">
+                                <option value="DESC">Derniers produits</option>
+                                <option value="ASC">Anciens produits</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <label for="filter_show"> Afficher</label>
+                            <select name="form_request_filter_show" id="filter_show">
+                                <option value="16">16</option>
+                                <option value="32">32</option>
+                                <option value="64">64</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="products-list">
+                    {% for product in products.data %}
+                        <article class="product-card">
+                            <div class="product-card-img">
+                                <a href="#">
+                                    <img src="{{ product.pictures[0].path }}" alt="{{ product.pictures[0].alt }}"
+                                         class="">
+                                </a>
+                            </div>
+                            <div class="product-card-body">
+                                <p>{{ product.brand.name }}</p>
+                                <h3 class="product-card-title"><a href="">{{ product.name }}</a></h3>
+                                <p class="product-card-price"><a href="">{{ product.price }} €</a></p>
+                                <button class="product-card-button add-to-cart" data-id="{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}">
+                                    Ajouter au panier
+                                </button>
+                                <ul class="product-card-caracteristics">
+                                    {#                                    affiche maximum 2 caracteristiques #}
+
+                                    {% for caracteristic in product.caracteristics %}
+                                        {% if loop.index <= 2 %}
+                                            <li>{{ caracteristic.value }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+                <div class="pagination-container">
+                    {% if products.hasPreviousPage %}
+                        <a href="{{ path('app_product_index', {'categorySlug': category.slug, 'subCategorySlug': subCategory ? subCategory.slug : null, 'page': products.currentPage - 1, 'order': app.request.get('order'), 'show': app.request.get('show')}) }}"
+                           class="pagination-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="#5C74A6" viewBox="0 0 320 512">
+                                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+                            </svg>
+                        </a>
+                    {% endif %}
+
+                    {% for page in 1..products.totalPages %}
+                        <a href="{{ path('app_product_index', {'categorySlug': category.slug, 'subCategorySlug': subCategory ? subCategory.slug : null, 'page': page, 'order': app.request.get('order'), 'show': app.request.get('show')}) }}"
+                           class="pagination-link {{ page == products.currentPage ? 'active' : '' }}">{{ page }}</a>
+                    {% endfor %}
+
+                    {% if products.hasNextPage %}
+                        <a href="{{ path('app_product_index', {'categorySlug': category.slug, 'subCategorySlug': subCategory ? subCategory.slug : null, 'page': products.currentPage + 1, 'order': app.request.get('order'), 'show': app.request.get('show')}) }}"
+                           class="pagination-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="#5C74A6" viewBox="0 0 320 512">
+                                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/>
+                            </svg>
+                        </a>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </section>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('productsPage') }}
+{% endblock %}

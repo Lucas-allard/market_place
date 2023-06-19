@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Form\Registration;
+namespace App\Form\RegistrationForm;
 
 use App\Entity\Customer;
+use App\Entity\Seller;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CustomerRegistrationType extends RegistrationFormType
+class SellerRegistrationType extends RegistrationFormType
 {
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Customer::class,
+            'data_class' => Seller::class,
         ]);
     }
 }

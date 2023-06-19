@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230510104319 extends AbstractMigration
+final class Version20230521204638 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,15 +20,14 @@ final class Version20230510104319 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE order_item ADD CONSTRAINT FK_52EA1F094584665A FOREIGN KEY (product_id) REFERENCES product (id)');
-        $this->addSql('CREATE INDEX idx_order_created_at ON `order` (created_at);');
-        $this->addSql('CREATE INDEX idx_category_parent ON category (parent_id);');
-        $this->addSql('CREATE INDEX idx_category_id ON category (id);');
+        $this->addSql('ALTER TABLE brand DROP FOREIGN KEY FK_1C52F95812469DE2');
+        $this->addSql('ALTER TABLE brand ADD CONSTRAINT FK_1C52F95812469DE2 FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE order_item DROP FOREIGN KEY FK_52EA1F094584665A');
+        $this->addSql('ALTER TABLE brand DROP FOREIGN KEY FK_1C52F95812469DE2');
+        $this->addSql('ALTER TABLE brand ADD CONSTRAINT FK_1C52F95812469DE2 FOREIGN KEY (category_id) REFERENCES category (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
     }
 }
