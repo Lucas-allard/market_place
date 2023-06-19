@@ -6,7 +6,10 @@ use App\Entity\Category;
 use App\Entity\Product;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -116,6 +119,115 @@ class ProductRepository extends ServiceEntityRepository
             ->groupBy('p.id')
             ->orderBy('SUM(oi.quantity)', 'DESC')
             ->setMaxResults($maxResult);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function getProductsByCategorySlugQueryBuilder(string $categorySlug, string $order): QueryBuilder
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder
+            ->select('p, c, b')
+            ->from(Product::class, 'p')
+            ->innerJoin('p.categories', 'c')
+            ->innerJoin('p.brand', 'b')
+            ->where('c.slug = :categorySlug')
+            ->orderBy('p.createdAt', $order)
+            ->setParameter('categorySlug', $categorySlug);
+
+        return $queryBuilder;
+    }
+
+    public function findProductsByCategorySlug(string $categorySlug, ?string $order = 'DESC')
+    {
+        $queryBuilder = $this->getProductsByCategorySlugQueryBuilder($categorySlug, $order);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function findMinPrice()
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder
+            ->select('MIN(p.price)')
+            ->from(Product::class, 'p');
+
+        return $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function findMaxPrice()
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder
+            ->select('MAX(p.price)')
+            ->from(Product::class, 'p');
+
+        return $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    public function getProductsByFilterQueryBuilder(
+        Category $category,
+        ?int     $minPrice = null,
+        ?int     $maxPrice = null,
+        ?array   $brand = null,
+        ?array   $caracteristic = null,
+        string   $order = 'DESC'): QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->innerJoin('p.categories', 'c')
+            ->innerJoin('p.brand', 'b')
+            ->innerJoin('p.caracteristics', 'car')
+            ->where('c.id = :category')
+            ->setParameter('category', $category->getId());
+
+        if ($minPrice) {
+            $queryBuilder
+                ->andWhere('p.price >= :minPrice')
+                ->setParameter('minPrice', $minPrice);
+        }
+
+        if ($maxPrice) {
+            $queryBuilder
+                ->andWhere('p.price <= :maxPrice')
+                ->setParameter('maxPrice', $maxPrice);
+        }
+
+        if ($brand) {
+            $queryBuilder
+                ->andWhere('b.id IN (:brand)')
+                ->setParameter('brand', $brand);
+        }
+
+        if ($caracteristic) {
+            $queryBuilder
+                ->andWhere('car.id IN (:caracteristic)')
+                ->setParameter('caracteristic', $caracteristic);
+        }
+
+        $queryBuilder
+            ->orderBy('p.price', $order);
+
+        return $queryBuilder;
+    }
+
+    public function findProductsByFilter(
+        Category $category,
+        ?int     $minPrice = null,
+        ?int     $maxPrice = null,
+        ?array   $brand = null,
+        ?array   $caracteristic = null,
+        string   $order = 'DESC'
+    )
+    {
+        $queryBuilder = $this->getProductsByFilterQueryBuilder($category, $minPrice, $maxPrice, $brand, $caracteristic, $order);
 
         return $queryBuilder->getQuery()->getResult();
     }

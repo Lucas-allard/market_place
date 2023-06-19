@@ -30,6 +30,6 @@ services:
     App\EventListener\NavbarListener:
         arguments:
             $twig: '@twig'
-            $categoryRepository: '@App\Repository\CategoryRepository'
+            $categoryService: '@App\Service\Category\CategoryService'
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

@@ -35,11 +35,15 @@ class Category extends AbstractEntity
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
+    #[ORM\ManyToMany(targetEntity: Brand::class, mappedBy: 'categories')]
+    private Collection $brands;
+
     public function __construct()
     {
         parent::__construct();
         $this->products = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->brands = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -160,4 +164,33 @@ class Category extends AbstractEntity
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Brand>
+     */
+    public function getBrands(): Collection
+    {
+        return $this->brands;
+    }
+
+    public function addBrand(Brand $brand): self
+    {
+        if (!$this->brands->contains($brand)) {
+            $this->brands->add($brand);
+            $brand->addCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBrand(Brand $brand): self
+    {
+        if ($this->brands->removeElement($brand)) {
+            $brand->removeCategory($this);
+        }
+
+        return $this;
+    }
+
+
 }

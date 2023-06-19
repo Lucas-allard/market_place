@@ -26,8 +26,8 @@ class OrderItem extends AbstractEntity {
     #[ORM\ManyToOne(targetEntity: Order::class, cascade: ['persist', 'remove'], inversedBy: 'orderItems')]
     private ?Order $order = null;
 
-    #[ORM\ManyToOne(inversedBy: 'orderItems')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'orderItems')]
+    #[ORM\JoinColumn(nullable: false,onDelete: 'CASCADE')]
     private ?Product $product = null;
 
     /**

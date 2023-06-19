@@ -28,4 +28,14 @@ class CategoryService
         return $this->categoryRepository->findCategoriesHavingMostProductsAndBestProduct();
     }
 
+    public function getParentsAndChildrenCategoriesInSeparatedArrays(): array
+    {
+        return $this->categoryRepository->findParentsAndChildrenCategoriesInSeparatedArrays();
+    }
+
+    public function getChildrenCategories(): array
+    {
+        return $this->categoryRepository->findChildrenCategories();
+    }
+
 }

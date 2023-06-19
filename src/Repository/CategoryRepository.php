@@ -61,7 +61,7 @@ class CategoryRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getParentsAndChildrenCategoriesInSeparatedArrays(): array
+    public function findParentsAndChildrenCategoriesInSeparatedArrays(): array
     {
         $qb = $this->createQueryBuilder('parent');
         $qb->select('parent.name AS parent_category, child.name AS child_category, parent.slug AS parent_slug, child.slug AS child_slug')
@@ -141,5 +141,14 @@ SQL;
         $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
 
         return $stmt->executeQuery()->fetchAllAssociative();
+    }
+
+    public function findChildrenCategories()
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->where('c.parent IS NOT NULL')
+            ->orderBy('c.name', 'ASC');
+
+        return $qb->getQuery()->getResult();
     }
 }

@@ -6,8 +6,8 @@ use App\Security\EmailVerifier;
 use App\Entity\Customer;
 use App\Entity\Interface\UserInterface;
 use App\Entity\Seller;
-use App\Form\Registration\CustomerRegistrationType;
-use App\Form\Registration\SellerRegistrationType;
+use App\Form\RegistrationForm\CustomerRegistrationType;
+use App\Form\RegistrationForm\SellerRegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,9 +31,8 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @throws TransportExceptionInterface
      */
-    #[Route('/inscription', name: 'app_register', requirements: ['type' => 'customer|seller'], methods: ['GET', 'POST'])]
+    #[Route('/inscription', name: 'app_register', requirements: ['type' => 'customer|seller'])]
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,

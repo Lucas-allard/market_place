@@ -8,13 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
-class Brand
+class Brand extends AbstractEntity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -28,9 +23,16 @@ class Brand
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Picture $picture = null;
 
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'brands')]
+    private Collection $categories;
+
+
+
     public function __construct()
     {
+        parent::__construct();
         $this->products = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -103,4 +105,29 @@ class Brand
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        $this->categories->removeElement($category);
+
+        return $this;
+    }
+
 }

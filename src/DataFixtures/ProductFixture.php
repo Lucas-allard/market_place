@@ -50,7 +50,7 @@ class ProductFixture extends Fixture implements DependentFixtureInterface
             $subCategory = $this->getReference('sub_cat_' . $faker->numberBetween(0, 29));
             $product->addCategory($subCategory);
             $product->addCategory($subCategory->getParent());
-            $product->setBrand($this->getReference('brand_' . $faker->numberBetween(0, 49)));
+            $product->setBrand($subCategory->getParent()->getBrands()[$faker->numberBetween(0, 5)]);
             $product->setPictures($productPictures);
             $manager->persist($product);
 

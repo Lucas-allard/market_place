@@ -1,0 +1,15 @@
+<nav class="bg-gray-100 py-4 px-14 mb-16">
+    <p class="text-xs text-custom-blue-darker font-medium">
+        <a class="hover:text-orange-400 transition-all text-xs"
+           href="{{ path('app_product_index', {categorySlug: category.slug}) }}">{{ category.name }}</a>
+        {% if subCategory.name is defined %}
+            > <a class="hover:text-orange-400 transition-all text-xs"
+                  href="{{ path('app_product_index', {categorySlug: category.slug, subCategorySlug: subCategory.slug}) }}">
+            {{ subCategory.name }}
+        </a>
+        {% endif %}
+        {% if product.name is defined %}
+            > {{ product.name }}
+        {% endif %}
+    </p>
+</nav>

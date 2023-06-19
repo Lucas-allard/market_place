@@ -45,7 +45,7 @@ class Product extends AbstractEntity
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderItem::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderItem::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $orderItems;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
@@ -53,14 +53,14 @@ class Product extends AbstractEntity
     private ?Brand $brand = null;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class, orphanRemoval: true)]
-
     private Collection $pictures;
 
     #[ORM\Column(nullable: true)]
     private ?int $discount = null;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Caracteristic::class, orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Caracteristic::class, inversedBy: 'products')]
     private Collection $caracteristics;
+
 
     public function __construct()
     {
@@ -316,7 +316,6 @@ class Product extends AbstractEntity
     {
         if (!$this->caracteristics->contains($caracteristic)) {
             $this->caracteristics->add($caracteristic);
-            $caracteristic->setProduct($this);
         }
 
         return $this;
@@ -324,14 +323,8 @@ class Product extends AbstractEntity
 
     public function removeCaracteristic(Caracteristic $caracteristic): self
     {
-        if ($this->caracteristics->removeElement($caracteristic)) {
-            // set the owning side to null (unless already changed)
-            if ($caracteristic->getProduct() === $this) {
-                $caracteristic->setProduct(null);
-            }
-        }
+        $this->caracteristics->removeElement($caracteristic);
 
         return $this;
     }
-
 }
