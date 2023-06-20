@@ -5,9 +5,10 @@ namespace App\Service\Product;
 use App\Entity\Category;
 use App\Repository\ProductRepository;
 use App\Service\Pagination\PaginationService;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Tools\Pagination\Paginator;
+use Exception;
 
 class ProductService
 {
@@ -52,40 +53,58 @@ class ProductService
         return $this->productRepository->findSellsProductsHasDiscount($maxResults);
     }
 
+    /**
+     * @throws Exception
+     */
     public function getProductsByCategorySlug(
-        string  $categorySlug,
+        string $categorySlug,
         ?string $subCategorySlug = null,
         ?string $order = null,
-        ?int    $page = null,
-        ?int    $limit = null
+        ?int $page = null,
+        ?int $limit = null
     ): array
     {
         if ($subCategorySlug) {
             $categorySlug = $subCategorySlug;
         }
 
-        if (!$order) {
-            $order = 'DESC';
+        [$order, $page, $limit] = $this->setDefaultValues($order, $page, $limit);
+
+        $query = $this->productRepository->getProductsByCategorySlugQuery($categorySlug, $order);
+
+        return $this->paginationService->getPaginatedResult($query, $page, $limit);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getProductsByFilter(
+        mixed $filterData,
+        Category $category,
+        ?Category $subCategory = null,
+        ?string $order = null,
+        ?int $page = null,
+        ?int $limit = null
+    ): array
+    {
+        if ($subCategory) {
+            $category = $subCategory;
         }
 
-        if (!$page) {
-            $page = 1;
-        }
+        [$order, $page, $limit] = $this->setDefaultValues($order, $page, $limit);
 
-        if (!$limit) {
-            $limit = 16;
-        }
+        [$minPrice, $maxPrice, $brandArray, $caracteristicArray] = $this->extractFilterData($filterData);
 
+        $queryBuilder = $this->productRepository->getProductsByFilterQuery(
+            $category,
+            $minPrice,
+            $maxPrice,
+            $brandArray,
+            $caracteristicArray,
+            $order
+        );
 
-        $queryBuilder = $this->productRepository->getProductsByCategorySlugQueryBuilder($categorySlug, $order, $page, $limit);
-        $queryBuilder->setFirstResult(($page * $limit) - $limit);
-        $queryBuilder->setMaxResults($limit);
-
-        $this->paginationService->setQueryBuilder($queryBuilder);
-        $this->paginationService->setCurrentPage($page);
-        $this->paginationService->setLimit($limit);
-
-        return $this->paginationService->getPaginatedResult();
+        return $this->paginationService->getPaginatedResult($queryBuilder, $page, $limit);
     }
 
     public function getMinPrice(): int
@@ -106,60 +125,37 @@ class ProductService
         }
     }
 
-    public function getProductsByFilter(
-        mixed $filterData,
-        Category $category,
-        ?Category $subCategory = null,
-        ?string $order = null,
-        ?int    $page = null,
-        ?int    $limit = null
-    ): array
+    private function setDefaultValues(?string &$order, ?int &$page, ?int &$limit): array
     {
-        if (!$subCategory) {
-            $subCategory = $category;
-        }
+        $order = $order ?? 'DESC';
+        $page = $page ?? 1;
+        $limit = $limit ?? 16;
 
-        if (!$order) {
-            $order = 'DESC';
-        }
+        return [$order, $page, $limit];
+    }
 
-        if (!$page) {
-            $page = 1;
-        }
-
-        if (!$limit) {
-            $limit = 16;
-        }
-
+    private function extractFilterData(mixed $filterData): array
+    {
         $minPrice = $filterData['price']['min'] ?? null;
         $maxPrice = $filterData['price']['max'] ?? null;
         $filterBrand = $filterData['brand'] ?? null;
-        $brandArray = [];
-        foreach ($filterBrand as $brand) {
-            $brandArray[] = $brand->getId();
-        }
+        $brandArray = $this->extractFilterArray($filterBrand);
         $filterCaracteristic = $filterData['caracteristic'] ?? null;
-        $caracteristicArray = [];
-        foreach ($filterCaracteristic as $caracteristic) {
-            $caracteristicArray[] = $caracteristic->getId();
+        $caracteristicArray = $this->extractFilterArray($filterCaracteristic);
+
+        return [$minPrice, $maxPrice, $brandArray, $caracteristicArray];
+    }
+
+    private function extractFilterArray(?Collection $filterItems): array
+    {
+        $filterArray = [];
+
+        if ($filterItems) {
+            foreach ($filterItems as $filterItem) {
+                $filterArray[] = $filterItem->getId();
+            }
         }
 
-        $queryBuilder = $this->productRepository->getProductsByFilterQueryBuilder(
-            $subCategory,
-            $minPrice,
-            $maxPrice,
-            $brandArray,
-            $caracteristicArray,
-            $order
-        );
-
-        $queryBuilder->setFirstResult(($page * $limit) - $limit);
-        $queryBuilder->setMaxResults($limit);
-
-        $this->paginationService->setQueryBuilder($queryBuilder);
-        $this->paginationService->setCurrentPage($page);
-        $this->paginationService->setLimit($limit);
-
-        return $this->paginationService->getPaginatedResult();
+        return $filterArray;
     }
 }

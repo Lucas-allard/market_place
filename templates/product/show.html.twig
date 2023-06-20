@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Le shop{% endblock %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('productPage') }}
+{% endblock %}
+
+{% block body %}
+    <section class="product-page-section">
+        {{ include('components/_nested_nav.html.twig') }}
+        <article class="product-page-container">
+            <div class="product-page-pictures-container">
+                <aside class="product-page-small-pictures-container">
+                    {% for picture in product.pictures %}
+                        <img src="{{ picture.path }}" alt="{{ picture.alt }}"
+                             class="product-page-small-picture">
+                    {% endfor %}
+                </aside>
+                <div class="product-page-big-picture-container">
+                    <img src="{{ product.pictures[0].path }}" alt="{{ product.pictures[0].alt }}"
+                         class="product-page-big-picture">
+                </div>
+            </div>
+            <div class="product-page-info-container">
+                <header class="product-page-info-header">
+                    <h1>{{ product.name }}</h1>
+                    <p class="product-page-seller"><em>Vendu par {{ product.seller.company }}</em></p>
+                    <p class="product-page-seller-rating">
+                        <span class="product-page-seller-rating-stars">
+                            {% for i in 1..5 %}
+                                {% if i <= product.seller.rating %}
+                                    <i class="fa-solid fa-star"></i>
+                                {% elseif i - 0.5 == product.seller.rating %}
+                                    <span class="start-half-container">
+                                        <i class="fa-regular fa-star"></i>
+                                        <i class="fa-solid fa-star-half"></i>
+                                    </span>
+                                {% else %}
+                                    <i class="fa-regular fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                        <span class="product-page-seller-rating-number">{{ product.seller.rating }}</span>
+                    </p>
+                </header>
+                <hr>
+                <p class="product-page-price">{{ product.price }} €</p>
+                <p class="product-page-description">{{ product.description }}</p>
+                <ul class="product-page-caracteristics">
+                    {% for caracteristic in product.caracteristics %}
+                        <li class="product-page-caracteristic">
+                            <span class="product-page-caracteristic-type">{{ caracteristic.type }}</span>
+                            <span class="product-page-caracteristic-value">{{ caracteristic.value }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="product-page-buy-container">
+                    <div class="product-page-quantity-container">
+                        <label for="product-page-quantity">Quantité</label>
+                        <div class="product-page-quantity-input">
+                            <span class="product-page-quantity-minus">-</span>
+                            <input type="number" id="product-page-quantity" name="product-page-quantity" min="1" value="1">
+                            <span class="product-page-quantity-plus">+</span>
+                        </div>
+                    </div>
+                    <div class="product-page-button-container">
+                        {{ include('components/_cart_button.html.twig', {'product': product, 'buttonLabel': 'Ajouter au panier', 'className': 'product-to-cart'}) }}
+                        {{ include('components/_cart_button.html.twig', {'product': product, 'buttonLabel': 'Acheter maintenant', 'className': 'product-buy-now'}) }}
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('productPage') }}
+{% endblock %}

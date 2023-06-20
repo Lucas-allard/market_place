@@ -1,18 +1,20 @@
 <?php
+
 namespace App\Service\Pagination;
 
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Exception;
 
 class PaginationService
 {
-    private QueryBuilder $queryBuilder;
     private int $currentPage;
     private int $limit;
 
-    public function setQueryBuilder(QueryBuilder $queryBuilder): void
+    public function __construct(int $currentPage = 1, int $limit = 16)
     {
-        $this->queryBuilder = $queryBuilder;
+        $this->currentPage = $currentPage;
+        $this->limit = $limit;
     }
 
     public function setCurrentPage(int $currentPage): void
@@ -25,22 +27,39 @@ class PaginationService
         $this->limit = $limit;
     }
 
-    public function getPaginatedResult(): array
+
+    /**
+     * @throws Exception
+     */
+    public function getPaginatedResult(QueryBuilder $query, int $page, int $limit): array
     {
-        $paginator = new Paginator($this->queryBuilder);
+        $this->setCurrentPage($page);
+        $this->setLimit($limit);
+        $paginatedQuery = $this->paginateResults($query);
+        $paginationData = $this->calculatePaginationData($paginatedQuery);
+
+        return [
+            'data' => $paginatedQuery->getIterator()->getArrayCopy(),
+            'pagination' => $paginationData,
+        ];
+    }
+
+    private function paginateResults(QueryBuilder $query): Paginator
+    {
+        $paginator = new Paginator($query);
+        $paginator->getQuery()
+            ->setFirstResult($this->limit * ($this->currentPage - 1))
+            ->setMaxResults($this->limit);
+
+        return $paginator;
+    }
+
+    private function calculatePaginationData(Paginator $paginator): array
+    {
         $totalItems = count($paginator);
         $totalPages = ceil($totalItems / $this->limit);
 
-        $this->currentPage = max(1, min($this->currentPage, $totalPages));
-
-        $this->queryBuilder
-            ->setFirstResult(($this->currentPage - 1) * $this->limit)
-            ->setMaxResults($this->limit);
-
-        $results = $this->queryBuilder->getQuery()->getResult();
-
         return [
-            'data' => $results,
             'totalItems' => $totalItems,
             'totalPages' => $totalPages,
             'currentPage' => $this->currentPage,

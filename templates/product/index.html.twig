@@ -1,8 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block title %}Le shop{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('productsPage') }}
+{% endblock %}
 
 {% block body %}
+    {% set currentUrl = app.request.getUri %}
     <section class="products-page-section">
         {{ include('components/_nested_nav.html.twig') }}
         <div class="products-page-container">
@@ -11,58 +17,57 @@
             </aside>
             <section class="products-page-section">
                 <div class="products-filters">
-                    <p>{{ products.data|length }} produits trouvés sur {{ products.totalItems }}</p>
-                    <form class="form-filter" name="form_request_filter">
-                        <div class="form-row">
-                            <label for="filter_order">Trié par</label>
-                            <select name="form_request_filter_order" id="filter_order">
-                                <option value="DESC">Derniers produits</option>
-                                <option value="ASC">Anciens produits</option>
-                            </select>
-                        </div>
-                        <div class="form-row">
-                            <label for="filter_show"> Afficher</label>
-                            <select name="form_request_filter_show" id="filter_show">
-                                <option value="16">16</option>
-                                <option value="32">32</option>
-                                <option value="64">64</option>
-                            </select>
-                        </div>
-                    </form>
+                    <p>{{ products.data|length }} produits trouvés sur {{ products.pagination.totalItems }}</p>
+                    <div class="products-filters-sort">
+                        <p>Date</p>
+                        <ul class="products-filters-list">
+                            <li class="products-filters-item">
+                                <a href="{{ query_replace(currentUrl, {'order': 'DESC'}) }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="#5C74A6"
+                                         viewBox="0 0 384 512">
+                                        <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                        <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/>
+                                    </svg>
+                                </a>
+                            </li>
+                            <li class="products-filters-item">
+                                <a href="{{ query_replace(currentUrl, {'order': 'ASC'}) }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="#5C74A6"
+                                         viewBox="0 0 384 512">
+                                        <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                        <path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="products-filters-limit">
+                        <p> Afficher</p>
+                        <ul class="products-filters-list">
+                            <li class="products-filters-item">
+                                <a href="{{ query_replace(currentUrl, {'limit': 8}) }}">8</a>
+                            </li>
+                            <li class="products-filters-item">
+                                <a href="{{ query_replace(currentUrl, {'limit': 16}) }}">16</a>
+                            </li>
+                            <li class="products-filters-item">
+                                <a href="{{ query_replace(currentUrl, {'limit': 32}) }}">32</a>
+                            </li>
+                            <li class="products-filters-item">
+                                <a href="{{ query_replace(currentUrl, {'limit': 64}) }}">64</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="products-list">
                     {% for product in products.data %}
-                        <article class="product-card">
-                            <div class="product-card-img">
-                                <a href="#">
-                                    <img src="{{ product.pictures[0].path }}" alt="{{ product.pictures[0].alt }}"
-                                         class="">
-                                </a>
-                            </div>
-                            <div class="product-card-body">
-                                <p>{{ product.brand.name }}</p>
-                                <h3 class="product-card-title"><a href="">{{ product.name }}</a></h3>
-                                <p class="product-card-price"><a href="">{{ product.price }} €</a></p>
-                                <button class="product-card-button add-to-cart" data-id="{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}">
-                                    Ajouter au panier
-                                </button>
-                                <ul class="product-card-caracteristics">
-                                    {#                                    affiche maximum 2 caracteristiques #}
-
-                                    {% for caracteristic in product.caracteristics %}
-                                        {% if loop.index <= 2 %}
-                                            <li>{{ caracteristic.value }}</li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </article>
+                        {{ include('product/_product_card.html.twig', {'product': product}) }}
                     {% endfor %}
                 </div>
                 <div class="pagination-container">
-                    {% if products.hasPreviousPage %}
-                        <a href="{{ path('app_product_index', {'categorySlug': category.slug, 'subCategorySlug': subCategory ? subCategory.slug : null, 'page': products.currentPage - 1, 'order': app.request.get('order'), 'show': app.request.get('show')}) }}"
-                           class="pagination-link">
+                    {% if products.pagination.hasPreviousPage %}
+                        {% set previousPageUrl = query_replace(currentUrl, {'page': products.pagination.currentPage - 1}) %}
+                        <a href="{{ previousPageUrl }}" class="pagination-link">
                             <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="#5C74A6" viewBox="0 0 320 512">
                                 <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
                                 <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
@@ -70,20 +75,24 @@
                         </a>
                     {% endif %}
 
-                    {% for page in 1..products.totalPages %}
-                        <a href="{{ path('app_product_index', {'categorySlug': category.slug, 'subCategorySlug': subCategory ? subCategory.slug : null, 'page': page, 'order': app.request.get('order'), 'show': app.request.get('show')}) }}"
-                           class="pagination-link {{ page == products.currentPage ? 'active' : '' }}">{{ page }}</a>
+                    {% for page in 1..products.pagination.totalPages %}
+                        {% set pageUrl = query_replace(currentUrl, {'page': page}) %}
+                        <a href="{{ pageUrl }}"
+                           class="pagination-link {{ page == products.pagination.currentPage ? 'active' : '' }}">
+                            {{ page }}
+                        </a>
                     {% endfor %}
 
-                    {% if products.hasNextPage %}
-                        <a href="{{ path('app_product_index', {'categorySlug': category.slug, 'subCategorySlug': subCategory ? subCategory.slug : null, 'page': products.currentPage + 1, 'order': app.request.get('order'), 'show': app.request.get('show')}) }}"
-                           class="pagination-link">
+                    {% if products.pagination.hasNextPage %}
+                        {% set nextPageUrl = query_replace(currentUrl, {'page': products.pagination.currentPage + 1}) %}
+                        <a href="{{ nextPageUrl }}" class="pagination-link">
                             <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="#5C74A6" viewBox="0 0 320 512">
                                 <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
                                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/>
                             </svg>
                         </a>
                     {% endif %}
+
                 </div>
             </section>
         </div>

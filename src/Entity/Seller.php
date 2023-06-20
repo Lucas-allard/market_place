@@ -33,7 +33,7 @@ class Seller extends User
      * @var float
      */
     #[ORM\Column(type: 'float')]
-    private float $sellerRating = 0.0;
+    private float $rating = 0.0;
 
     #[ORM\OneToMany(mappedBy: 'seller', targetEntity: Product::class, orphanRemoval: true)]
     private Collection $products;
@@ -102,18 +102,18 @@ class Seller extends User
     /**
      * @return float|null
      */
-    public function getSellerRating(): ?float
+    public function getRating(): ?float
     {
-        return $this->sellerRating;
+        return $this->rating;
     }
 
     /**
      * @param float $sellerRating
      * @return Seller
      */
-    public function setSellerRating(float $sellerRating): Seller
+    public function setRating(float $rating): Seller
     {
-        $this->sellerRating = $sellerRating;
+        $this->rating = $rating;
         return $this;
     }
 

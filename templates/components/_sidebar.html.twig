@@ -14,7 +14,7 @@
         {% for category in categories %}
             <li class="w-full flex justify-center group py-4 border-r-4 border-transparent hover:border-orange-400">
                 <div class="cursor-pointer">
-                    <a href="{{ path('app_product_index', {categorySlug: category.slug}) }}">
+                    <a href="{{ path('app_product_index', {categorySlug: category.slug})  ~ '?page=1' }}">
                         {% set svg_file = 'svg/' ~ category.slug ~ '.html.twig' %}
                         {% include svg_file %}
                     </a>
@@ -22,7 +22,7 @@
                 <ul class="group-hover:block hidden absolute left-[56px] px-6 z-100 w-[200px] top-[44px] lg:top-[16px] h-screen bg-gray-50 border-l border-r border-gray-300 py-4 text-custom-blue font-bold">
                     {% for child in category.children %}
                         <li class="py-2">
-                            <a href="{{ path('app_product_index', { categorySlug: category.slug, subCategorySlug: child.slug }) }}"
+                            <a href="{{ path('app_product_index', { categorySlug: category.slug, subCategorySlug: child.slug })  ~ '?page=1' }}"
                                class="hover:text-orange-400 font-dm-sans font-bold">{{ child.name }}</a>
                         </li>
                     {% endfor %}

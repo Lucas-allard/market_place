@@ -1,4 +1,4 @@
-import SwiperSlider from "./SwiperSlider";
+import SwiperSlider from "../classes/SwiperSlider";
 import Particles from "particlesjs";
 
 document.addEventListener("DOMContentLoaded", function () {

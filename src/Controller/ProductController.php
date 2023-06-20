@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Product;
 use App\Form\FilterForm\FilterFormType;
 use App\Service\Form\FormProcessor;
 use App\Service\Product\ProductService;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +31,7 @@ class ProductController extends AbstractController
      * @param Category $category
      * @param Category|null $subCategory
      * @return Response
+     * @throws Exception
      */
     #[Route('/{categorySlug}/{subCategorySlug?}', name: '_index', requirements: [
         'categorySlug' => '[a-zA-Z0-9-_]+',
@@ -45,6 +48,7 @@ class ProductController extends AbstractController
         $order = $request->query->get('order');
         $page = $request->query->get('page');
         $limit = $request->query->get('limit');
+
         $products = $this->productService->getProductsByCategorySlug($category, $subCategory, $order, $page, $limit);
 
         $minPrice = $this->productService->getMinPrice();
@@ -67,6 +71,27 @@ class ProductController extends AbstractController
             'category' => $category,
             'subCategory' => $subCategory,
             'filterForm' => $filterForm->createView(),
+        ]);
+    }
+
+    #[Route('/{categorySlug}/{subCategorySlug}/{productSlug}', name: '_show', requirements: [
+        'categorySlug' => '[a-zA-Z0-9-_]+',
+        'subCategorySlug' => '[a-zA-Z0-9-_]+',
+        'productSlug' => '[a-zA-Z0-9-_]+',
+    ])]
+    #[ParamConverter('category', options: ['mapping' => ['categorySlug' => 'slug']])]
+    #[ParamConverter('subCategory', options: ['mapping' => ['subCategorySlug' => 'slug']])]
+    #[ParamConverter('product', options: ['mapping' => ['productSlug' => 'slug']])]
+    public function show(
+        Category $category,
+        Category $subCategory,
+        Product   $product
+    ): Response
+    {
+        return $this->render('product/show.html.twig', [
+            'category' => $category,
+            'subCategory' => $subCategory,
+            'product' => $product,
         ]);
     }
 }
