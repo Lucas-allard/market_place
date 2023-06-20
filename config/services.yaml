@@ -33,3 +33,6 @@ services:
             $categoryService: '@App\Service\Category\CategoryService'
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    App\Service\Twig\TwigQueryReplace:
+        tags: [ 'twig.extension' ]

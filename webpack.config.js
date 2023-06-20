@@ -22,9 +22,11 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
-    .addEntry('swiperSlider', './assets/js/SwiperSlider.js')
-    .addEntry('homePage', './assets/js/homePage.js')
-    .addEntry('productsPage', './assets/js/productsPage.js')
+    .addEntry('swiperSlider', './assets/js/classes/SwiperSlider.js')
+    .addEntry('homePage', './assets/js/pages/homePage.js')
+    .addEntry('productsPage', './assets/js/pages/productsPage.js')
+    .addEntry('productPage', './assets/js/pages/productPage.js')
+    .addEntry('cartPage', './assets/js/pages/cartPage.js')
 
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)

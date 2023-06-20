@@ -1,0 +1,29 @@
+<article class="product-card">
+    <div class="product-card-img">
+        <a href="{{ path('app_product_show', {'categorySlug': product.categories[0].slug, 'subCategorySlug': product.categories[1].slug, 'productSlug': product.slug}) }}">
+            <img src="{{ product.pictures[0].path }}" alt="{{ product.pictures[0].alt }}"
+                 class="">
+        </a>
+    </div>
+    <div class="product-card-body">
+        <p>{{ product.brand.name }}</p>
+        <h3 class="product-card-title">
+            <a href="{{ path('app_product_show', {'categorySlug': product.categories[0].slug, 'subCategorySlug': product.categories[1].slug, 'productSlug': product.slug}) }}">
+                {{ product.name }}
+            </a>
+        </h3>
+        <p class="product-card-price">
+            <a href="{{ path('app_product_show', {'categorySlug': product.categories[0].slug, 'subCategorySlug': product.categories[1].slug, 'productSlug': product.slug}) }}">
+                {{ product.price }} €
+            </a>
+        </p>
+        {{ include('components/_cart_button.html.twig', {'product': product, 'buttonLabel': 'Ajouter au panier', 'className': 'product-card-button'}) }}
+        <ul class="product-card-caracteristics">
+            {% for caracteristic in product.caracteristics %}
+                {% if loop.index <= 2 %}
+                    <li>{{ caracteristic.value }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</article>

@@ -7,7 +7,6 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
-import './styles/app.scss';
 
 // start the Stimulus application
 import './bootstrap';
@@ -15,5 +14,21 @@ import './bootstrap';
 // Import Flowbite
 import 'flowbite';
 
-// AddToCart.js
-import './js/AddToCart.js';
+// Import addToCart function
+import {addItemToCart} from './js/utils/addToCart.js';
+
+// Create Cart instance
+import Cart from './js/classes/Cart.js';
+
+const cart = new Cart();
+
+// Export Cart instance to be used by other modules
+export default cart;
+
+// Add event listeners for addToCart functionality
+const addButtons = document.querySelectorAll('.add-to-cart');
+addButtons.forEach((buttonItem) => {
+    buttonItem.addEventListener('click', (event) => {
+        addItemToCart(buttonItem);
+    });
+});

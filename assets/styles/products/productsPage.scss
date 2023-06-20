@@ -37,45 +37,39 @@
         color: $text-blue;
       }
 
-      .form-filter {
+      .products-filters-sort,
+      .products-filters-limit {
+        flex: 1;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 1rem;
-        margin: 1rem;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
         width: 100%;
 
-        .form-row {
+        .products-filters-list {
           display: flex;
           flex-direction: row;
-          justify-content: center;
           align-items: center;
-          gap: 2rem;
-          margin: 0 0.5rem;
+          gap: 1rem;
 
-          label {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: $text-blue;
-          }
-
-          select {
-            flex: 1;
-            height: 2.5rem;
-            margin: 0.5rem 0;
-            padding: 0.5rem;
+          .products-filters-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 2rem;
+            height: 2rem;
             border: 1px solid $text-blue;
             border-radius: 0.5rem;
+            color: $text-blue;
             font-size: 1.2rem;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
 
-            &:focus {
-              outline: none;
-            }
-
-            option {
-              font-size: 1.2rem;
-              font-weight: 600;
+            &:hover {
+              background-color: $orange;
+              border: 1px solid $orange;
+              color: white;
             }
           }
         }
@@ -84,49 +78,10 @@
 
     @media (min-width: 768px) {
       .products-filters {
-        width: 800px;
-        margin: 1rem 0 1rem auto;
         flex-direction: row;
-
-        p {
-          font-size: .8rem;
-        }
-
-        .form-filter {
-          flex: 1;
-          flex-direction: row;
-          justify-content: space-between;
-          gap: 1rem;
-
-
-          .form-row:first-child {
-            width: 70%;
-
-            select {
-              flex: 0.7;
-            }
-          }
-
-          .form-row:last-child {
-            width: 30%;
-
-          }
-
-          .form-row label {
-            font-size: .8rem;
-          }
-
-          .form-row select {
-            font-size: .8rem;
-            color: $text-blue-lighter;
-
-            option {
-              font-size: .8rem;
-              font-weight: 600;
-              color: $text-blue-lighter;
-            }
-          }
-        }
+        justify-content: flex-end;
+        max-width: 800px;
+        margin: 1rem 1rem 1rem auto;
       }
     }
 
@@ -243,16 +198,17 @@
         cursor: pointer;
         transition: all 0.3s ease-in-out;
         margin: 0 1rem;
+
         &:hover {
           background-color: $text-blue-darker;
           color: white;
         }
       }
 
-        .pagination-link.active {
-            background-color: $text-blue-darker;
-            color: white;
-        }
+      .pagination-link.active {
+        background-color: $text-blue-darker;
+        color: white;
+      }
     }
   }
 }
