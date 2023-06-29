@@ -1,0 +1,95 @@
+{% extends 'user/index.html.twig' %}
+
+{% block section %}
+    <section class="account-section">
+        <h2>Modifier mes informations</h2>
+        <div class="account-form-container">
+            {{ form_start(form, {'attr': {'class': 'account-form'}}) }}
+            <p class="account-section-text">Changer votre prénom, nom, email ou autres informations, c'est ici que ça se
+                passe.</p>
+            <p class="account-section-text">Attention, les informations que vous modifiez ici seront utilisées pour la
+                livraison de vos commandes.</p>
+            <div class="form-group">
+                <div class="form-field">
+                    {{ form_label(form.lastname, 'Nom') }}
+                    {{ form_widget(form.lastname) }}
+                    {% for error in form.lastname.vars.errors %}
+                        <span class="form-error">{{ error.message }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-field">
+                    {{ form_label(form.firstname, 'Prénom') }}
+                    {{ form_widget(form.firstname) }}
+                    {% for error in form.firstname.vars.errors %}
+                        <span class="form-error">{{ error.message }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group small">
+                <div>
+                    {{ form_label(form.birthDate, 'Date de naissance') }}
+                    {{ form_widget(form.birthDate) }}
+                </div>
+                {% for error in form.birthDate.vars.errors %}
+                    <span class="form-error">{{ error.message }}</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <div class="form-field">
+                    {{ form_label(form.phone, 'Téléphone') }}
+                    {{ form_widget(form.phone) }}
+                    {% for error in form.phone.vars.errors %}
+                        <span class="form-error">{{ error.message }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-field">
+                    {{ form_label(form.email, 'Email') }}
+                    {{ form_widget(form.email) }}
+                    {% for error in form.email.vars.errors %}
+                        <span class="form-error">{{ error.message }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-field">
+                    {{ form_label(form.city, 'Ville') }}
+                    {{ form_widget(form.city) }}
+                    {% for error in form.city.vars.errors %}
+                        <span class="form-error">{{ error.message }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-field">
+                    {{ form_label(form.postalCode, 'Code postal') }}
+                    {{ form_widget(form.postalCode) }}
+                    {% for error in form.postalCode.vars.errors %}
+                        <span class="form-error">{{ error.message }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-field">
+                    {{ form_label(form.streetNumber, 'Numéro de rue') }}
+                    {{ form_widget(form.streetNumber) }}
+                    {% for error in form.streetNumber.vars.errors %}
+                        <span class="form-error">{{ error.message }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-field">
+                    {{ form_label(form.street, 'Nom de rue') }}
+                    {{ form_widget(form.street) }}
+                    {% for error in form.street.vars.errors %}
+                        <span class="form-error">{{ error.message }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group form-button">
+                <button type="submit" class="button button-dark-blue">Modifier mes informations</button>
+            </div>
+            {{ form_end(form) }}
+            <div class="account-image">
+                <img src="{{ asset('images/user-information.svg') }}"
+                     alt="Attention, les informations que vous modifiez ici seront utilisées pour la livraison de vos commandes.">
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Customer;
 use App\Entity\Product;
 use App\Form\RegistrationForm\CheckoutRegistrationFormType;
+use App\Form\UserForm\DynamicUserFormType;
 use App\Form\UserForm\UserAddressFormType;
 use App\Manager\CartManager;
 use App\Service\Form\FormProcessor;
@@ -22,6 +23,7 @@ class CartController extends AbstractController
 {
     private CartManager $cartManager;
     private FormProcessor $formProcessor;
+
     public function __construct(CartManager $cartManager, FormProcessor $formProcessor)
     {
         $this->cartManager = $cartManager;
@@ -39,7 +41,7 @@ class CartController extends AbstractController
         }
 
         $form = $this->getUser() ?
-            $this->formProcessor->create(UserAddressFormType::class, $this->getUser())
+            $this->formProcessor->create(DynamicUserFormType::class, $this->getUser(), ['notBirthDate' => true, 'notEmail' => true])
             : $this->formProcessor->create(CheckoutRegistrationFormType::class, new Customer());
 
         $this->formProcessor->handleRequest($request, $form);

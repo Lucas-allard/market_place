@@ -1,0 +1,409 @@
+@import '../../_variables.scss';
+
+.account-page-section {
+  padding: $spacing-xxxl;
+  color: $color-blue;
+
+  h1 {
+    margin-bottom: $spacing-lg;
+    color: $color-blue-darker;
+    font-size: $font-size-xxl;
+  }
+
+  > p {
+    margin-bottom: $spacing-xxl;
+
+    @media (min-width: $breakpoint-desktop) {
+      max-width: 50%;
+    }
+  }
+
+  .account-page-links {
+    margin-top: $spacing-lg;
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .nav-item {
+        width: 100%;
+        border: 1px solid $color-gray;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: $spacing-lg;
+        transition: all 0.3s ease-in-out;
+
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        .nav-link {
+          padding: $spacing-lg $spacing-md;
+          background: $color-light-gray;
+          font-size: $font-size-lg;
+          font-weight: $font-weight-bold;
+          transition: all 0.3s ease-in-out;
+          height: 100%;
+          display: block;
+
+          @media (min-width: $breakpoint-desktop) {
+            margin-bottom: $spacing-md;
+          }
+        }
+
+        &:hover {
+          background: $color-blue;
+
+          .nav-link {
+            background: $color-blue;
+            color: #fff;
+            border-bottom: none;
+          }
+        }
+
+        @media (min-width: $breakpoint-desktop) {
+          width: initial;
+          float: left;
+          height: 44px;
+          margin: 0 $spacing-lg -1px 0;
+          border-radius: $border-radius-lg $border-radius-lg 0 0;
+          overflow: hidden;
+        }
+      }
+
+      .active {
+        background: $color-blue;
+
+        .nav-link {
+          background: $color-blue;
+          color: #fff;
+          border-bottom: none;
+        }
+      }
+
+      @media (min-width: $breakpoint-desktop) {
+        flex-direction: row;
+      }
+    }
+
+    @media (min-width: $breakpoint-desktop) {
+      border-bottom: 1px solid $color-gray;
+    }
+  }
+
+  .account-orders-section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xxxl;
+    padding: $spacing-xxxl 0;
+    margin: 0 auto;
+    max-width: 900px;
+
+    .order {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid $color-gray;
+
+      .order-header, .order-list {
+        padding: $spacing-xl;
+      }
+
+      .order-header {
+        border-bottom: 1px solid $color-gray;
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+        justify-content: center;
+        align-items: center;
+
+        h2 {
+          font-size: $font-size-xl;
+          font-weight: $font-weight-bold;
+          color: $color-blue-darker;
+          margin-bottom: $spacing-md;
+        }
+
+        p {
+          margin: $spacing-md 0;
+        }
+
+        @media (min-width: $breakpoint-desktop) {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+
+          h2 {
+            font-size: $font-size-xxl;
+          }
+        }
+      }
+
+      .order-list {
+        display: flex;
+        flex-direction: column;
+
+        .order-item {
+          display: flex;
+          flex-direction: column;
+          padding: $spacing-md;
+
+          .order-item-image-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+
+            .order-item-image {
+              border: 1px solid $color-blue;
+              width: 100%;
+
+              img {
+                width: 200px;
+                height: 200px;
+                object-fit: cover;
+                margin: $spacing-lg auto;
+              }
+            }
+
+            p {
+              flex: 1;
+              padding: $spacing-md;
+            }
+
+            @media (min-width: $breakpoint-tablet) {
+              flex-direction: row;
+              align-items: center;
+              gap: $spacing-md;
+
+              p {
+                font-size: $font-size-lg;
+              }
+
+              .order-item-image {
+                width: 30%;
+                border: none;
+
+                img {
+                  margin: 0;
+                }
+              }
+            }
+          }
+
+
+          .order-item-description {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: $spacing-md;
+            width: 100%;
+            flex: 1;
+
+
+            > p {
+              font-size: $font-size-md;
+            }
+
+            .order-item-description-details {
+              display: flex;
+              flex-direction: row;
+              gap: $spacing-md;
+              justify-content: space-between;
+              font-size: $font-size-lg;
+              color: $color-blue-darker;
+              font-weight: $font-weight-bold;
+            }
+          }
+
+          @media (min-width: $breakpoint-desktop) {
+            flex-direction: row;
+            gap: $spacing-md;
+            align-items: center;
+            justify-content: space-between;
+
+            .order-item-description {
+              width: 50%;
+            }
+
+            .order-item-image-container .order-item-image {
+              width: initial;
+            }
+
+          }
+        }
+
+        .order-total {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          padding: $spacing-md;
+          border-top: 1px solid $color-gray;
+
+          p {
+            font-size: $font-size-lg;
+            font-weight: $font-weight-bold;
+            color: $color-blue-darker;
+          }
+        }
+      }
+    }
+  }
+
+  .account-section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xxxl;
+    padding: $spacing-xxxl 0;
+
+    h2 {
+      text-align: center;
+      padding: $spacing-md;
+
+      @media (min-width: $breakpoint-desktop) {
+        text-align: left;
+      }
+    }
+
+    h2 {
+      font-size: $font-size-xxl;
+      font-weight: $font-weight-bold;
+      color: $color-blue-darker;
+    }
+
+    .account-section-text {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-bold;
+      color: $color-blue;
+      padding-bottom: $spacing-xxl
+    }
+
+    .account-form-container {
+      display: flex;
+      flex-direction: row;
+
+      .account-form {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+        padding: $spacing-md;
+        max-width: 600px;
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: $spacing-md;
+
+          .form-field {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            gap: $spacing-md;
+            width: 100%;
+
+
+            label {
+              margin: 0 $spacing-md;
+            }
+
+          }
+
+          label {
+            font-size: $font-size-lg;
+            color: $color-blue;
+            flex: 1;
+            margin: 0 $spacing-md;
+          }
+
+          input {
+            border: 1px solid $color-gray;
+            border-radius: $border-radius-md;
+            padding: $spacing-md;
+            font-size: $font-size-lg;
+            color: $color-blue-darker;
+            flex: 1;
+          }
+
+          .form-error {
+            color: $color-red;
+            font-size: $font-size-md;
+            font-weight: $font-weight-bold;
+            margin: $spacing-md;
+          }
+
+          #dynamic_user_form_birthDate {
+            display: flex;
+            flex: 1;
+            gap: $spacing-md;
+
+            select {
+              border: 1px solid $color-gray;
+              border-radius: $border-radius-md;
+              padding: $spacing-md;
+              margin: $spacing-md 0;
+              font-size: $font-size-lg;
+              color: $color-blue-darker;
+              flex: 1;
+
+              option {
+                font-size: $font-size-lg;
+                color: $color-blue-darker;
+              }
+            }
+          }
+
+
+          @media (min-width: $breakpoint-desktop) {
+            flex-direction: row;
+            align-items: center;
+          }
+        }
+
+        .form-group.small {
+          flex-direction: column;
+          align-items: flex-start;
+          div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+          }
+          label {
+            flex: none;
+          }
+        }
+
+        .form-group.form-button {
+          justify-content: center;
+          align-items: center;
+          padding: $spacing-xl 0;
+
+          button {
+            margin: $spacing-xl auto;
+          }
+        }
+
+        @media (min-width: $breakpoint-desktop) {
+          flex: 1;
+        }
+      }
+
+      .account-image {
+        display: none;
+
+        @media (min-width: $breakpoint-desktop) {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          flex: 1;
+
+          img {
+            object-fit: cover;
+          }
+        }
+      }
+    }
+  }
+}

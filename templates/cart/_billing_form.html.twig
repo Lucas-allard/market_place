@@ -2,36 +2,65 @@
     <h2>Informations de facturation</h2>
     <div class="billing-form-row">
         <div class="billing-form-row-item">
+            {{ form_label(form.lastname) }}
             {{ form_widget(form.lastname) }}
+            {% for error in form.email.vars.errors %}
+                <span class="billing-form-row-item-error">{{ error.message }}</span>
+            {% endfor %}
         </div>
         <div class="billing-form-row-item">
+            {{ form_label(form.firstname) }}
             {{ form_widget(form.firstname) }}
+            {% for error in form.firstname.vars.errors %}
+                <span class="billing-form-row-item-error">{{ error.message }}</span>
+            {% endfor %}
         </div>
     </div>
     <div class="billing-form-row">
         <div class="billing-form-row-item">
+            {{ form_label(form.city) }}
             {{ form_widget(form.city) }}
+            {% for error in form.city.vars.errors %}
+                <span class="billing-form-row-item-error">{{ error.message }}</span>
+            {% endfor %}
         </div>
         <div class="billing-form-row-item">
+            {{ form_label(form.postalCode) }}
             {{ form_widget(form.postalCode) }}
+            {% for error in form.postalCode.vars.errors %}
+                <span class="billing-form-row-item-error">{{ error.message }}</span>
+            {% endfor %}
         </div>
     </div>
     <div class="billing-form-row">
         <div class="billing-form-row-item">
+            {{ form_label(form.streetNumber) }}
             {{ form_widget(form.streetNumber) }}
+            {% for error in form.streetNumber.vars.errors %}
+                <span class="billing-form-row-item-error">{{ error.message }}</span>
+            {% endfor %}
         </div>
         <div class="billing-form-row-item">
+            {{ form_label(form.street) }}
             {{ form_widget(form.street) }}
+            {% for error in form.street.vars.errors %}
+                <span class="billing-form-row-item-error">{{ error.message }}</span>
+            {% endfor %}
         </div>
     </div>
     <div class="billing-form-row">
         <div class="billing-form-row-item">
+            {{ form_label(form.phone) }}
             {{ form_widget(form.phone) }}
+            {% for error in form.phone.vars.errors %}
+                <span class="billing-form-row-item-error">{{ error.message }}</span>
+            {% endfor %}
         </div>
     </div>
     <div class="billing-form-row">
         {% if form.email is defined %}
             <div class="billing-form-row-item">
+                {{ form_label(form.email) }}
                 {{ form_widget(form.email) }}
                 {% for error in form.email.vars.errors %}
                     <span class="billing-form-row-item-error">{{ error.message }}</span>
@@ -40,7 +69,11 @@
         {% endif %}
         {% if form.plainPassword is defined %}
             <div class="billing-form-row-item">
+                {{ form_label(form.plainPassword) }}
                 {{ form_widget(form.plainPassword) }}
+                {% for error in form.plainPassword.vars.errors %}
+                    <span class="billing-form-row-item-error">{{ error.message }}</span>
+                {% endfor %}
             </div>
         {% endif %}
     </div>
@@ -49,6 +82,9 @@
             <div class="billing-form-row-item">
                 {{ form_widget(form.agreeTerms) }}
                 {{ form_label(form.agreeTerms) }}
+                {% for error in form.agreeTerms.vars.errors %}
+                    <span class="billing-form-row-item-error">{{ error.message }}</span>
+                {% endfor %}
             </div>
         {% endif %}
         {% if app.user is null %}

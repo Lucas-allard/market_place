@@ -119,6 +119,11 @@ img {
   color: $color-white;
 }
 
+.badge.badge-red {
+  background-color: $color-red;
+  color: $color-white;
+}
+
 .button {
   padding: $spacing-md $spacing-xl;
   cursor: pointer;

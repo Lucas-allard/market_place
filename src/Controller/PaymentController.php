@@ -11,24 +11,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
+#[IsGranted('ROLE_USER')]
 #[Route('/paiement', name: 'app_payment')]
 class PaymentController extends AbstractController
 {
     private CartManager $cartManager;
     private PaymentManager $paymentManager;
-    private OrderService $orderService;
 
     public function __construct(
-        CartManager $cartManager,
+        CartManager    $cartManager,
         PaymentManager $paymentManager,
-        OrderService $orderService
     )
     {
         $this->cartManager = $cartManager;
         $this->paymentManager = $paymentManager;
-        $this->orderService = $orderService;
     }
 
     #[Route('/', name: '_index')]
@@ -37,6 +36,8 @@ class PaymentController extends AbstractController
         $cart = $this->cartManager->getCurrentCart();
 
         $payment = $this->paymentManager->getPayment($cart);
+
+        $this->paymentManager->savePayment($payment);
 
         $paymentSession = $this->paymentManager->getPaymentSession($payment);
 
@@ -47,13 +48,13 @@ class PaymentController extends AbstractController
     public function paymentSuccess(Order $order): Response
     {
         if ($order->getOrderStatus() === Order::STATUS_CART) {
-            $order->setOrderStatus(Order::STATUS_COMPLETED);
+            $order->setOrderStatus(Order::STATUS_PENDING);
             $this->cartManager->saveCart($order);
         }
 
         $payment = $this->paymentManager->getPayment($order);
 
-        if ($order->getOrderStatus() === Order::STATUS_COMPLETED && $payment->getStatus() === Payment::STATUS_PENDING) {
+        if ($order->getOrderStatus() === Order::STATUS_PENDING && $payment->getStatus() === Payment::STATUS_PENDING) {
             $payment->setStatus(Payment::STATUS_PAID);
             $this->paymentManager->savePayment($payment);
         }
