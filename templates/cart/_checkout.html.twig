@@ -1,0 +1,26 @@
+    <div class="cart-page-checkout-info">
+        <h2>Récapitulatif de la commande</h2>
+        {% if app.user and app.user.shippingAddress %}
+            <div class="cart-page-checkout-delivery">
+                <p class="cart-page-checkout-delivery-title">Adresse de livraison</p>
+                <p class="cart-page-checkout-delivery-address">{{ app.user.shippingAddress }}</p>
+            </div>
+        {% endif %}
+        <div class="cart-page-checkout-subtotal">
+            <p>Sous-total</p>
+            <p class="cart-checkout-subtotal">{{ cart.total|number_format(2, ",") }} €</p>
+        </div>
+        <div class="cart-page-checkout-shipping-fees">
+            <p>Frais de livraison</p>
+            <p>Gratuit</p>
+        </div>
+        <div class="cart-page-checkout-total">
+            <p>Total</p>
+            <p class="cart-checkout-total">{{ cart.total|number_format(2, ",") }} €</p>
+        </div>
+        <div class="cart-page-checkout-buttons">
+            {% if cart.orderItems|length > 0 %}
+                <button type="submit" class="cart-page-checkout-button button button-red">Payer</button>
+            {% endif %}
+        </div>
+    </div>

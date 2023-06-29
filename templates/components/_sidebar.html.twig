@@ -1,33 +1,22 @@
-<input type="checkbox" id="dropdownCategoriesInput" class="hidden">
-<div id="dropdownCategories"
-     class="fixed z-20 top-[-44px] left-[-80px] lg:left-0 lg:top-[10px] w-[56px] h-screen mt-12 bg-gray-50 transition-transform">
-    <label for="dropdownCategoriesInput"
-           class="mx-4 block lg:hidden">
-        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
-             xmlns="http://www.w3.org/2000/svg"
-             aria-hidden="true" class="w-6 h-6 text-custom-blue hover:text-orange-400 mx-auto">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path>
-        </svg>
-    </label>
-    <ul class="flex flex-col items-center pt-6 ">
-        {% for category in categories %}
-            <li class="w-full flex justify-center group py-4 border-r-4 border-transparent hover:border-orange-400">
-                <div class="cursor-pointer">
-                    <a href="{{ path('app_product_index', {categorySlug: category.slug})  ~ '?page=1' }}">
+<aside class="sidenav-container" id="sidenavMenu">
+    <nav class="sidenav">
+        <ul class="sidenav-list ">
+            {% for category in categories %}
+                <li class="sidenav-item">
+                    <a href="{{ path('app_product_index', {categorySlug: category.slug})  ~ '?page=1' }}" class="sidenav-link">
                         {% set svg_file = 'svg/' ~ category.slug ~ '.html.twig' %}
                         {% include svg_file %}
                     </a>
-                </div>
-                <ul class="group-hover:block hidden absolute left-[56px] px-6 z-100 w-[200px] top-[44px] lg:top-[16px] h-screen bg-gray-50 border-l border-r border-gray-300 py-4 text-custom-blue font-bold">
-                    {% for child in category.children %}
-                        <li class="py-2">
-                            <a href="{{ path('app_product_index', { categorySlug: category.slug, subCategorySlug: child.slug })  ~ '?page=1' }}"
-                               class="hover:text-orange-400 font-dm-sans font-bold">{{ child.name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-    </ul>
-</div>
+                    <ul class="sidenav-subnav-list">
+                        {% for child in category.children %}
+                            <li class="subnav-list-item">
+                                <a href="{{ path('app_product_index', { categorySlug: category.slug, subCategorySlug: child.slug })  ~ '?page=1' }}"
+                                   class="subnav-list-link">{{ child.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+</aside>

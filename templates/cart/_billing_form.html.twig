@@ -1,0 +1,61 @@
+<div class="cart-page-billing-form">
+    <h2>Informations de facturation</h2>
+    <div class="billing-form-row">
+        <div class="billing-form-row-item">
+            {{ form_widget(form.lastname) }}
+        </div>
+        <div class="billing-form-row-item">
+            {{ form_widget(form.firstname) }}
+        </div>
+    </div>
+    <div class="billing-form-row">
+        <div class="billing-form-row-item">
+            {{ form_widget(form.city) }}
+        </div>
+        <div class="billing-form-row-item">
+            {{ form_widget(form.postalCode) }}
+        </div>
+    </div>
+    <div class="billing-form-row">
+        <div class="billing-form-row-item">
+            {{ form_widget(form.streetNumber) }}
+        </div>
+        <div class="billing-form-row-item">
+            {{ form_widget(form.street) }}
+        </div>
+    </div>
+    <div class="billing-form-row">
+        <div class="billing-form-row-item">
+            {{ form_widget(form.phone) }}
+        </div>
+    </div>
+    <div class="billing-form-row">
+        {% if form.email is defined %}
+            <div class="billing-form-row-item">
+                {{ form_widget(form.email) }}
+                {% for error in form.email.vars.errors %}
+                    <span class="billing-form-row-item-error">{{ error.message }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if form.plainPassword is defined %}
+            <div class="billing-form-row-item">
+                {{ form_widget(form.plainPassword) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="billing-form-row">
+        {% if form.agreeTerms is defined %}
+            <div class="billing-form-row-item">
+                {{ form_widget(form.agreeTerms) }}
+                {{ form_label(form.agreeTerms) }}
+            </div>
+        {% endif %}
+        {% if app.user is null %}
+            <div class="billing-form-row-item">
+                <a href="{{ path('app_login') }}">Déjà un compte ? Se
+                    connecter</a>
+            </div>
+        {% endif %}
+    </div>
+</div>

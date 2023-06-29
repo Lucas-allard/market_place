@@ -1,6 +1,7 @@
+import '../../styles/pages/homePage/home.scss';
+
 import SwiperSlider from "../classes/SwiperSlider";
 import Particles from "particlesjs";
-
 document.addEventListener("DOMContentLoaded", function () {
     new SwiperSlider(
         '.swiper.brands__slider',
@@ -46,8 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
         '.swiper.top-product__slider',
         {
             navigation: {
-                nextEl: '.swiper-button-next-top-product',
-                prevEl: '.swiper-button-prev-top-product',
+                nextEl: '.swiper-button-next-top-products',
+                prevEl: '.swiper-button-prev-top-products',
             }
         }
     ).init();

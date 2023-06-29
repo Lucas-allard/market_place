@@ -1,35 +1,31 @@
-<section class="px-2 md:px-8 lg:px-16 pt-8 pb-8">
-    <div class="flex flex-col md:flex-row justify-between pb-6 gap-6">
-        <div class="flex flex-col lg:flex-row w-full lg:w-1/2 rounded-md bg-custom-blue shadow-md">
-            <div class="w-3/4 lg:w-1/3 flex flex-row items-center justify-center p-8 mx-auto">
-                <img src="{{ asset('images/delivered.svg') }}" alt="illustration pour la livraison" class="">
-            </div>
-            <div class="p-8 lg:w-2/3 lg:ml-auto text-white">
-                <h3 class="text-2xl text-center lg:text-left font-bold mb-2">Livraison gratuite !</h3>
-                <p class="text-lg text-center lg:text-left mb-4">Profitez de la livraison gratuite sur toutes les
-                    commandes ! Pas de minimum
-                    d'achat.</p>
-                <div class="text-center lg:text-left">
-                    <a href="#"
-                       class="bg-custom-dark-blue rounded-md py-2 px-4 ml-auto inline-block hover:bg-custom-blue-darker transition-all">Voir
-                        les produits</a>
-                </div>
+<section class="section cta-container">
+    <article class="cta-banner">
+        <div class="cta-image">
+            <img src="{{ asset('images/delivered.svg') }}" alt="illustration pour la livraison">
+        </div>
+        <div class="cta-body">
+            <h3>Livraison gratuite !</h3>
+            <p>Profitez de la livraison gratuite sur toutes les
+                commandes ! Pas de minimum
+                d'achat.</p>
+            <div>
+                <a href="#" class="button button-dark-blue">Voir les produits</a>
             </div>
         </div>
-        <div class="flex flex-col lg:flex-row w-full lg:w-1/2 rounded-md bg-custom-light-blue-darker shadow-md">
-            <div class="py-8 px-12 w-full lg:w-2/3 mr-auto text-white order-2 lg:order-1">
-                <h3 class="text-2xl text-center lg:text-right font-bold mb-2">Inscrivez-vous dès maintenant !</h3>
-                <p class="text-lg text-center lg:text-right mb-4">Inscrivez-vous dès maintenant ouvrir votre marketplace
-                    et vendre vos produits !</p>
-                <div class="text-center lg:text-right">
-                    <a href="{{ path('app_register') }}"
-                       class="bg-custom-blue-darker text-white rounded-md py-2 px-4 ml-auto inline-block hover:bg-custom-blue transition-all">S'inscrire
-                        maintenant</a>
-                </div>
-            </div>
-            <div class="w-3/4 order-1 lg:order-2 lg:w-1/3 flex flex-row items-center justify-center p-8 mx-auto">
-                <img src="{{ asset('images/welcome.svg') }}" alt="illustration pour la livraison" class="">
+    </article>
+    <article class="cta-banner">
+        <div class="cta-body">
+            <h3>Inscrivez-vous dès maintenant !</h3>
+            <p>Inscrivez-vous dès maintenant ouvrir votre marketplace
+                et vendre vos produits !</p>
+            <div>
+                <a href="{{ path('app_register') }}"
+                   class="button button-dark-blue">S'inscrire
+                    maintenant</a>
             </div>
         </div>
-    </div>
+        <div class="cta-image">
+            <img src="{{ asset('images/welcome.svg') }}" alt="illustration pour la livraison">
+        </div>
+    </article>
 </section>

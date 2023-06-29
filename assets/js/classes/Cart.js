@@ -4,9 +4,13 @@ class Cart {
     }
 
     add(item) {
+        console.log(item)
         if (this.cartHasItem(item)) {
             const index = this.getItemIndex(item);
-            this.items[index].quantity = parseInt(this.items[index].quantity) + parseInt(item.quantity);
+            console.log(typeof this.items[index].totalPrice)
+            console.log(typeof item.price)
+            this.items[index].quantity++;
+            this.items[index].totalPrice = (parseFloat(this.items[index].totalPrice) + item.price).toFixed(2);
             this.save();
             return;
         }
@@ -22,6 +26,7 @@ class Cart {
 
         const index = this.getItemIndex(item);
         this.items[index].quantity--;
+        this.items[index].totalPrice = (this.items[index].totalPrice - item.price).toFixed(2);
 
         if (this.items[index].quantity === 0) {
             this.items.splice(index, 1);

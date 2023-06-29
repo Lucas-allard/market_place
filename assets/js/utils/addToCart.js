@@ -1,24 +1,37 @@
-import cart from "../../app.js";
-import ProductItem from "../classes/ProductItem.js";
+import Fetch from "../classes/Fetch";
+import swal from 'sweetalert';
 
-export function addItemToCart(buttonItem) {
-    const productId = buttonItem.getAttribute('data-id');
-    const productName = buttonItem.getAttribute('data-name');
-    const productPrice = buttonItem.getAttribute('data-price');
-    const productQuantity = buttonItem.getAttribute('data-quantity');
-    const productPicturePath = buttonItem.getAttribute('data-picture-path');
-    const productPictureAlt = buttonItem.getAttribute('data-picture-alt');
+export async function addItemToCart(buttonItem) {
+    const csrfToken = buttonItem.getAttribute('data-token');
+    const productQuantity = buttonItem.dataset.quantity
+    const cartUrl = new URL(buttonItem.dataset.url, window.location.origin);
 
-    console.log(productQuantity)
-    const item = new ProductItem(
-        productId,
-        productName,
-        productPrice,
-        productQuantity,
+    // send the product id and quantity to the server
+    // and add the product to the cart
+    const response = await Fetch.send(
+        cartUrl,
+        'POST',
         {
-            productPicturePath,
-            productPictureAlt
-        });
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        {
+            quantity: productQuantity
+        })
+        .then(response =>response);
 
-    cart.add(item);
+    if (response.success) {
+        await swal({
+            title: "Produit ajouté au panier",
+            icon: "success",
+            button: "OK",
+        });
+    }
+    if (!response.success) {
+        await swal({
+            title: "Une erreur est survenue lors de l'ajout du produit au panier",
+            icon: "error",
+            button: "OK",
+        });
+    }
 }

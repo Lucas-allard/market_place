@@ -1,0 +1,74 @@
+<section class="cart-page-cart">
+    <h1>Mon panier</h1>
+    <div class="cart-page-cart-items">
+        {% if cart.orderItems|length == 0 %}
+            <p class="cart-page-empty-cart">Votre panier est vide</p>
+        {% endif %}
+        <ul class="cart-items-list">
+            {% for orderItem in cart.orderItems %}
+                {% set updateCsrfToken = csrf_token('update-item') %}
+                {% set removeCsrfToken = csrf_token('remove-item') %}
+                <li class="cart-item">
+                    <img src="{{ orderItem.product.pictures[0].path }}"
+                         alt="{{ orderItem.product.pictures[0].alt }}"
+                         class="cart-item-image">
+                    <p class="cart-item-name">{{ orderItem.product.name }}</p>
+                    <div class="cart-item-price">
+                        {% if orderItem.product.discount %}
+                            <p class="cart-item-price-old">{{ orderItem.product.price|number_format(2, ",") }}
+                                €</p>
+                            <p class="cart-item-price-new">{{ orderItem.product.getPriceWithDiscount|number_format(2, ",") }}
+                                €</p>
+                        {% else %}
+                            <p class="cart-item-price-new">{{ orderItem.product.price|number_format(2, ",") }}
+                                €</p>
+                        {% endif %}
+                    </div>
+                    <div class="cart-item-quantity">
+                        <label for="quantity">
+                                        <span class="cart-page-quantity quantity-minus"
+                                              data-product-id="{{ orderItem.product.id }}"
+                                              data-quantity="1"
+                                              data-url="{{ path('app_cart_update', {'id': orderItem.product.id}) }}"
+                                              data-price="{{ orderItem.product.getPriceWithDiscount }}"
+                                              data-token="{{ updateCsrfToken }}">
+                                            <i class="fas fa-minus"></i>
+                                        </span>
+                            <input id="quantity" type="number" value="{{ orderItem.quantity }}" min="1"
+                                   data-product-id="{{ orderItem.product.id }}"
+                                   max="10" name="cart-page-quantity">
+                            <span class="cart-page-quantity quantity-plus"
+                                  data-quantity="1"
+                                  data-product-id="{{ orderItem.product.id }}"
+                                  data-url="{{ path('app_cart_update', {'id': orderItem.product.id}) }}"
+                                  data-price="{{ orderItem.product.getPriceWithDiscount }}"
+                                  data-token="{{ updateCsrfToken }}">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                        </label>
+                    </div>
+                    <div class="cart-item-total">
+                        <p>{{ orderItem.getTotal|number_format(2, ",") }} €</p>
+                    </div>
+                    <div class="cart-item-remove">
+                        <button class="cart-item-remove-button button button-red"
+                                data-url="{{ path('app_cart_remove', {'id': orderItem.product.id} ) }}"
+                                data-token="{{ removeCsrfToken }}">Supprimer
+                        </button>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="cart-page-buttons">
+        <a href="{{ path('app_home') }}" class="button button-blue">Continuer mes achats</a>
+        {% if cart.orderItems|length > 0 %}
+            <button class="cart-page-clear-cart-button button button-red"
+                    data-url="{{ path('app_cart_clear') }}" data-token="{{ csrf_token('clear-cart') }}">
+                Vider mon panier
+            </button>
+        {% endif %}
+    </div>
+</section>
+
+

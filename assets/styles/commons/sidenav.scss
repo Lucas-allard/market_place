@@ -1,0 +1,112 @@
+@import '../variables';
+
+.sidenav-container {
+  position: fixed;
+  top: 70px;
+  left: -300px;
+  height: 100%;
+  max-width: 80px;
+  background-color: $color-white;
+  border-right: 1px solid $color-light-gray-darker;
+  transition: left $transition-duration-300 $transition-easing;
+  z-index: 90;
+
+
+  .sidenav {
+    height: 100%;
+
+    .sidenav-list {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+
+      .sidenav-item {
+        display: flex;
+        justify-content: center;
+        padding: $spacing-xl;
+        position: relative;
+        border-left: 3px solid $color-transparent;
+        transition: background-color $transition-duration-200 ease-in-out, border-left $transition-duration-200 ease-in-out;
+
+        .sidenav-link {
+          margin: $spacing-md 0;
+
+          .sidenav-icon {
+            color: $color-blue-darker;
+            height: 30px;
+            width: 30px;
+            max-width: 30px;
+            transition: color $transition-duration-200 ease-in-out;
+
+          }
+        }
+
+        &:hover {
+          background-color: $color-light-gray;
+          border-left: 3px solid $color-orange;
+
+
+          .sidenav-icon {
+            color: $color-orange;
+          }
+        }
+
+        .sidenav-subnav-list {
+          display: none;
+          position: absolute;
+          top: 0;
+          left: 71px;
+          width: 200px;
+          background-color: $color-white;
+          border: 1px solid $color-light-gray-darker;
+          box-shadow: $shadow-md;
+
+          .subnav-list-item {
+            padding: $spacing-lg $spacing-lg;
+            width: 100%;
+            border-left: 3px solid $color-transparent;
+            cursor: pointer;
+            transition: color $transition-duration-200 ease-in-out, background-color $transition-duration-200 ease-in-out;
+
+            .subnav-list-link {
+              color: $color-blue-darker;
+              transition: color $transition-duration-200 ease-in-out;
+            }
+
+            &:hover {
+              background-color: $color-light-gray;
+              border-left: 3px solid $color-orange;
+
+              .subnav-list-link {
+                color: $color-orange;
+              }
+            }
+          }
+        }
+
+        &:hover .sidenav-subnav-list {
+          display: block;
+
+
+        }
+      }
+
+      .sidenav-item:first-child .sidenav-subnav-list {
+        border-top: none;
+      }
+
+    }
+  }
+}
+
+.sidenav-container.active {
+  left: 0;
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .sidenav-container {
+    position: fixed;
+    left: 0;
+  }
+}

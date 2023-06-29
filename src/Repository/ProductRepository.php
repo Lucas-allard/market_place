@@ -48,7 +48,7 @@ class ProductRepository extends ServiceEntityRepository
 
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $queryBuilder
-            ->select('p, c, b')
+            ->select('p')
             ->from(Product::class, 'p')
             ->innerJoin('p.orderItems', 'oi')
             ->innerJoin('oi.order', 'o')
@@ -208,5 +208,23 @@ class ProductRepository extends ServiceEntityRepository
             ->from(Product::class, 'p');
 
         return $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+
+    public function findBestProductsByCategoryIds(array $categoryIds)
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder
+            ->select('p')
+            ->from(Product::class, 'p')
+            ->innerJoin('p.categories', 'c')
+            ->innerJoin('p.orderItems', 'oi')
+            ->where($queryBuilder->expr()->in('c.id', $categoryIds))
+            ->andWhere('c.parent IS NOT NULL')
+            ->groupBy('p.id')
+            ->orderBy('SUM(oi.quantity)', 'DESC');
+
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }

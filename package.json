@@ -29,6 +29,7 @@
         "flowbite": "^1.6.5",
         "nouislider": "^15.7.0",
         "particlesjs": "^2.2.3",
+        "sweetalert": "^2.1.2",
         "swiper": "^9.3.1"
     }
 }

@@ -38,6 +38,8 @@ class Category extends AbstractEntity
     #[ORM\ManyToMany(targetEntity: Brand::class, mappedBy: 'categories')]
     private Collection $brands;
 
+    private Product $bestProduct;
+
     public function __construct()
     {
         parent::__construct();
@@ -192,5 +194,31 @@ class Category extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return Product
+     */
+    public function getBestProduct(): Product
+    {
+        return $this->bestProduct;
+    }
 
+    /**
+     * @param Product $bestProduct
+     * @return Category
+     */
+    public function setBestProduct(Product $bestProduct): Category
+    {
+        $this->bestProduct = $bestProduct;
+
+        return $this;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getTotalProducts(): int
+    {
+        return $this->products->count();
+    }
 }

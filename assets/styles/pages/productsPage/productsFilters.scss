@@ -1,0 +1,263 @@
+@import '../../_variables.scss';
+
+.products-page-aside {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 99vh;
+  width: 95%;
+  z-index: $z-index-100 + 1;
+  transform: translate(-50%, -50%);
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+
+  .products-page-aside-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: $spacing-sm;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    svg {
+      width: 4rem;
+      height: 4rem;
+      color: $color-blue;
+
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .filter-item {
+    background-color: $color-white;
+    border: 1px solid $color-gray;
+
+
+    h2 {
+      text-align: center;
+      font-weight: $font-weight-bold;
+      font-size: $font-size-xl;
+      color: $color-blue;
+      border-bottom: 1px solid $color-gray;
+    }
+
+    form > div {
+      padding: $spacing-md $spacing-lg;
+
+      h3 {
+        font-size: $font-size-md;
+        font-weight: $font-weight-bold;
+        color: $color-blue-darker;
+        padding-bottom: $spacing-sm;
+      }
+
+      .fields-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-sm;
+
+        h4 {
+          font-size: $font-size-sm;
+          color: $color-blue-darker;
+          padding-bottom: $spacing-sm;
+        }
+
+        label {
+          color: $color-blue;
+          font-size: $font-size-sm;
+        }
+      }
+
+      .brands-fields div, .caracteristics-fields {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: $spacing-md;
+      }
+
+      .brands-fields div.hidden {
+        display: none;
+      }
+    }
+
+    form .submit-field {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      button {
+        padding: $spacing-sm $spacing-md;
+        border: none;
+        border-radius: 5px;
+        background-color: $color-blue;
+        color: $color-white;
+        font-size: $font-size-md;
+        font-weight: $font-weight-bold;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+          background-color: $color-orange;
+        }
+      }
+    }
+
+    .price-filter {
+      margin: $spacing-md $spacing-lg;
+    }
+
+    h2, form {
+      padding: $spacing-md $spacing-lg;
+    }
+  }
+
+  .filter-item.filter-category {
+    display: none;
+  }
+}
+
+.products-page-aside.open {
+  display: flex;
+}
+
+.products-page-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: $z-index-100;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.products-page-backdrop.open {
+  display: block;
+}
+
+@media (min-width: $breakpoint-desktop) {
+  .products-page-aside {
+    display: flex;
+    position: static;
+    height: auto;
+    width: 300px;
+    transform: none;
+    z-index: 0;
+
+    .products-page-aside-close {
+        display: none;
+    }
+
+    .filter-item.filter-category {
+      display: block;
+
+      ul {
+
+        li {
+          font-size: $font-size-md;
+
+          .parent-category-filter {
+            padding: $spacing-md $spacing-lg;
+            color: $color-blue;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+
+            svg {
+              height: 20px;
+              width: 20px;
+              margin-right: $spacing-sm;
+              color: $color-blue-darker;
+              transition: all $transition-duration-300 ease-in-out;
+            }
+
+            &:hover {
+              background-color: $color-orange;
+            }
+          }
+
+          ul {
+            display: none;
+            flex-direction: column;
+            padding-left: $spacing-lg;
+            padding-bottom: $spacing-md;
+
+            li {
+              padding: $spacing-sm $spacing-md;
+              color: $color-blue;
+              transition: all 0.3s ease-in-out;
+              cursor: pointer;
+
+              &:hover {
+                background-color: $color-orange;
+              }
+            }
+          }
+
+          &:hover {
+
+            .parent-category-filter {
+              background-color: rgba($color-blue, 0.1);
+              color: $color-orange;
+
+              svg {
+                color: $color-orange;
+                transform: rotate(90deg);
+              }
+            }
+
+            ul {
+              display: flex;
+              padding: 0;
+
+              li {
+
+                a {
+                  color: $color-blue-darker;
+                  transition: all 0.3s ease-in-out;
+                  display: block;
+                  padding: $spacing-sm $spacing-md;
+                  font-size: $font-size-md;
+
+                  &:hover {
+                    color: $color-orange;
+                  }
+                }
+
+                &:hover {
+                  background-color: rgba($color-blue, 0.1);
+                  color: $color-orange;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .filter-item {
+
+      h2 {
+        text-align: left;
+      }
+
+      form .submit-field {
+        justify-content: flex-start;
+      }
+    }
+  }
+
+  .products-page-backdrop {
+    display: none;
+  }
+}

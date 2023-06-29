@@ -15,19 +15,14 @@ class OrderItem extends AbstractEntity {
     private ?int $quantity = 0;
 
     /**
-     * @var float|null
-     */
-    #[ORM\Column(type: 'float')]
-    private ?float $price = 0.0;
-
-    /**
      * @var Order|null
      */
-    #[ORM\ManyToOne(targetEntity: Order::class, cascade: ['persist', 'remove'], inversedBy: 'orderItems')]
+    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderItems')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Order $order = null;
 
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'orderItems')]
-    #[ORM\JoinColumn(nullable: false,onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
     /**
@@ -55,24 +50,6 @@ class OrderItem extends AbstractEntity {
     public function addQuantity(int $quantity = 1): OrderItem
     {
         $this->quantity += $quantity;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float|null $price
-     * @return OrderItem
-     */
-    public function setPrice(?float $price): OrderItem
-    {
-        $this->price = $price;
         return $this;
     }
 
@@ -107,5 +84,17 @@ class OrderItem extends AbstractEntity {
         return $this;
     }
 
+    public function equals(OrderItem $item): bool
+    {
+        return $this->getProduct()->getId() === $item->getProduct()->getId();
+    }
 
+    public function getTotal(): float
+    {
+        if ($this->getProduct()->getPriceWithDiscount() !== null) {
+            return $this->getProduct()->getPriceWithDiscount() * $this->getQuantity();
+        }
+
+        return $this->getProduct()->getPrice() * $this->getQuantity();
+    }
 }

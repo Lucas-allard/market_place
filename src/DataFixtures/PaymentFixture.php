@@ -27,7 +27,7 @@ class PaymentFixture extends Fixture implements DependentFixtureInterface
              */
             $order = $this->getReference('order_' . $i);
             $payment->setDescription($faker->text);
-            $payment->setAmount($order->getTotalAmount());
+            $payment->setAmount($order->getTotal());
             $payment->setStatus(Payment::STATUS_PAID);
             $payment->setOrder($order);
 
@@ -44,7 +44,7 @@ class PaymentFixture extends Fixture implements DependentFixtureInterface
              */
             $order = $this->getReference('order_' . $i);
             $payment->setDescription($faker->text);
-            $payment->setAmount($order->getTotalAmount());
+            $payment->setAmount($order->getTotal());
             $payment->setStatus(Payment::STATUS_PENDING);
             $payment->setOrder($order);
 

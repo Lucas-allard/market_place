@@ -57,11 +57,11 @@ class ProductService
      * @throws Exception
      */
     public function getProductsByCategorySlug(
-        string $categorySlug,
+        string  $categorySlug,
         ?string $subCategorySlug = null,
         ?string $order = null,
-        ?int $page = null,
-        ?int $limit = null
+        ?int    $page = null,
+        ?int    $limit = null
     ): array
     {
         if ($subCategorySlug) {
@@ -79,12 +79,12 @@ class ProductService
      * @throws Exception
      */
     public function getProductsByFilter(
-        mixed $filterData,
-        Category $category,
+        mixed     $filterData,
+        Category  $category,
         ?Category $subCategory = null,
-        ?string $order = null,
-        ?int $page = null,
-        ?int $limit = null
+        ?string   $order = null,
+        ?int      $page = null,
+        ?int      $limit = null
     ): array
     {
         if ($subCategory) {
@@ -157,5 +157,12 @@ class ProductService
         }
 
         return $filterArray;
+    }
+
+
+    public function getBestProductsByCategoryIds(array $categoryIds)
+    {
+
+        return $this->productRepository->findBestProductsByCategoryIds($categoryIds);
     }
 }

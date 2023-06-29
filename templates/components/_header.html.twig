@@ -1,0 +1,124 @@
+<header class="header">
+    <div class="header-sidebar-trigger">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+             xmlns="http://www.w3.org/2000/svg"
+             aria-hidden="true" class="sidebar-icon menu-trigger"
+             data-menu-id="sidenavMenu">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path>
+        </svg>
+    </div>
+    <div class="header-nav-logo">
+        <a href="{{ path('app_home') }}">
+            Discountopia
+        </a>
+    </div>
+    {{ form_start(searchFormView, {'attr': {'class': 'header-nav-search'}}) }}
+    {{ form_widget(searchFormView.category, {'attr': {'class': 'header-nav-search-select', 'placeholder': 'Rechercher'}}) }}
+    {{ form_widget(searchFormView.product, {'attr': {'class': 'header-nav-search-input', 'placeholder': 'Rechercher'}}) }}
+    {{ form_end(searchFormView) }}
+    <nav class="desktop-menu">
+        <ul class="menu-list">
+            <li class="menu-item {% if app.request.attributes.get('_route')  == 'app_home' %}current{% endif %}">
+                <a href="{{ path('app_home') }}" class="menu-link">Accueil</a>
+            </li>
+            <li class="menu-item {% if app.request.attributes.get('_route')  == 'app_seller' %}current{% endif %}">
+                <a href="#" class="menu-link">Vendeurs</a>
+            </li>
+            <li class="menu-item {% if app.request.attributes.get('_route')  == 'app_contact' %}current{% endif %}">
+                <a href="#" class="menu-link">Contact</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="header-navs">
+        <nav class="dropdown" id="dropdownMenuAccount">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                 class="dropdown-icon">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <div class="dropdown-menu hidden">
+                <ul class="dropdown-list ">
+                    {% if app.user %}
+                        <li class="dropdown-item">
+                            <a href="{{ path('app_logout') }}" class="dropdown-link">Mon compte</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ path('app_logout') }}" class="dropdown-link">Déconnexion</a>
+                        </li>
+                    {% else %}
+                        <li class="dropdown-item">
+                            <a href="{{ path('app_register') }}" class="dropdown-link">Inscription</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ path('app_login') }}" class="dropdown-link">Connexion</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        <nav class="dropdown">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="dropdown-icon">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
+            </svg>
+            <div class="dropdown-menu hidden">
+                <ul class="dropdown-list">
+                    <li class="dropdown-item">
+                        <a href="{{ path('app_cart_index') }}" class="dropdown-link">Panier</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#" class="dropdown-link">Commandes</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+             class="dropdown-icon menu-trigger" data-menu-id="mobileMenu">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"></path>
+        </svg>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+        <div class="header-menu">
+            <div class="header-menu-burger">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="burger-icon menu-trigger" data-menu-id="mobileMenu">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </div>
+            <div class="header-menu-logo">
+                <a href="{{ path('app_home') }}">
+                    Discountopia
+                </a>
+            </div>
+        </div>
+        <ul class="menu-list">
+            <li class="menu-item">
+                <a href="{{ path('app_home') }}" class="menu-link">Accueil</a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">Vendeurs</a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">Contact</a>
+            </li>
+            {% if app.user %}
+                <li class="menu-item">
+                    <a href="{{ path('app_logout') }}" class="menu-link">Mon compte</a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ path('app_logout') }}" class="menu-link">Déconnexion</a>
+                </li>
+            {% else %}
+                <li class="menu-item">
+                    <a href="{{ path('app_login') }}" class="menu-link">Connexion</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+

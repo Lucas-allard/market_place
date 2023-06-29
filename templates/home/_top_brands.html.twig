@@ -1,102 +1,62 @@
-<section class="px-2 md:px-8 lg:px-16 pt-8 pb-8 bg-gray-100">
-    <div class="flex flex-row justify-between pb-6">
-        <div class="flex flex-col text-custom-blue-darker">
-            <h2 class="text-3xl font-semibold pb-2">Meilleures marques</h2>
-            <p>Les marques les plus vendus du mois</p>
+<section class="section">
+    <div class="swiper-slider-nav">
+        <div class="swiper-slider-nav-header">
+            <h2>Meilleures marques</h2>
+            <p>Les produits des marques les plus vendus du mois</p>
         </div>
-        <div class="flex flex-row items-center">
-            <button class="border-2 border-custom-blue mx-2 p-1 rounded-md group hover:border-orange-400  transition-all swiper-button-prev-top-brands">
+        <nav class="swiper-slider-nav-buttons">
+            <button class="swiper-button-prev-top-brands">
                 <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
-                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                     class="h-4 w-4 text-custom-blue group-hover:text-orange-400  transition-all">
+                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
                 </svg>
             </button>
-            <button class="border-2 border-custom-blue mx-2 p-1 rounded-md group hover:border-orange-400 transition-all swiper-button-next-top-brands">
+            <button class="swiper-button-next-top-brands">
                 <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
-                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                     class="h-4 w-4 text-custom-blue group-hover:text-orange-400 transition-all">
+                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
                 </svg>
             </button>
-        </div>
+        </nav>
     </div>
-    <hr class="w-full">
+    <hr>
     <div class="swiper top-brands__slider">
-        <div class="swiper-wrapper pt-6">
+        <div class="swiper-wrapper">
             <div class="swiper-slide">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {% for brand in topBrands|slice(0,8) %}
-                        <div class="p-4 flex flex-col lg:flex-row gap-4 col-span-1 bg-white transition-all border border-gray-200 hover:border-custom-blue rounded-md hover:translate-y-[-5px] shadow-sm">
-                            <div class="flex flex-col justify-center items-center w-full h-full">
-                                <img src="{{ brand.products[0].pictures[0].path }}" alt="{{ brand.products[0].name }}"
-                                     class="h-auto max-w-full object-cover">
-                            </div>
-                            <div class="flex flex-col justify-between w-full h-full">
-                                <div class="flex flex-row w-full pb-2">
-                                    <img src="{{ brand.picture.path }}" alt="{{ brand.name }}"
-                                         class="h-[50px] md:h-[25px] max-w-full object-cover">
-                                </div>
-                                <p class="md:text-xs text-md text-custom-blue-darker pb-4">
-                                    {% for category in brand.products[0].categories %}
-                                        <a href="#"
-                                           class="transition-all hover:text-orange-400">
-                                            {{ category.name }}
-                                        </a>
-                                        {% if  loop.last %}...{% endif %}
-                                        {% if not loop.last %}, {% endif %}
-                                    {% endfor %}
-                                </p>
-                                <hr class="w-full">
-                                <p class="pt-4 text-xl md:text-lg text-custom-blue-darker">
-                                    Jusqu'à
-                                    <span class="font-semibold">- {{ brand.products[0].discount }}%</span>
-                                </p>
-                                <a href="#"
-                                   class=" text-lg md:text-sm text-orange-400 hover:text-orange-300 transition-all">
-                                    Acheter maintenant
+                <article class="swiper-slider-wrapper">
+                    {% for brand in topBrands|slice(0,10) %}
+                        <div class="slider-item">
+                            <div class="product-picture">
+                                <a href="{{ path('app_product_show', {'categorySlug': brand.products[0].categories[0].slug, 'subCategorySlug': brand.products[0].categories[1].slug, 'productSlug': brand.products[0].slug }) }}">
+                                    <img src="{{ brand.products[0].pictures[0].path }}"
+                                         alt="{{ brand.products[0].pictures[0].alt }}">
                                 </a>
+                            </div>
+                            <div class="product-content">
+                                <div class="product-content-header">
+                                    <h4 class="product-content-brand">{{ brand.name }}</h4>
+                                    <p class="product-content-categories">
+                                        {% for category in brand.products[0].categories %}
+                                            {% if category.parent is null %}
+                                                <a
+                                                href="{{ path('app_product_index', {'categorySlug': category.slug }) }}">{{ category.name }} </a>{% if not loop.last %},{% endif %}
+                                            {% else %}
+                                                <a
+                                                href="{{ path('app_product_index', {'categorySlug': category.parent.slug, 'subCategorySlug': category.slug }) }}">{{ category.name }} </a>{% if not loop.last %},{% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                                <hr>
+                                <p class="product-content-discount">
+                                    Jusqu'à
+                                    <span>- {{ brand.products[0].discount }}%</span>
+                                </p>
+                                {{ include('components/_cart_button.html.twig', {'product': brand.products[0], 'buttonLabel': 'Ajouter au panier', 'className': 'button button-dark-blue'}) }}
                             </div>
                         </div>
                     {% endfor %}
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {% for brand in topBrands|slice(8, 16) %}
-                        <div class="p-4 flex flex-col lg:flex-row gap-4 col-span-1 bg-white transition-all border border-gray-200 hover:border-custom-blue rounded-md hover:translate-y-[-5px] shadow-sm">
-                            <div class="flex flex-col justify-center items-center w-full h-full">
-                                <img src="{{ brand.products[0].pictures[0].path }}" alt="{{ brand.products[0].name }}"
-                                     class="h-auto max-w-full object-cover">
-                            </div>
-                            <div class="flex flex-col justify-between w-full h-full">
-                                <div class="flex flex-row w-full pb-2">
-                                    <img src="{{ brand.picture.path }}" alt="{{ brand.name }}"
-                                         class="h-[50px] md:h-[25px] max-w-full object-cover">
-                                </div>
-                                <p class="md:text-xs text-md text-custom-blue-darker pb-4">
-                                    {% for category in brand.products[0].categories %}
-                                        <a href="#"
-                                           class="transition-all hover:text-orange-400">
-                                            {{ category.name }}
-                                        </a>
-                                        {% if  loop.last %}...{% endif %}
-                                        {% if not loop.last %}, {% endif %}
-                                    {% endfor %}
-                                </p>
-                                <hr class="w-full">
-                                <p class="pt-4 text-xl md:text-md text-custom-blue-darker">
-                                    Jusqu'à
-                                    <span class="font-semibold">- {{ brand.products[0].discount }}%</span>
-                                </p>
-                                <a href="#"
-                                   class=" text-lg md:text-sm text-orange-400 hover:text-orange-300 transition-all">
-                                    Acheter maintenant
-                                </a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                </article>
             </div>
 
         </div>

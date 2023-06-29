@@ -44,13 +44,6 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
-    public function getParentCategories(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->where('c.parent IS NULL')
-            ->getQuery()
-            ->getResult();
-    }
 
     public function getChildrenCategories(Category $category): array
     {
@@ -99,48 +92,62 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
 
-    /**
-     * @throws Exception
-     */
-    public function findCategoriesHavingMostProductsAndBestProduct(int $maxResults = 28): array
+//    /**
+//     * @throws Exception
+//     */
+//    public function findCategoriesHavingMostProductsAndBestProduct(int $maxResults = 28): array
+//    {
+//        $rawSql = <<<SQL
+//SELECT c.*,
+//       COUNT(p.id) AS total_products,
+//       (SELECT p.name
+//        FROM product p
+//                 INNER JOIN category_product cp ON p.id = cp.product_id
+//                 INNER JOIN order_item oi ON p.id = oi.product_id
+//        WHERE cp.category_id = c.id
+//          AND oi.quantity > 0
+//        GROUP BY p.id
+//        ORDER BY SUM(oi.quantity) DESC
+//        LIMIT 1)       AS best_selling_product,
+//       (SELECT pi.path
+//        FROM product p
+//                 INNER JOIN category_product cp ON p.id = cp.product_id
+//                 INNER JOIN order_item oi ON p.id = oi.product_id
+//                 INNER JOIN picture pi ON p.id = pi.product_id
+//        WHERE cp.category_id = c.id
+//          AND oi.quantity > 0
+//        GROUP BY p.id
+//        ORDER BY SUM(oi.quantity) DESC
+//        LIMIT 1)       AS best_selling_product_picture
+//FROM category c
+//         INNER JOIN category_product cp ON c.id = cp.category_id
+//         INNER JOIN product p ON cp.product_id = p.id
+//WHERE c.parent_id IS NOT NULL
+//GROUP BY c.id
+//HAVING total_products > 0
+//   AND best_selling_product IS NOT NULL
+//ORDER BY total_products DESC
+//LIMIT 24;
+//SQL;
+//
+//        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
+//
+//        return $stmt->executeQuery()->fetchAllAssociative();
+//    }
+
+    public function findCategoriesHasOrder(int $maxResults = 24): array
     {
-        $rawSql = <<<SQL
-SELECT c.name,
-       c.slug,
-       COUNT(p.id) AS total_products,
-       (SELECT p.name
-        FROM product p
-                 INNER JOIN category_product cp ON p.id = cp.product_id
-                 INNER JOIN order_item oi ON p.id = oi.product_id
-        WHERE cp.category_id = c.id
-          AND oi.quantity > 0
-        GROUP BY p.id
-        ORDER BY SUM(oi.quantity) DESC
-        LIMIT 1)       AS best_selling_product,
-       (SELECT pi.path
-        FROM product p
-                 INNER JOIN category_product cp ON p.id = cp.product_id
-                 INNER JOIN order_item oi ON p.id = oi.product_id
-                 INNER JOIN picture pi ON p.id = pi.product_id
-        WHERE cp.category_id = c.id
-          AND oi.quantity > 0
-        GROUP BY p.id
-        ORDER BY SUM(oi.quantity) DESC
-        LIMIT 1)       AS best_selling_product_picture
-FROM category c
-         INNER JOIN category_product cp ON c.id = cp.category_id
-         INNER JOIN product p ON cp.product_id = p.id
-WHERE c.parent_id IS NOT NULL
-GROUP BY c.id
-HAVING total_products > 0
-   AND best_selling_product IS NOT NULL
-ORDER BY total_products DESC
-LIMIT 24;
-SQL;
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('c')
+            ->leftJoin('c.products', 'p')
+            ->leftJoin('p.orderItems', 'oi')
+            ->where('c.parent IS NOT NULL')
+            ->andWhere('oi.quantity > 0')
+            ->groupBy('c.id')
+            ->setMaxResults($maxResults);
 
-        $stmt = $this->getEntityManager()->getConnection()->prepare($rawSql);
+        return $qb->getQuery()->getResult();
 
-        return $stmt->executeQuery()->fetchAllAssociative();
     }
 
     public function findChildrenCategories()

@@ -48,9 +48,7 @@ class FormProcessor
 
         if ($this->isValid($form)) {
             /** @var object $entity */
-            $entity = $form->getData();
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
+            $this->save($form);
             return true;
         }
 
@@ -65,5 +63,11 @@ class FormProcessor
     public function isValid(FormInterface $form): bool
     {
         return $form->isSubmitted() && $form->isValid();
+    }
+
+    public function save(object $data): void
+    {
+        $this->entityManager->persist($data);
+        $this->entityManager->flush();
     }
 }
