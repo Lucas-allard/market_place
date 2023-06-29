@@ -12,9 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    /**
-     * @throws Exception
-     */
     #[Route('/', name: 'app_home')]
     public function index(
         ProductService  $productService,
@@ -22,14 +19,13 @@ class HomeController extends AbstractController
         BrandService    $brandService
     ): Response
     {
-
         return $this->render('home/index.html.twig', [
             'newProducts' => $productService->getNewsArrivalsProducts(4),
             'discountProducts' => $productService->getSellsProductsHasDiscount(10),
             'brands' => $brandService->getBrandsWithPictures(),
-            'topBrands' => $brandService->getTopBrands(16),
-            'bestCategories' => $categoryService->getCategoriesHavingMostProductsAndBestProduct(),
-            'topProducts' => $productService->getTopProductsOrdered(18),
+            'topBrands' => $brandService->getTopBrands(20),
+            'bestCategories' => $categoryService->getBestCategories(),
+            'topProducts' => $productService->getTopProductsOrdered(20),
         ]);
     }
 }

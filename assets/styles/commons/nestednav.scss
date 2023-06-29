@@ -1,0 +1,24 @@
+@import '../_variables.scss';
+
+.nested-nav {
+  background-color: $color-gray-lighter;
+  padding: $spacing-md $spacing-xxxl;
+  margin-bottom: $spacing-xxxl;
+
+  p {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: $color-blue-darker;
+
+    a {
+      color: $color-blue-darker;
+      text-decoration: none;
+      transition: color $transition-duration-200 ease-in-out;
+
+      &:hover {
+        color: $color-orange;
+        text-decoration: underline;
+      }
+    }
+  }
+}

@@ -26,13 +26,23 @@ services:
 
     Symfony\Component\Security\Csrf\CsrfTokenManagerInterface: '@security.csrf.token_manager'
 
-
     App\EventListener\NavbarListener:
         arguments:
             $twig: '@twig'
             $categoryService: '@App\Service\Category\CategoryService'
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    App\EventListener\UserRegistrationListener:
+        tags:
+            - { name: postPersist, entity: App\Entity\User }
+
+    App\EventListener\AuthenticationSuccessListener:
+        arguments:
+            $cartSessionStorage: '@App\Service\Cart\CartSessionStorage'
+            $entityManager: '@doctrine.orm.default_entity_manager'
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login }
 
     App\Service\Twig\TwigQueryReplace:
         tags: [ 'twig.extension' ]

@@ -1,136 +1,105 @@
-<section class="px-2 md:px-8 lg:px-16 pt-8 pb-8">
-    <div class="flex flex-col xl:flex-row gap-6 pb-8">
-        <div id="default-carousel" class="overflow-hidden relative w-full xl:w-1/2 bg-custom-blue rounded-lg z-0"
+<section class="section">
+    <div class="products-hero">
+        <div id="default-carousel" class="products-hero-carousel"
              data-carousel="slide">
             <!-- Carousel wrapper -->
-            <div class="relative h-[550px] sm:h-[500px] overflow-hidden rounded-lg shadow-md">
+            <div class="hero-carousel-wrapper">
                 <!-- Item 1 -->
                 {% for product in discountProducts %}
-                    <div class="hidden duration-200 ease-in-out" data-carousel-item>
-                        <div class="absolute w-[128px] h-[138px] z-[-1] top-0 left-0 bg-no-repeat bg-cover bg-center"
-                             style="background-image: url('{{ asset('images/quart-cercle.png') }}')">
+                    <article class="hidden duration-200 ease-in-out" data-carousel-item>
+                        <div class="product-discount-circle">
                             <p class="text-white text-2xl font-bold pt-10 px-6">- {{ product.discount }} %</p>
                         </div>
-                        <div class="absolute flex flex-col p-10 md:p-12 lg:py-16 lg:px-20 w-full">
-                            <div class="flex flex-col p-8 text-white">
-                                <a href="#" class="py-2">
-                                        <span class="bg-custom-green text-white text-sm uppercase font-bold mr-2 px-2.5 py-0.5 rounded">
-                                            Discount
-                                        </span>
-                                </a>
-                                <h2 class="text-4xl font-bold pt-2 pb-4">Tendance dans la
-                                    catégorie {{ product.categories[0].name }}</h2>
-                                <p class="pb-4">{{ product.name }}</p>
-{#                                <ul class="list-disc text-sm px-4 pb-8">#}
-{#                                    {% for caracteristic in product.caracteristics %}#}
-{#                                        <li>{{ caracteristic.content }}</li>#}
-{#                                    {% endfor %}#}
-{#                                </ul>#}
-                                <div class="flex flex-col sm:flex-row items-center">
-                                    <button type="button"
-                                            class="text-white bg-custom-dark-blue hover:bg-custom-blue-darker transition-all focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-md px-5 py-2.5 mr-2 mb-2">
-                                        Acheter maintenant
-                                    </button>
-                                    <a href="#"
-                                       class="underline my-4 md:my-0 sm:ml-4 hover:text-orange-300  transition-all ">Plus
-                                        de
-                                        détails</a>
-                                </div>
+                        <div class="hero-carousel-item-content">
+                            <div class="item-content-badge">
+                                <span class="badge badge-green">Discount</span>
+                            </div>
+                            <h2>Tendance dans la
+                                catégorie {{ product.categories[0].name }}</h2>
+                            <p>{{ product.name }}</p>
+                            <ul>
+                                {% for caracteristic in product.caracteristics %}
+                                    <li>{{ caracteristic.value }}</li>
+                                {% endfor %}
+                            </ul>
+                            <div class="item-carousel-cta">
+                                <button type="button"
+                                        class="button button-dark-blue">
+                                    Acheter maintenant
+                                </button>
+                                <a href="#"
+                                   class="cta-link">Plus
+                                    de
+                                    détails</a>
                             </div>
                         </div>
-                    </div>
+                    </article>
                 {% endfor %}
-                <!-- Item 2 -->
             </div>
             <!-- Slider indicators -->
             <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
-                <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1"
-                        data-carousel-slide-to="0"></button>
-                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2"
-                        data-carousel-slide-to="1"></button>
-                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3"
-                        data-carousel-slide-to="2"></button>
-                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4"
-                        data-carousel-slide-to="3"></button>
-                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5"
-                        data-carousel-slide-to="4"></button>
+                {% for product in discountProducts %}
+                    <button type="button" class="w-3 h-3 rounded-full" aria-current="true"
+                            aria-label="Slide {{ loop.index }}"
+                            data-carousel-slide-to="{{ loop.index - 1 }}"></button>
+                {% endfor %}
+
             </div>
         </div>
-        <div class="w-full h-full xl:w-1/2">
-            <div class="flex flex-wrap flex-row h-full lg:items-center lg:justify-between gap-6">
-                <div class="flex flex-col flex-1 gap-6">
-                    <div class="new-arrival w-full relative rounded-lg overflow-hidden shadow-md">
-                        <div class="flex flex-col lg:items-end group h-[270px] lg:h-[238px] bg-custom-light-blue before:bg-custom-light-blue-darker before:rounded-full before:absolute before:top-[-275px] before:left-[-150px] before:block before:transform before:rotate-45  before:h-[400px] before:w-[400px]">
-                            <div class="relative z-20 w-full md:w-4/5 h-1/2 py-2 pr-8 order-2">
-                                <h3 class="text-custom-blue-darker text-right text-lg py-2">Nouvel arrivage</h3>
-                                <p class="text-custom-blue-darker font-bold text-right text-3xl">{{ newProducts[0].name }}</p>
-                            </div>
-                            <div class="flex flex-row justify-end items-end h-1/2 w-full pr-8 relative z-20 order-1">
-                                <a href="#"
-                                   class="opacity-0 group-hover:opacity-100 transition-opacity underline text-orange-400 cursor-pointer">
-                                    Plus de détails
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="new-arrival w-full relative rounded-lg overflow-hidden shadow-md">
-                        <div class="group h-[270px] lg:h-[238px] bg-custom-light-cream before:bg-custom-light-cream-darker before:z-0 before:rounded-full before:absolute before:top-[150px] before:right-[-50px] before:block before:transform before:rotate-45  before:h-[400px] before:w-[400px]">
-                            <div class="relative z-20 h-full flex flex-col items-center pt-2 px-4">
-                                <h3 class="text-custom-blue-darker text-center text-lg py-2">Nouvel arrivage</h3>
-                                <p class="text-custom-blue-darker font-bold text-center text-3xl pb-2">{{ newProducts[1].name }}</p>
-                                <a href="#"
-                                   class="opacity-0 group-hover:opacity-100 transition-opacity underline text-orange-400 cursor-pointer">
-                                    Plus de détails
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+        <div class="products-hero-lastest-products">
+            <article class="new-arrival">
+                <div>
+                    <h3>Nouvel arrivage</h3>
+                    <p>{{ newProducts[0].name }}</p>
                 </div>
-                <div class="flex flex-col flex-1 gap-6">
-                    <div class="new-arrival w-full relative rounded-lg overflow-hidden shadow-md">
-                        <div class="group h-[270px] flex flex-col lg:items-end lg:h-[238px] bg-custom-light-green before:bg-custom-light-green-darker before:rounded-full before:absolute before:bottom-[-275px] before:left-[-200px] before:block before:transform before:rotate-45  before:h-[400px] before:w-[400px]">
-                            <div class="relative z-20 w-full md:w-4/5 py-2 pr-8">
-                                <h3 class="text-custom-blue-darker text-right text-lg py-2">Nouvel arrivage</h3>
-                                <p class="text-custom-blue-darker font-bold text-right text-3xl pb-2">{{ newProducts[2].name }}</p>
-                            </div>
-                            <div class="flex flex-row justify-end items-start h-1/2 w-full pr-8 relative z-20">
-                                <a href="#"
-                                   class="align-top opacity-0 group-hover:opacity-100 transition-opacity underline text-orange-400 cursor-pointer">
-                                    Plus de détails
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="new-arrival w-full relative rounded-lg overflow-hidden shadow-md">
-                        <div class="group h-[270px] flex flex-col lg:h-[238px] bg-custom-light-pink before:bg-custom-light-pink-darker before:rounded-full before:absolute before:bottom-[-275px] before:right-[-200px] before:block before:transform before:rotate-45  before:h-[400px] before:w-[400px]">
-                            <div class="relative z-20 w-full md:w-4/5 py-2 pl-8">
-                                <h3 class="text-custom-blue-darker  text-lg py-2">Nouvel arrivage</h3>
-                                <p class="text-custom-blue-darker font-bold text-3xl pb-2">{{ newProducts[3].name }}</p>
-                            </div>
-                            <div class="flex flex-row items-start h-1/2 w-full pl-8 relative z-20">
-                                <a href="#"
-                                   class="opacity-0 group-hover:opacity-100 transition-opacity underline text-orange-400 cursor-pointer">
-                                    Plus de détails
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                <a href="#" class="cta-link">
+                    Plus de détails
+                </a>
+            </article>
+            <article class="new-arrival">
+                <div>
+                    <h3>Nouvel arrivage</h3>
+                    <p>{{ newProducts[1].name }}</p>
+                    <a href="#" class="cta-link">
+                        Plus de détails
+                    </a>
                 </div>
-            </div>
+            </article>
+            <article class="new-arrival">
+                <div>
+                    <h3>Nouvel arrivage</h3>
+                    <p>{{ newProducts[2].name }}</p>
+                </div>
+                <div>
+                    <a href="#"
+                       class="cta-link">
+                        Plus de détails
+                    </a>
+                </div>
+            </article>
+            <article class="new-arrival">
+                <div>
+                    <h3>Nouvel arrivage</h3>
+                    <p>{{ newProducts[3].name }}</p>
+                </div>
+                <div>
+                    <a href="#" class="cta-link">
+                        Plus de détails
+                    </a>
+                </div>
+            </article>
         </div>
     </div>
-    <div class="mx-4">
-        <div class="swiper brands__slider">
-            <div class="swiper-wrapper">
-                {% for brand in brands %}
-                    <div class="swiper-slide">
-                        <div class="max-w-[127px]">
-                            <img class="h-auto max-w-full object-cover" src="{{ brand.picture.path }}"
-                                 alt="{{ brand.picture.alt }}">
-                        </div>
+    <div class="swiper brands__slider">
+        <ul class="swiper-wrapper">
+            {% for brand in brands %}
+                <li class="swiper-slide">
+                    <div class="max-w-[127px]">
+                        <img class="h-auto max-w-full object-cover" src="{{ brand.picture.path }}"
+                             alt="{{ brand.picture.alt }}">
                     </div>
-                {% endfor %}
-            </div>
-        </div>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 </section>

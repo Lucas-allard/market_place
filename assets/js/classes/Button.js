@@ -16,7 +16,7 @@ class Button {
         this.button = document.createElement('button');
         this.button.type = 'button';
         this.updateButton(this.button, this.buttonLalbel)
-        this.button.classList.add('underline', 'text-custom-blue', 'text-xs', 'mt-2', 'block', 'cursor-pointer', 'hover:text-orange-400');
+        this.button.classList.add('underline', 'text-custom-blue', 'text-lg', 'mt-2', 'block', 'cursor-pointer', 'hover:text-orange-400');
 
         buttonContainer.append(this.button);
         this.lastElement[this.lastElement.length - 1].parentNode.parentNode.append(buttonContainer);

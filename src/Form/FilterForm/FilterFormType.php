@@ -2,12 +2,15 @@
 
 namespace App\Form\FilterForm;
 
+use App\DataTransformer\StripTagTransformer;
+use App\DataTransformer\TrimTransformer;
 use App\Entity\Brand;
 use App\Entity\Caracteristic;
 use Doctrine\ORM\EntityRepository;
 use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,6 +18,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterFormType extends AbstractType
 {
+    private StripTagTransformer $stripTagTransformer;
+    private TrimTransformer $trimTransformer;
+    public function __construct(StripTagTransformer $stripTagTransformer, TrimTransformer $trimTransformer)
+    {
+        $this->stripTagTransformer = $stripTagTransformer;
+        $this->trimTransformer = $trimTransformer;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -59,6 +70,16 @@ class FilterFormType extends AbstractType
                 },
             ])
         ;
+
+//        $this->addModelTransformer($builder);
+    }
+
+    private function addModelTransformer(FormBuilderInterface $builder): void
+    {
+        foreach ($builder->all() as $child) {
+            $child->addModelTransformer($this->stripTagTransformer);
+            $child->addModelTransformer($this->trimTransformer);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

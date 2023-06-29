@@ -8,6 +8,8 @@ use App\Entity\Interface\UserInterface;
 use App\Entity\Seller;
 use App\Form\RegistrationForm\CustomerRegistrationType;
 use App\Form\RegistrationForm\SellerRegistrationType;
+use App\Security\UserAuthenticator;
+use App\Service\Form\FormProcessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +20,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
@@ -25,29 +28,41 @@ class RegistrationController extends AbstractController
 {
     private EmailVerifier $emailVerifier;
 
-    public function __construct(EmailVerifier $emailVerifier)
+    private FormProcessor $formProcessor;
+
+    public function __construct(EmailVerifier $emailVerifier, FormProcessor $formProcessor)
     {
         $this->emailVerifier = $emailVerifier;
+        $this->formProcessor = $formProcessor;
     }
 
     /**
      */
     #[Route('/inscription', name: 'app_register', requirements: ['type' => 'customer|seller'])]
     public function register(
-        Request $request,
-        UserPasswordHasherInterface $userPasswordHasher,
-        EntityManagerInterface $entityManager,
+        Request                     $request,
+        EntityManagerInterface      $entityManager,
+        UserAuthenticatorInterface  $userAuthenticator,
+        UserAuthenticator           $authenticator,
     ): Response
     {
         $userType = $request->get('type') ?? 'customer';
         $form = $this->createFormType($userType);
-        $form->handleRequest($request);
+
+        $this->formProcessor->handleRequest($request, $form);
 
         if ($this->checkFormValid($form)) {
             $user = $form->getData();
-            $this->encodePassword($user, $form->get('plainPassword')->getData(), $userPasswordHasher);
+            $password = $form->get('plainPassword')->getData();
+            $user->setPassword($password);
             $this->persistUser($user, $entityManager);
             $this->sendEmailConfirmation($user);
+
+            $userAuthenticator->authenticateUser(
+                $user,
+                $authenticator,
+                $request
+            );
 
             return $this->redirectToRoute('app_home');
         }
@@ -60,9 +75,9 @@ class RegistrationController extends AbstractController
     public function createFormType(string $type): FormInterface
     {
         if ($type === 'customer') {
-            return $this->createForm(CustomerRegistrationType::class, new Customer());
+            return $this->formProcessor->create(CustomerRegistrationType::class, new Customer());
         } elseif ($type === 'seller') {
-            return $this->createForm(SellerRegistrationType::class, new Seller());
+            return $this->formProcessor->create(SellerRegistrationType::class, new Seller());
         } else {
             throw $this->createNotFoundException('Registration type not found');
         }
@@ -73,17 +88,8 @@ class RegistrationController extends AbstractController
         return $form->isSubmitted() && $form->isValid();
     }
 
-    public function encodePassword(UserInterface $user, string $plainPassword,UserPasswordHasherInterface $userPasswordHasher): void
-    {
-        $user->setPassword(
-            $userPasswordHasher->hashPassword(
-                $user,
-                $plainPassword
-            )
-        );
-    }
 
-    public function persistUser(UserInterface $user,EntityManagerInterface $entityManager): void
+    public function persistUser(UserInterface $user, EntityManagerInterface $entityManager): void
     {
         $entityManager->persist($user);
         $entityManager->flush();

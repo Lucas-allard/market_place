@@ -8,63 +8,53 @@ use App\Service\Stripe\StripeConnexion;
 use Exception;
 use LogicException;
 use Stripe;
+use Stripe\Checkout\Session;
 use Stripe\Exception\ApiErrorException;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PaymentProcessor implements PaymentProcessorInterface
 {
 
-    public function __construct()
+    private UrlGeneratorInterface $urlGenerator;
+    private Security $security;
+    public function __construct(UrlGeneratorInterface $urlGenerator, Security $security)
     {
+        $this->urlGenerator = $urlGenerator;
+        $this->security = $security;
         StripeConnexion::init();
     }
 
     /**
      * @param Payment $payment
-     * @return bool
+     * @return Session
+     * @throws ApiErrorException
      */
-    public function process(PaymentInterface $payment): bool
+    public function process(PaymentInterface $payment): Session
     {
-        $isSuccess = false;
-        $this->checkPaymentStatus($payment->getStatus());
+        $stripeProducts = [];
 
-        try {
-            $this->chargePayment($payment);
-            $payment->setStatus(Payment::STATUS_PAID);
-            $isSuccess = true;
-        } catch (Exception $e) {
-            $payment->setStatus(Payment::STATUS_FAILED);
-            print_r($e->getMessage());
+        foreach ($payment->getOrder()->getOrderItems() as $orderItem) {
+            $stripeProducts[] = [
+                'price_data' => [
+                    'currency' => $payment->getCurrency(),
+                    'unit_amount' => $orderItem->getProduct()->getPriceWithDiscount() * 100,
+                    'product_data' => [
+                        'name' => $orderItem->getProduct()->getName(),
+                    ],
+                ],
+                'quantity' => $orderItem->getQuantity(),
+            ];
         }
 
-        return $isSuccess;
-    }
 
-    public function checkPaymentStatus(string $status): void
-    {
-        if ($status !== Payment::STATUS_PENDING) {
-            throw new LogicException('Payment is not pending');
-        }
-    }
-
-    /**
-     * @param Payment $payment
-     * @return void
-     * @throws Exception
-     */
-    private function chargePayment(PaymentInterface $payment): void
-    {
-        try {
-            $charge = Stripe\Charge::create([
-                'amount' => $payment->getAmount(),
-                'currency' => $payment->getCurrency(),
-                'description' => $payment->getDescription(),
-                'source' => $payment->getPaymentToken(),
-            ]);
-            if ($charge->status !== 'succeeded') {
-                throw new Exception('Payment failed');
-            }
-        } catch (ApiErrorException $e) {
-            throw new Exception($e->getMessage());
-        }
+        return Session::create([
+            'customer_email' => $this->security->getUser()->getEmail(),
+            'payment_method_types' => ['card'],
+            'line_items' => $stripeProducts,
+            'mode' => 'payment',
+            'success_url' => $this->urlGenerator->generate('app_payment_success', ['id' => $payment->getOrder()->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+            'cancel_url' => $this->urlGenerator->generate('app_payment_failed', ['id' => $payment->getOrder()->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+        ]);
     }
 }

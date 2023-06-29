@@ -61,9 +61,9 @@
                     <div class="product-page-quantity-container">
                         <label for="product-page-quantity">Quantité</label>
                         <div class="product-page-quantity-input">
-                            <span class="product-page-quantity-minus">-</span>
-                            <input type="number" id="product-page-quantity" name="product-page-quantity" min="1" value="1">
-                            <span class="product-page-quantity-plus">+</span>
+                            <span class="product-page-quantity quantity-minus">-</span>
+                            <input type="number" id="product-page-quantity" name="product-page-quantity" min="1" value="1" data-product-id="{{ product.id }}">
+                            <span class="product-page-quantity quantity-plus">+</span>
                         </div>
                     </div>
                     <div class="product-page-button-container">

@@ -1,0 +1,82 @@
+<aside class="products-page-aside modal" id="filterModal">
+    <div class="products-page-aside-close modal-close">
+        {{ include('svg/x_mark.html.twig') }}
+    </div>
+    <div class="filter-item filter-category">
+        <h2>Catégories</h2>
+        <ul>
+            {% for category in categories %}
+                <li>
+                    <a href="{{ path('app_product_index', {categorySlug: category.slug}) }}"
+                       class="parent-category-filter">
+                        <svg fill="none"
+                             stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
+                        </svg>
+                        <span>{{ category.name }}</span>
+                    </a>
+                    <ul>
+                        {% for child in category.children %}
+                            <li class="hover:bg-custom-blue/10">
+                                <a href="{{ path('app_product_index', { categorySlug: category.slug, subCategorySlug: child.slug }) }}"
+                                   class="block px-16 py-4 text-md text-custom-blue-darker hover:text-orange-400">{{ child.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="filter-item">
+        <h2>Filtres</h2>
+        {{ form_start(filterForm) }}
+        <div class="price-filter">
+            <h3>Prix</h3>
+            <div id="range"></div>
+            {{ form_widget(filterForm.price, {'attr': {'class': 'hidden'}}) }}
+        </div>
+        <div>
+            <h3>Marques</h3>
+            <div class="fields-wrapper brands-fields">
+                {% for brandRow in filterForm.brand %}
+                    <div>
+                        {{ form_widget(brandRow, {'attr': {'class': '', 'data-limit' : 3}}) }}
+                        {{ form_label(brandRow, null, {'label_attr': {'class': ''}}) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div>
+            <h3>Caractéristiques</h3>
+            <div class="fields-wrapper">
+                {% set previousType = null %}
+                {% for caracteristicRow in filterForm.caracteristic %}
+                {% set caracteristicType = caracteristicRow.vars.attr['data-type'] %}
+                {% if caracteristicType != previousType %}
+                {% if previousType is not null %}
+            </div><!-- close previous type div -->
+            {% endif %}
+            <div class="">
+                <h4 class="caracteristic-type">{{ caracteristicType }}</h4>
+                {% endif %}
+                <div class="caracteristics-fields">
+                    {{ form_widget(caracteristicRow) }}
+                    {{ form_label(caracteristicRow) }}
+                </div>
+                {% set previousType = caracteristicType %}
+                {% endfor %}
+                {% if previousType is not null %}
+            </div><!-- close last type div -->
+            {% endif %}
+        </div>
+    </div>
+    <div class="submit-field">
+        <button type="submit">Filtrer</button>
+    </div>
+    {{ form_end(filterForm) }}
+    </div>
+</aside>
+<div class="products-page-backdrop backdrop"></div>
+

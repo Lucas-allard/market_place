@@ -1,3 +1,6 @@
+import cart from "./Cart";
+import Button from "./Button";
+
 class QuantityInput {
     constructor(inputElement, minusButton, plusButton, cartButtons) {
         this.inputElement = inputElement;
@@ -10,7 +13,7 @@ class QuantityInput {
 
         this.quantityButtons.forEach(button => {
             button.addEventListener('click', () => {
-                if (button.classList.contains('product-page-quantity-minus')) {
+                if (button.classList.contains('quantity-minus')) {
                     if (this.quantity > 1) {
                         this.quantity--;
                         this.inputElement.value = this.quantity;
@@ -20,11 +23,32 @@ class QuantityInput {
                     this.inputElement.value = this.quantity;
                 }
 
-                this.cartButtons.forEach(button => {
-                    button.updateDataAttributes('data-quantity', this.quantity);
-
-                });
+                if (this.cartButtons !== null) {
+                    this.cartButtons.forEach(button => {
+                        if (button.button.getAttribute('data-product-id') === this.inputElement.getAttribute('data-product-id')) {
+                            button.updateDataAttributes('data-quantity', this.quantity);
+                        }
+                    });
+                }
             })
+        })
+    }
+
+    static updateAllQuantities() {
+
+        const quantityElement = document.querySelectorAll("input[name='cart-page-quantity']")
+        const minusButton = document.querySelectorAll('.cart-page-quantity.quantity-minus')
+        const plusButton = document.querySelectorAll('.cart-page-quantity.quantity-plus')
+        const actionButton = [...minusButton, ...plusButton];
+        const cartButtons = [];
+
+        actionButton.forEach(button => {
+            const buttonElement = new Button({button: button});
+            cartButtons.push(buttonElement);
+        })
+
+        quantityElement.forEach((element, index) => {
+            (new QuantityInput(element, minusButton[index], plusButton[index], cartButtons)).updateQuantity();
         })
     }
 

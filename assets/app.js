@@ -6,6 +6,7 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
+import './styles/app.scss';
 import './styles/app.css';
 
 // start the Stimulus application
@@ -16,19 +17,23 @@ import 'flowbite';
 
 // Import addToCart function
 import {addItemToCart} from './js/utils/addToCart.js';
+import DropdownManager from './js/classes/DropdownManager.js';
+import MenuManager from "./js/classes/MenuManager";
+import ModalManager from "./js/classes/ModalManager";
 
-// Create Cart instance
-import Cart from './js/classes/Cart.js';
+window.onload = () => {
+    const mobileMenu = document.getElementById('mobileMenu');
+    const sidenavMenu = document.getElementById('sidenavMenu');
+    const menuManager = new MenuManager([mobileMenu, sidenavMenu]);
+    DropdownManager.init();
+    ModalManager.initAll();
 
-const cart = new Cart();
-
-// Export Cart instance to be used by other modules
-export default cart;
 
 // Add event listeners for addToCart functionality
-const addButtons = document.querySelectorAll('.add-to-cart');
-addButtons.forEach((buttonItem) => {
-    buttonItem.addEventListener('click', (event) => {
-        addItemToCart(buttonItem);
+    const addButtons = document.querySelectorAll('.add-to-cart');
+    addButtons.forEach((buttonItem) => {
+        buttonItem.addEventListener('click', (event) => {
+            addItemToCart(buttonItem);
+        });
     });
-});
+}

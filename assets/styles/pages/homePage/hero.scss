@@ -1,0 +1,290 @@
+@import '../../_variables.scss';
+
+.products-hero {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxl;
+  padding-bottom: $spacing-xxl;
+
+  .products-hero-carousel,
+  .products-hero-lastest-products {
+    width: 100%;
+  }
+
+  .products-hero-carousel {
+    overflow: hidden;
+    position: relative;
+    background-color: $color-blue;
+    border-radius: $border-radius-lg;
+
+    .hero-carousel-wrapper {
+      position: relative;
+      height: 550px;
+      overflow: hidden;
+      border-radius: $border-radius-lg;
+
+      article {
+        box-shadow: $shadow-xl;
+
+        .product-discount-circle {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 128px;
+          height: 138px;
+          background-image: url("../../../../public/images/quart-cercle.png");
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
+          color: $color-white;
+          border-radius: $border-radius-lg $border-radius-none $border-radius-none $border-radius-lg;
+
+          p {
+            padding: $spacing-xxxl $spacing-lg 0 $spacing-lg;
+            font-size: $font-size-xxl;
+          }
+        }
+
+        .hero-carousel-item-content {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: $spacing-xxl $spacing-xxl $spacing-xxl 128px;
+          height: 100%;
+
+
+          div, h2, p, ul {
+            padding-bottom: $spacing-lg;
+          }
+
+          h2 {
+            color: $color-white;
+            font-size: $font-size-xxxl;
+            line-height: $line-height-xs;
+          }
+
+          ul {
+            list-style: disc;
+            font-size: $font-size-xs;
+            padding-left: $spacing-xxl;
+          }
+
+          .item-carousel-cta {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: $spacing-md;
+            padding-top: $spacing-md;
+
+            a {
+              margin: 0 $spacing-md
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .products-hero-lastest-products {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: $spacing-xl;
+
+    article {
+      position: relative;
+      overflow: hidden;
+      border-radius: $border-radius-lg;
+      box-shadow: $shadow-md;
+      width: 100%;
+      height: 270px;
+      display: flex;
+      flex-direction: column;
+
+      &::before {
+        content: "";
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        transform: rotate(45deg);
+
+      }
+
+      &:nth-child(1) {
+        background-color: $color-light-blue;
+
+        &::before {
+          top: -275px;
+          left: -150px;
+          background-color: $color-light-blue-darker;
+        }
+
+        div:first-child {
+          height: 50%;
+          order: 2;
+
+          h3, p {
+            text-align: right;
+          }
+        }
+
+        a {
+          height: 50%;
+          order: 1;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-end;
+          align-items: flex-end;
+          padding: $spacing-md $spacing-xxl;
+        }
+      }
+
+      &:nth-child(2) {
+        background-color: $color-light-cream;
+
+        a {
+          text-align: right;
+        }
+
+        p {
+          text-align: center
+        }
+
+        &::before {
+          top: 150px;
+          right: -50px;
+          background-color: $color-light-cream-darker;
+        }
+      }
+
+      &:nth-child(3) {
+        background-color: $color-light-green;
+
+        p {
+          text-align: right;
+        }
+
+        &::before {
+          bottom: -275px;
+          left: -200px;
+          background-color: $color-light-green-darker;
+        }
+
+        div:last-child {
+          justify-content: flex-end;
+        }
+      }
+
+      &:nth-child(4) {
+        background-color: $color-light-pink;
+
+        &::before {
+          bottom: -275px;
+          right: -200px;
+          background-color: $color-light-pink-darker;
+        }
+      }
+
+      &:nth-child(1), &:nth-child(3) {
+        align-items: flex-end;
+      }
+
+      &:nth-child(3), &:nth-child(4) {
+        div {
+          height: 50%;
+        }
+
+        div:last-child {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+
+      &:nth-child(2), &:nth-child(3) {
+        div h3, div p {
+          text-align: right;
+        }
+      }
+
+      div {
+        padding: $spacing-lg $spacing-xxl;
+        position: relative;
+        z-index: $z-index-10;
+
+        h3 {
+          font-size: $font-size-xs;
+          padding: $spacing-md 0;
+        }
+
+        p {
+          font-size: $font-size-xl;
+          color: $color-blue-darker;
+          font-weight: $font-weight-bold;
+        }
+      }
+
+      a {
+        color: $color-orange;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        padding: $spacing-lg 0;
+        display: block;
+        position: relative;
+      }
+
+      &:hover {
+        a {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: $breakpoint-mobile) {
+  .products-hero {
+    .products-hero-carousel .hero-carousel-wrapper {
+      height: 500px;
+
+      article .hero-carousel-item-content .item-carousel-cta {
+        flex-direction: row;
+        justify-content: flex-start;
+      }
+    }
+  }
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .products-hero {
+    flex-direction: row;
+    gap: $spacing-xxl;
+
+    .products-hero-carousel,
+    .products-hero-lastest-products {
+      width: 50%;
+    }
+
+    .products-hero-lastest-products {
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      article {
+        width: calc(50% - #{$spacing-xxl});
+        height: 238px;
+
+        .product-circle {
+          height: 238px;
+        }
+
+        &:nth-child(3), &:nth-child(4) {
+          //div:first-child {
+          //  width: 80%;
+          //}
+        }
+      }
+    }
+  }
+}

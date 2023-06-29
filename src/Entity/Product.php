@@ -61,6 +61,9 @@ class Product extends AbstractEntity
     #[ORM\ManyToMany(targetEntity: Caracteristic::class, inversedBy: 'products')]
     private Collection $caracteristics;
 
+    #[ORM\Column]
+    private ?float $shippingFee = null;
+
 
     public function __construct()
     {
@@ -121,7 +124,7 @@ class Product extends AbstractEntity
      */
     public function setPrice(float $price): Product
     {
-        $this->price = $price;
+        $this->price = round($price, 2);
         return $this;
     }
 
@@ -324,6 +327,27 @@ class Product extends AbstractEntity
     public function removeCaracteristic(Caracteristic $caracteristic): self
     {
         $this->caracteristics->removeElement($caracteristic);
+
+        return $this;
+    }
+
+    public function getPriceWithDiscount(): float
+    {
+        if ($this->discount === null) {
+            return $this->price;
+        }
+        $newPrice = $this->price - ($this->price * $this->discount / 100);
+        return round($newPrice, 2);
+    }
+
+    public function getShippingFee(): ?float
+    {
+        return $this->shippingFee;
+    }
+
+    public function setShippingFee(float $shippingFee): self
+    {
+        $this->shippingFee = $shippingFee;
 
         return $this;
     }

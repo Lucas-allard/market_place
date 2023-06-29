@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiment{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('paymentPage') }}
+{% endblock %}
+
+{% block body %}
+    <div class="order-page-section">
+        <section class="order-section">
+            <h1>Commande n°{{ order.id }}</h1>
+            <ul class="order-list">
+                <li class="order-overview-item-headers">
+                    <p class="order-overview-item-product">Produit</p>
+                    <p class="order-overview-item-value">Prix</p>
+                    <p class="order-overview-item-quantity">Quantité</p>
+                    <p class="order-overview-item-total">Total</p>
+                </li>
+                {% for orderItem in order.orderItems %}
+                    <li class="order-overview-item">
+                        <p class="order-overview-item-product">
+                            <img src="{{ orderItem.product.pictures[0].path }}"
+                                 alt="{{ orderItem.product.pictures[0].alt }}"
+                                 class="order-overview-item-product-image">
+                            <span class="order-overview-item-product-name">{{ orderItem.product.name }}</span>
+                        </p>
+                        <p class="order-overview-item-value">{{ orderItem.product.getPriceWithDiscount|number_format(2, ",") }}
+                            €</p>
+                        <p class="order-overview-item-quantity">{{ orderItem.quantity }}</p>
+                        <p class="order-overview-item-total">{{ orderItem.getTotal|number_format(2, ",") }} €</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section class="order-section">
+            <h2>Adresse de facturation</h2>
+            <ul class="order-list">
+                <li class="order-billing-item">
+                    <p class="order-billing-item-label">Nom</p>
+                    <p class="order-billing-item-value">{{ order.customer.lastName }}</p>
+                </li>
+                <li class="order-billing-item">
+                    <p class="order-billing-item-label">Prénom</p>
+                    <p class="order-billing-item-value">{{ order.customer.firstName }}</p>
+                </li>
+                <li class="order-billing-item">
+                    <p class="order-billing-item-label">Code postal</p>
+                    <p class="order-billing-item-value">{{ order.customer.postalCode }}</p>
+                </li>
+                <li class="order-billing-item">
+                    <p class="order-billing-item-label">Ville</p>
+                    <p class="order-billing-item-value">{{ order.customer.city }}</p>
+                </li>
+                <li class="order-billing-item">
+                    <p class="order-billing-item-label">Rue</p>
+                    <p class="order-billing-item-value">{{ order.customer.streetNumber }}
+                        , {{ order.customer.street }}</p>
+                </li>
+            </ul>
+
+            {% if app.request.attributes.get('_route') == "app_payment_failed" %}
+                <a class="button button-red" href="{{ path('app_payment_index') }}">Réessayer</a>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('paymentPage') }}
+{% endblock %}
+

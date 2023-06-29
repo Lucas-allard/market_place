@@ -1,12 +1,12 @@
-import '../../styles/products/productPage.scss'
+import '../../styles/pages/singleProductPage/productPage.scss'
 import Button from "../classes/Button";
 import QuantityInput from "../classes/QuantityInput";
 
-window.onload = function () {
+window.addEventListener('load', () => {
     const addToCartButton = document.querySelectorAll('.add-to-cart');
     const quantityElement = document.querySelector("input[name='product-page-quantity']")
-    const minusButton = document.querySelector('.product-page-quantity-minus')
-    const plusButton = document.querySelector('.product-page-quantity-plus')
+    const minusButton = document.querySelector('.product-page-quantity.quantity-minus')
+    const plusButton = document.querySelector('.product-page-quantity.quantity-plus')
     const buttonsElements = [];
 
     addToCartButton.forEach(button => {
@@ -30,5 +30,5 @@ window.onload = function () {
             }
         })
     })
-}
+})
 

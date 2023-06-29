@@ -5,7 +5,9 @@ namespace App\Repository;
 
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -18,26 +20,60 @@ use Doctrine\Persistence\ManagerRegistry;
 class OrderRepository extends ServiceEntityRepository
 {
 
-        public function __construct(ManagerRegistry $registry)
-        {
-            parent::__construct($registry, Order::class);
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Order::class);
+    }
+
+    public function save(Order $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Order $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findCart(?int $id, ?UserInterface $user): ?Order
+    {
+        $builder = $this->createQueryBuilder('o');
+        if ($id) {
+            $builder->where('o.id = :id')
+                ->setParameter('id', $id);
+
         }
 
-        public function save(Order $entity, bool $flush = false): void
-        {
-            $this->getEntityManager()->persist($entity);
+        if ($user) {
+            $builder->andWhere('o.customer = :customer')
+                ->setParameter('customer', $user);
+        };
 
-            if ($flush) {
-                $this->getEntityManager()->flush();
-            }
-        }
+        $builder->andWhere('o.orderStatus = :orderStatus')
+            ->setParameter('orderStatus', Order::STATUS_CART);
+        return $builder->getQuery()->getOneOrNullResult();
+    }
 
-        public function remove(Order $entity, bool $flush = false): void
-        {
-            $this->getEntityManager()->remove($entity);
-
-            if ($flush) {
-                $this->getEntityManager()->flush();
-            }
-        }
+    public function findCartsNotModifiedSince(\DateTime $limitDate, int $limit = 10): array
+    {
+        return $this->createQueryBuilder('o')
+            ->where('o.status = :status')
+            ->andWhere('o.updatedAt < :date')
+            ->setParameter('status', Order::STATUS_CART)
+            ->setParameter('date', $limitDate)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

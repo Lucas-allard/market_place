@@ -27,6 +27,8 @@ Encore
     .addEntry('productsPage', './assets/js/pages/productsPage.js')
     .addEntry('productPage', './assets/js/pages/productPage.js')
     .addEntry('cartPage', './assets/js/pages/cartPage.js')
+    .addEntry('paymentPage', './assets/js/pages/paymentPage.js')
+    .addEntry('userPage', './assets/js/pages/userPage.js')
 
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)

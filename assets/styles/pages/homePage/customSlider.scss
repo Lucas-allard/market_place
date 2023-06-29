@@ -1,0 +1,204 @@
+@import '../../_variables.scss';
+
+.swiper-slider-nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: $spacing-xl;
+
+  .swiper-slider-nav-header {
+    display: flex;
+    flex-direction: column;
+    color: $color-blue-darker;
+
+    h2 {
+      margin-bottom: $spacing-xs;
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  .swiper-slider-nav-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    button {
+      border: 2px solid $color-blue-darker;
+      border-radius: $border-radius-md;
+      margin: 0 $spacing-xs;
+      padding: $spacing-xs;
+
+      svg {
+        width: 20px;
+        height: 20px;
+        color: $color-blue-darker;
+      }
+
+      &:hover {
+        border: 2px solid $color-orange;
+        color: $color-white;
+
+        svg {
+          color: $color-orange;
+        }
+      }
+    }
+  }
+}
+
+.top-product__slider .swiper-slider-wrapper,
+.top-brands__slider .swiper-slider-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+
+  .slider-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: $color-white;
+    transition: all 0.3s ease-in-out;
+    border: 1px solid $color-gray-lighter;
+    border-radius: $border-radius-md;
+    box-shadow: $shadow-sm;
+    padding: $spacing-lg $spacing-md;
+    margin: $spacing-md 0;
+
+    .product-picture {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: $spacing-md;
+
+      a {
+        display: block;
+
+        img {
+          object-fit: cover;
+          margin: 0 auto;
+        }
+      }
+    }
+
+    .product-content {
+      .product-content-header {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: $spacing-md;
+
+        .product-content-brand {
+          font-size: $font-size-md;
+          color: $color-blue;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+
+        .product-content-name {
+          font-size: $font-size-lg;
+          color: $color-blue-darker;
+
+        }
+
+        .product-content-categories {
+          font-size: $font-size-xs;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+
+          a {
+            color: $color-blue;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+              color: $color-orange;
+            }
+          }
+        }
+      }
+
+      .product-content-body {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+        padding-bottom: $spacing-md;
+
+        .product-content-price {
+          font-size: $font-size-lg;
+          color: $color-blue-darker;
+          font-weight: 600;
+        }
+
+        .product-content-caracteristics {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          font-size: $font-size-xs;
+          color: $color-orange;
+          font-weight: 600;
+          letter-spacing: 1px;
+
+          li {
+            margin-right: $spacing-md;
+            margin-bottom: $spacing-xs;
+          }
+        }
+      }
+
+      .product-content-discount {
+        padding: $spacing-lg 0;
+        font-size: $font-size-md;
+        color: $color-orange;
+
+        span {
+            font-weight: 600;
+        }
+      }
+    }
+
+    &:hover {
+      box-shadow: $shadow-lg;
+      border: 1px solid $color-blue-darker;
+      transform: translateY(-5px);
+    }
+  }
+}
+
+
+hr {
+  width: 100%;
+}
+
+
+
+@media (min-width: $breakpoint-mobile) {
+  .top-product__slider .swiper-slider-wrapper ,
+  .top-brands__slider .swiper-slider-wrapper{
+    flex-direction: row;
+
+    .slider-item {
+      width: calc(50% - #{$spacing-md});
+    }
+  }
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .top-product__slider .swiper-slider-wrapper,
+  .top-brands__slider .swiper-slider-wrapper {
+    .slider-item {
+      width: calc(33% - #{$spacing-md});
+    }
+  }
+}
+
+@media (min-width: $breakpoint-desktop) {
+  .top-product__slider .swiper-slider-wrapper,
+  .top-brands__slider .swiper-slider-wrapper {
+    .slider-item {
+      width: calc(20% - #{$spacing-md});
+    }
+  }
+}
+

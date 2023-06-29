@@ -13,6 +13,8 @@ class Inputs {
         this.inputElements.forEach((input, index) => {
             if (index < this.visibleInputElements) {
                 input.parentElement.classList.remove(this.hideClass);
+            } else if (this.visibleInputElements === null) {
+                input.parentElement.classList.remove(this.hideClass);
             } else {
                 input.parentElement.classList.add(this.hideClass);
             }
@@ -32,7 +34,6 @@ class Inputs {
 
     addMoreInputs(button) {
         button.button.addEventListener('click', () => {
-            console.log('click')
             if (this.visibleInputElements >= this.totalElements) {
                 this.showInitialInputs();
                 button.updateButton(button.button, 'Voir plus');
@@ -47,7 +48,7 @@ class Inputs {
         this.showInput();
 
         if (this.totalElements > this.initialVisibleInputElements) {
-            const button = new Button(this.inputElements, 'Voir plus');
+            const button = new Button({lastElement: this.inputElements, buttonLabel: 'Voir plus'});
         }
 
         this.addMoreInputs(button);

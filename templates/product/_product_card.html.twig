@@ -6,7 +6,7 @@
         </a>
     </div>
     <div class="product-card-body">
-        <p>{{ product.brand.name }}</p>
+        <p class="product-card-brand">{{ product.brand.name }}</p>
         <h3 class="product-card-title">
             <a href="{{ path('app_product_show', {'categorySlug': product.categories[0].slug, 'subCategorySlug': product.categories[1].slug, 'productSlug': product.slug}) }}">
                 {{ product.name }}
@@ -14,10 +14,26 @@
         </h3>
         <p class="product-card-price">
             <a href="{{ path('app_product_show', {'categorySlug': product.categories[0].slug, 'subCategorySlug': product.categories[1].slug, 'productSlug': product.slug}) }}">
-                {{ product.price }} €
+                {% if product.discount %}
+                    <span class="product-card-price-old">
+                        {{ product.price|number_format(2, ',')  }} €</span>
+                    -
+                    <span class="product-card-price-new">
+                        {{ product.getPriceWithDiscount|number_format(2, ',')  }} €
+                    </span>
+                {% else %}
+                    <span class="product-card-price-new">
+                        {{ product.price|number_format(2, ',') }} €
+                    </span>
+                {% endif %}
             </a>
         </p>
-        {{ include('components/_cart_button.html.twig', {'product': product, 'buttonLabel': 'Ajouter au panier', 'className': 'product-card-button'}) }}
+        <p class="product-discount">
+            {% if product.discount %}
+                {{ product.discount }}% de réduction
+            {% endif %}
+        </p>
+        {{ include('components/_cart_button.html.twig', {'product': product, 'buttonLabel': 'Ajouter au panier', 'className': 'button button-dark-blue'}) }}
         <ul class="product-card-caracteristics">
             {% for caracteristic in product.caracteristics %}
                 {% if loop.index <= 2 %}

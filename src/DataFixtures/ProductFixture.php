@@ -43,6 +43,7 @@ class ProductFixture extends Fixture implements DependentFixtureInterface
             $product->setCreatedAt($faker->dateTimeBetween('-1 year'));
             $product->setPrice($faker->randomFloat(2, 0, 1000));
             $product->setQuantity($faker->numberBetween(0, 1000));
+            $product->setShippingFee($faker->randomFloat(2, 0, 20));
             /** @var Seller $seller */
             $seller = $this->getReference('seller_' . $faker->numberBetween(0, 19));
             $product->setSeller($seller);

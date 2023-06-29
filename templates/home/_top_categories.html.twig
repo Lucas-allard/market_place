@@ -1,0 +1,68 @@
+<section class="section">
+    <div class="swiper-slider-nav">
+        <header class="swiper-slider-nav-header">
+            <h2>Meilleures catégories</h2>
+            <p>Les catégories les plus populaires</p>
+        </header>
+        <nav class="swiper-slider-nav-buttons">
+            <button class="swiper-button-prev-best-categories">
+                <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
+                </svg>
+            </button>
+            <button class="swiper-button-next-best-categories">
+                <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
+                </svg>
+            </button>
+        </nav>
+    </div>
+    <hr>
+    <div class="swiper best-categories__slider">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <div class="swiper-slider-wrapper">
+                    {% for category in bestCategories|slice(0,12) %}
+                        <article>
+                            <a href="{{ path('app_product_index', {'categorySlug': category.parent.slug, 'subCategorySlug': category.slug }) }}"
+                               class="swiper-item">
+                                <div class="swiper-item-picture">
+                                    <img src="{{ category.bestProduct.pictures[0].path }}"
+                                         alt="{{ category.bestProduct.pictures[0].alt }}">
+                                </div>
+                                <div class="swiper-item-content">
+                                    <h3 >{{ category.name }}</h3>
+                                    <p>{{ category.totalProducts }}
+                                        produits</p>
+                                </div>
+                            </a>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="swiper-slider-wrapper">
+                    {% for category in bestCategories|slice(12,24) %}
+                        <article>
+                            <a href="{{ path('app_product_index', {'categorySlug': category.parent.slug, 'subCategorySlug': category.slug }) }}"
+                               class="swiper-item">
+                                <div class="swiper-item-picture">
+                                    <img src="{{ category.bestProduct.pictures[0].path }}"
+                                         alt="{{ category.bestProduct.pictures[0].alt }}">
+                                </div>
+                                <div class="swiper-item-content">
+                                    <h3>{{ category.name }}</h3>
+                                    <p>{{ category.totalProducts }}
+                                        produits</p>
+                                </div>
+                            </a>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
