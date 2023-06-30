@@ -24,15 +24,15 @@
     {{ include('components/_sidebar.html.twig') }}
 
     <section class="main-section">
-        <div class="message">
-            {% for type, messages in app.flashes %}
-                {% for message in messages %}
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="message">
                     <div class="alert alert-{{ type }}">
                         {{ message }}
                     </div>
-                {% endfor %}
+                </div>
             {% endfor %}
-        </div>
+        {% endfor %}
         {% block body %}{% endblock %}
     </section>
 </main>

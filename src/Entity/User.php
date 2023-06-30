@@ -83,6 +83,9 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
     /**
      * @return string|null
      */
@@ -144,7 +147,7 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-//        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -310,6 +313,18 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
 
         return $this;
     }

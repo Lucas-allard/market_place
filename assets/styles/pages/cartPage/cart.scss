@@ -172,6 +172,8 @@
 
       a, button {
         display: block;
+        text-align: center;
+        margin: 0 $spacing-md;
       }
     }
   }
@@ -198,6 +200,12 @@
           display: flex;
           flex-direction: column;
 
+          label {
+            font-size: $font-size-md;
+            font-weight: $font-weight-bold;
+            margin-bottom: $spacing-md;
+            margin-left: $spacing-md;
+          }
 
           input {
             padding: $spacing-md;

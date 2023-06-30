@@ -42,7 +42,7 @@
                 <ul class="dropdown-list ">
                     {% if app.user %}
                         <li class="dropdown-item">
-                            <a href="{{ path('app_logout') }}" class="dropdown-link">Mon compte</a>
+                            <a href="{{ path('app_user_order') }}" class="dropdown-link">Mon compte</a>
                         </li>
                         <li class="dropdown-item">
                             <a href="{{ path('app_logout') }}" class="dropdown-link">Déconnexion</a>
@@ -70,7 +70,7 @@
                         <a href="{{ path('app_cart_index') }}" class="dropdown-link">Panier</a>
                     </li>
                     <li class="dropdown-item">
-                        <a href="#" class="dropdown-link">Commandes</a>
+                        <a href="{{ path('app_user_order') }}" class="dropdown-link">Commandes</a>
                     </li>
                 </ul>
             </div>
