@@ -27,6 +27,20 @@ services:
 
     Symfony\Component\Security\Csrf\CsrfTokenManagerInterface: '@security.csrf.token_manager'
 
+    App\EventListener\AddPictureFieldListener:
+        arguments:
+            $cloudinaryService: '@App\Service\Cloudinary\CloudinaryService'
+
+    App\EventListener\SlugAssignerListener:
+        arguments:
+            $slugger: '@slugger'
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    App\EventListener\EntityUpdateListener:
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+
     App\EventListener\NavbarListener:
         arguments:
             $twig: '@twig'
@@ -51,5 +65,15 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postUpdate }
 
-    App\Service\Twig\TwigQueryReplace:
+    App\Extension\Twig\TwigQueryReplace:
         tags: [ 'twig.extension' ]
+
+    App\Extension\FormType\InputSanitizerExtension:
+        tags: [ 'form.type' ]
+
+    App\Extension\FormType\InputTransformExtension:
+        tags: [ 'form.type' ]
+
+    App\Extension\FormType\HtmlSanitizerExtension:
+        tags: [ 'form.type' ]
+

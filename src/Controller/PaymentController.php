@@ -20,7 +20,6 @@ class PaymentController extends AbstractController
 {
     private CartManager $cartManager;
     private PaymentManager $paymentManager;
-
     public function __construct(
         CartManager    $cartManager,
         PaymentManager $paymentManager,

@@ -12,18 +12,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 abstract class RegistrationFormType extends AbstractType
 {
-    private StripTagTransformer $stripTagTransformer;
-    private TrimTransformer $trimTransformer;
-
-    public function __construct(StripTagTransformer $stripTagTransformer, TrimTransformer $trimTransformer)
-    {
-        $this->stripTagTransformer = $stripTagTransformer;
-        $this->trimTransformer = $trimTransformer;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -32,18 +24,23 @@ abstract class RegistrationFormType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Adresse email',
                 ],
+                'input_sanitizer' => true,
             ])
             ->add('firstname', TextType::class, [
                 'label' => 'Prénom',
                 'attr' => [
                     'placeholder' => 'Prénom',
                 ],
+                'input_sanitizer' => true,
+                'input_transformer' => true,
             ])
             ->add('lastname', TextType::class, [
                 'label' => 'Nom',
                 'attr' => [
                     'placeholder' => 'Nom',
                 ],
+                'input_sanitizer' => true,
+                'input_transformer' => true,
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
@@ -54,11 +51,10 @@ abstract class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('plainPassword', PasswordType::class, [
+            ->add('password', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'label' => 'Mot de passe',
-                'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password', 'placeholder' => 'Mot de passe'],
                 'constraints' => [
                     new NotBlank([
@@ -70,20 +66,12 @@ abstract class RegistrationFormType extends AbstractType
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
+                    new Regex([
+                        'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/',
+                        'message' => 'Votre mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre.'
+                    ])
                 ],
+                'help' => 'Votre mot de passe doit contenir au moins 6 caractères. Pas d\'espace, pas de caractères spéciaux. Il doit contenir au moins une majuscule, une minuscule et un chiffre.',
             ]);
-
-        $this->addModelTransformers($builder);
-
-    }
-
-    protected function addModelTransformers(FormBuilderInterface $builder): void
-    {
-        foreach ($builder->all() as $child) {
-            if (!$child->getType()->getInnerType() instanceof CheckboxType) {
-                $child->addModelTransformer($this->stripTagTransformer);
-                $child->addModelTransformer($this->trimTransformer);
-            }
-        }
     }
 }

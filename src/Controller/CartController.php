@@ -44,14 +44,9 @@ class CartController extends AbstractController
             $this->formProcessor->create(DynamicUserFormType::class, $this->getUser(), ['notBirthDate' => true, 'notEmail' => true])
             : $this->formProcessor->create(CheckoutRegistrationFormType::class, new Customer());
 
-        $this->formProcessor->handleRequest($request, $form);
-
-        if ($this->formProcessor->isValid($form)) {
+        if ($this->formProcessor->process($request, $form)) {
             if (!$this->getUser()) {
                 $user = $form->getData();
-                $password = $form->get('plainPassword')->getData();
-                $user->setPassword($password);
-                $this->formProcessor->save($user);
                 $userAuthenticator->authenticateUser(
                     $user,
                     $authenticator,

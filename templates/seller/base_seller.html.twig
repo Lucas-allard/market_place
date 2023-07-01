@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ma boutique {% endblock %}
+
+{%  block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('sellerPage') }}
+{% endblock %}
+
+{% block body %}
+    <section class="account-page-section">
+        <h1>Bonjour {{ app.user.firstname }} {{ app.user.lastname }}</h1>
+        <p>Depuis le tableau de bord de votre compte, vous pouvez facilement ajouter, modifier ou supprimer des produits de votre boutique.
+            Vous pouvez également consulter les commandes reçues et mettre à jour vos informations personnelles.
+        </p>
+        <nav class="account-page-links">
+            <ul class="nav nav-tabs">
+                <li class="nav-item {% if app.request.attributes.get('_route') == "app_seller_index" %}active{% endif %}">
+                    <a href="{{ path('app_seller_index') }}" class="nav-link">Mon dashboard</a>
+                </li>
+                <li class="nav-item {% if app.request.attributes.get('_route') == "app_seller_product_index" %}active{% endif %}">
+                    <a href="{{ path('app_seller_product_index') }}" class="nav-link">Mes produits</a>
+                </li>
+{#                <li class="nav-item {% if app.request.attributes.get('_route') == "app_user_order_history" %}active{% endif %}">#}
+{#                    <a href="{{ path('app_user_order_history') }}" class="nav-link">Commandes passées</a>#}
+{#                </li>#}
+{#                <li class="nav-item {% if app.request.attributes.get('_route') == "app_user_info" %}active{% endif %}">#}
+{#                    <a href="{{ path('app_user_info') }}" class="nav-link">Mes informations</a>#}
+{#                </li>#}
+{#                <li class="nav-item {% if app.request.attributes.get('_route') == "app_forgot_password_reset_on_logged" %}active{% endif %}">#}
+{#                    <a href="{{ path('app_forgot_password_reset_on_logged') }}" class="nav-link">Modifier mon mot de passe</a>#}
+{#                </li>#}
+            </ul>
+        </nav>
+        {% block section %}
+        {% endblock %}
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('sellerPage') }}
+{% endblock %}

@@ -18,14 +18,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterFormType extends AbstractType
 {
-    private StripTagTransformer $stripTagTransformer;
-    private TrimTransformer $trimTransformer;
-    public function __construct(StripTagTransformer $stripTagTransformer, TrimTransformer $trimTransformer)
-    {
-        $this->stripTagTransformer = $stripTagTransformer;
-        $this->trimTransformer = $trimTransformer;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -71,15 +63,6 @@ class FilterFormType extends AbstractType
             ])
         ;
 
-//        $this->addModelTransformer($builder);
-    }
-
-    private function addModelTransformer(FormBuilderInterface $builder): void
-    {
-        foreach ($builder->all() as $child) {
-            $child->addModelTransformer($this->stripTagTransformer);
-            $child->addModelTransformer($this->trimTransformer);
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

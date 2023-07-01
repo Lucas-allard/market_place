@@ -1,7 +1,6 @@
-import cart from "./Cart";
 import Button from "./Button";
 
-class QuantityInput {
+class QuantityInputManager {
     constructor(inputElement, minusButton, plusButton, cartButtons) {
         this.inputElement = inputElement;
         this.quantityButtons = [minusButton, plusButton];
@@ -48,7 +47,7 @@ class QuantityInput {
         })
 
         quantityElement.forEach((element, index) => {
-            (new QuantityInput(element, minusButton[index], plusButton[index], cartButtons)).updateQuantity();
+            (new QuantityInputManager(element, minusButton[index], plusButton[index], cartButtons)).updateQuantity();
         })
     }
 
@@ -73,4 +72,4 @@ class QuantityInput {
     }
 }
 
-export default QuantityInput;
+export default QuantityInputManager;

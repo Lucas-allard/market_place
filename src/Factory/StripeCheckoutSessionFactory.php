@@ -1,23 +1,20 @@
 <?php
 
-namespace App\Service\Payment;
+namespace App\Factory;
 
-use App\Entity\Interface\PaymentInterface;
+
+use App\Config\Stripe\StripeConnexion;
 use App\Entity\Payment;
-use App\Service\Stripe\StripeConnexion;
-use Exception;
-use LogicException;
-use Stripe;
 use Stripe\Checkout\Session;
 use Stripe\Exception\ApiErrorException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class PaymentProcessor implements PaymentProcessorInterface
+class StripeCheckoutSessionFactory
 {
-
     private UrlGeneratorInterface $urlGenerator;
     private Security $security;
+
     public function __construct(UrlGeneratorInterface $urlGenerator, Security $security)
     {
         $this->urlGenerator = $urlGenerator;
@@ -30,7 +27,7 @@ class PaymentProcessor implements PaymentProcessorInterface
      * @return Session
      * @throws ApiErrorException
      */
-    public function process(PaymentInterface $payment): Session
+    public function create(Payment $payment): Session
     {
         $stripeProducts = [];
 

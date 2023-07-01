@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[UniqueEntity('email', message: "Un utilisateur ayant cette adresse email existe déjà !")]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -22,19 +23,41 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\NotBlank(message: "Le prénom est obligatoire !")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "Le prénom doit contenir au moins {{ limit }} caractères !",
+        maxMessage: "Le prénom doit contenir au maximum {{ limit }} caractères !"
+    )]
     private string $firstName = "";
 
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire !")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères !",
+        maxMessage: "Le nom doit contenir au maximum {{ limit }} caractères !"
+    )]
     private string $lastName = "";
 
     /**
      * @var string
      */
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Assert\NotBlank(message: "L'adresse email est obligatoire !")]
+    #[Assert\Email(message: "L'adresse email n'est pas valide !")]
+    #[Assert\Length(
+        min: 2,
+        max: 180,
+        minMessage: "L'adresse email doit contenir au moins {{ limit }} caractères !",
+        maxMessage: "L'adresse email doit contenir au maximum {{ limit }} caractères !"
+    )]
     private string $email = "";
 
     /**
@@ -46,13 +69,21 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\NotBlank(message: "La ville est obligatoire !")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "La ville doit contenir au moins {{ limit }} caractères !",
+        maxMessage: "La ville doit contenir au maximum {{ limit }} caractères !"
+    )]
     private string $city = "";
 
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\NotBlank(message: "Le nom de la rue est obligatoire !")]
     private string $street = "";
 
     /**
@@ -64,13 +95,28 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 5)]
+    #[Assert\NotBlank(message: "Le code postal est obligatoire !")]
+    #[Assert\Length(
+        min: 5,
+        max: 5,
+        minMessage: "Le code postal doit contenir au moins {{ limit }} caractères !",
+        maxMessage: "Le code postal doit contenir au maximum {{ limit }} caractères !"
+    )]
     private string $postalCode = "";
 
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 10)]
+    #[Assert\NotBlank(message: "Le numéro de téléphone est obligatoire !")]
+    #[Assert\Length(
+        min: 12,
+        max: 12,
+        minMessage: "Le numéro de téléphone doit contenir au moins {{ limit }} caractères !",
+        maxMessage: "Le numéro de téléphone doit contenir au maximum {{ limit }} caractères !"
+    )]
+    #[Assert\Regex(pattern: '/^\+33[67][0-9]{8}$/', message: "Le numéro de téléphone n'est pas valide !")]
     private string $phone = "";
 
     /**
@@ -298,7 +344,7 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     /**
      * @see UserInterface
      */
-    public function eraseCredentials() : ?string
+    public function eraseCredentials(): ?string
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;

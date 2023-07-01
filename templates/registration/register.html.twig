@@ -63,7 +63,7 @@
                     }) }}
                 </div>
                 <div class="mb-6">
-                    {{ form_label(registrationForm.plainPassword,
+                    {{ form_label(registrationForm.password,
                         'Mot de passe',
                         {
                             label_attr: {
@@ -71,7 +71,7 @@
                         }
                         }
                     ) }}
-                    {{ form_widget(registrationForm.plainPassword, {
+                    {{ form_widget(registrationForm.password, {
                         attr: {
                             class: 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md rounded-md border-custom-blue focus:border-custom-blue focus:ring-0 block w-full p-2.5'
                         }

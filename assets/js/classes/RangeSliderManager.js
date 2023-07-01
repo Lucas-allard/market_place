@@ -1,6 +1,6 @@
 import noUiSlider from 'nouislider';
 
-class RangeSlider {
+class RangeSliderManager {
     constructor(rangeElement, minInput, maxInput) {
         this.rangeElement = rangeElement;
         this.minInput = minInput;
@@ -49,4 +49,4 @@ class RangeSlider {
     }
 }
 
-export default RangeSlider;
+export default RangeSliderManager;

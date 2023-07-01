@@ -3,23 +3,27 @@
 namespace App\Service\Product;
 
 use App\Entity\Category;
+use App\Factory\ProductFactory;
 use App\Repository\ProductRepository;
 use App\Service\Pagination\PaginationService;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ProductService
 {
     private ProductRepository $productRepository;
     private PaginationService $paginationService;
 
+    private ProductFactory $productFactory;
 
-    public function __construct(ProductRepository $productRepository, PaginationService $paginationService)
+    public function __construct(ProductRepository $productRepository, PaginationService $paginationService, ProductFactory $productFactory)
     {
         $this->productRepository = $productRepository;
         $this->paginationService = $paginationService;
+        $this->productFactory = $productFactory;
     }
 
     public function getAllProducts(): array
@@ -164,5 +168,15 @@ class ProductService
     {
 
         return $this->productRepository->findBestProductsByCategoryIds($categoryIds);
+    }
+
+    public function getProductsBySeller(?UserInterface $user): array
+    {
+        return $this->productRepository->findBy(['seller' => $user]);
+    }
+
+    public function getProductFactory(): ProductFactory
+    {
+        return $this->productFactory;
     }
 }

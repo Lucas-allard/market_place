@@ -3,7 +3,6 @@
 namespace App\Service\Form;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,7 +66,7 @@ class FormProcessor
 
     public function save(object $data): void
     {
-        $this->entityManager->persist($data);
+        $this->entityManager->persist($data->getData());
         $this->entityManager->flush();
     }
 }

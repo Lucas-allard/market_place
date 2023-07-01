@@ -4,7 +4,7 @@
         <div class="billing-form-row-item">
             {{ form_label(form.lastname) }}
             {{ form_widget(form.lastname) }}
-            {% for error in form.email.vars.errors %}
+            {% for error in form.lastname.vars.errors %}
                 <span class="billing-form-row-item-error">{{ error.message }}</span>
             {% endfor %}
         </div>
@@ -67,11 +67,11 @@
                 {% endfor %}
             </div>
         {% endif %}
-        {% if form.plainPassword is defined %}
+        {% if form.password is defined %}
             <div class="billing-form-row-item">
-                {{ form_label(form.plainPassword) }}
-                {{ form_widget(form.plainPassword) }}
-                {% for error in form.plainPassword.vars.errors %}
+                {{ form_label(form.password) }}
+                {{ form_widget(form.password) }}
+                {% for error in form.password.vars.errors %}
                     <span class="billing-form-row-item-error">{{ error.message }}</span>
                 {% endfor %}
             </div>

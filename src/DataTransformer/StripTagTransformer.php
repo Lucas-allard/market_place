@@ -20,6 +20,6 @@ class StripTagTransformer implements DataTransformerInterface
         if (gettype($value) !== 'string') {
             return '';
         }
-        return $value;
+        return strip_tags($value);
     }
 }

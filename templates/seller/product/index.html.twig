@@ -1,0 +1,11 @@
+{% extends 'seller/base_seller.html.twig' %}
+
+{% block section %}
+    <section class="seller-section">
+        <div class="seller-header">
+            <h2>Liste des produits</h2>
+            <a href="{{ path('app_seller_product_add') }}" class="button button-blue">Ajouter un produit</a>
+        </div>
+        {{ include('components/_table.html.twig', {'className': 'seller-table'}) }}
+    </section>
+{% endblock %}

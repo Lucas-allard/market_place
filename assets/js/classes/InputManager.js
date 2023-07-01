@@ -1,6 +1,6 @@
 import Button from "./Button";
 
-class Inputs {
+class InputManager {
     constructor(inputElements, visibleInputElements) {
         this.hideClass = 'hidden';
         this.inputElements = inputElements;
@@ -57,4 +57,4 @@ class Inputs {
     }
 }
 
-export default Inputs;
+export default InputManager;

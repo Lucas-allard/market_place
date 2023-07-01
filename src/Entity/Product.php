@@ -6,6 +6,7 @@ use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product extends AbstractEntity
@@ -13,25 +14,37 @@ class Product extends AbstractEntity
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\NotBlank(message: 'Veuillez saisir le nom du produit')]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Le nom du produit doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom du produit doit contenir au maximum {{ limit }} caractères',
+    )]
     private string $name = '';
 
     /**
      * @var string
      */
     #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: 'Veuillez saisir la description du produit')]
     private string $description = '';
 
     /**
      * @var float
      */
     #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(message: 'Veuillez saisir le prix du produit')]
+    #[Assert\Positive(message: 'Le prix du produit doit être positif')]
     private float $price = 0.0;
 
     /**
      * @var int
      */
     #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(message: 'Veuillez saisir la quantité du produit')]
+    #[Assert\Positive(message: 'La quantité du produit doit être positive')]
     private int $quantity = 0;
 
 
@@ -56,12 +69,13 @@ class Product extends AbstractEntity
     private Collection $pictures;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Positive(message: 'Le pourcentage de réduction doit être positif')]
     private ?int $discount = null;
 
     #[ORM\ManyToMany(targetEntity: Caracteristic::class, inversedBy: 'products')]
     private Collection $caracteristics;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $shippingFee = null;
 
 

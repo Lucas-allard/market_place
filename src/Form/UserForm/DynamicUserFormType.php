@@ -32,6 +32,8 @@ class DynamicUserFormType extends AbstractType
                             'maxMessage' => 'Votre prénom doit contenir au maximum {{ limit }} caractères',
                         ])
                     ],
+                    'input_sanitizer' => true,
+                    'input_transformer' => true,
                 ]);
         if (!$options['notLastname'])
             $builder
@@ -48,6 +50,8 @@ class DynamicUserFormType extends AbstractType
                             'maxMessage' => 'Votre nom doit contenir au maximum {{ limit }} caractères',
                         ])
                     ],
+                    'input_sanitizer' => true,
+                    'input_transformer' => true,
                 ]);
         if (!$options['notBirthDate'])
             $builder
@@ -69,6 +73,7 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre email',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notPhone'])
             $builder
@@ -79,6 +84,7 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre numéro de téléphone',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notPostalCode'])
             $builder
@@ -89,6 +95,7 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre code postal',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notStreet'])
             $builder
@@ -99,6 +106,7 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre rue',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notStreetNumber'])
             $builder
@@ -109,6 +117,7 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre numéro',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notCity'])
             $builder
@@ -119,6 +128,8 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre ville',
                         ]),
                     ],
+                    'input_sanitizer' => true,
+                    'input_transformer' => true,
                 ]);
     }
 

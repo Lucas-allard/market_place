@@ -6,7 +6,6 @@ use App\Entity\Customer;
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Product;
-use App\Entity\User;
 
 class OrderFactory
 {

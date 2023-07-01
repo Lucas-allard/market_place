@@ -43,6 +43,7 @@ class Seller extends User
     {
         parent::__construct();
         $this->products = new ArrayCollection();
+        $this->setRoles(['ROLE_SELLER']);
     }
 
     /**

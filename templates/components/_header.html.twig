@@ -1,3 +1,8 @@
+{% if app.user is not null and "ROLE_SELLER" in app.user.roles %}
+    {% set accountPath = path('app_seller_index') %}
+{% else %}
+    {% set accountPath = path('app_user_order') %}
+{% endif %}
 <header class="header">
     <div class="header-sidebar-trigger">
         <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
@@ -42,7 +47,7 @@
                 <ul class="dropdown-list ">
                     {% if app.user %}
                         <li class="dropdown-item">
-                            <a href="{{ path('app_user_order') }}" class="dropdown-link">Mon compte</a>
+                            <a href="{{ accountPath }}" class="dropdown-link">Mon compte</a>
                         </li>
                         <li class="dropdown-item">
                             <a href="{{ path('app_logout') }}" class="dropdown-link">Déconnexion</a>
@@ -58,23 +63,25 @@
                 </ul>
             </div>
         </nav>
-        <nav class="dropdown">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                 stroke="currentColor" class="dropdown-icon">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
-            </svg>
-            <div class="dropdown-menu hidden">
-                <ul class="dropdown-list">
-                    <li class="dropdown-item">
-                        <a href="{{ path('app_cart_index') }}" class="dropdown-link">Panier</a>
-                    </li>
-                    <li class="dropdown-item">
-                        <a href="{{ path('app_user_order') }}" class="dropdown-link">Commandes</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        {% if app.user is not null and "ROLE_SELLER" not in app.user.roles %}
+            <nav class="dropdown">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="dropdown-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
+                </svg>
+                <div class="dropdown-menu hidden">
+                    <ul class="dropdown-list">
+                        <li class="dropdown-item">
+                            <a href="{{ path('app_cart_index') }}" class="dropdown-link">Panier</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ accountPath }}" class="dropdown-link">Commandes</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        {% endif %}
         <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
              xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
              class="dropdown-icon menu-trigger" data-menu-id="mobileMenu">
@@ -108,7 +115,7 @@
             </li>
             {% if app.user %}
                 <li class="menu-item">
-                    <a href="{{ path('app_logout') }}" class="menu-link">Mon compte</a>
+                    <a href="{{ accountPath }}" class="menu-link">Mon compte</a>
                 </li>
                 <li class="menu-item">
                     <a href="{{ path('app_logout') }}" class="menu-link">Déconnexion</a>
