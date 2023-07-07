@@ -1,0 +1,15 @@
+{% macro datalistStart %}
+<dl>
+{% endmacro %}
+
+{% macro datalistEnd %}
+</dl>
+{% endmacro %}
+
+{% macro datalistItem(label, value, classes="") %}
+<div class="data-row {{ classes }}">
+    <dt>{{ label }}</dt>
+    <dd>{{ value }}</dd>
+</div>
+{% endmacro %}
+

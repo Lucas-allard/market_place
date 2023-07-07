@@ -4,25 +4,38 @@ namespace App\EventListener;
 
 use App\Entity\Order;
 use App\Entity\Payment;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
-#[AsDoctrineListener(event: Events::postUpdate, priority: 1, connection: 'default')]
-class OrderPendingListener
+class OrderPendingListener implements EventSubscriberInterface
 {
     private MailerInterface $mailer;
+
+    private EntityManagerInterface $entityManager;
     private string $adminEmail;
 
-    public function __construct(MailerInterface $mailer, string $adminEmail)
+    public function __construct(MailerInterface $mailer, EntityManagerInterface $entityManager, string $adminEmail)
     {
         $this->mailer = $mailer;
+        $this->entityManager = $entityManager;
         $this->adminEmail = $adminEmail;
     }
 
+    /**
+     * @return string[]
+     */
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            Events::postUpdate => 'postUpdate',
+        ];
+    }
 
     public function postUpdate(PostUpdateEventArgs $event): void
     {
@@ -39,6 +52,7 @@ class OrderPendingListener
 
             }
 
+            $this->updateOrderDate($entity->getOrder());
             $this->updateProductQuantity($entity->getOrder());
         }
     }
@@ -80,6 +94,16 @@ class OrderPendingListener
         foreach ($order->getOrderItems() as $orderItem) {
             $product = $orderItem->getProduct();
             $product->setQuantity($product->getQuantity() - $orderItem->getQuantity());
+
+            $this->entityManager->persist($product);
+            $this->entityManager->flush();
         }
+    }
+
+    private function updateOrderDate(Order $order): void
+    {
+        $order->setOrderDate($order->getUpdatedAt());
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
     }
 }

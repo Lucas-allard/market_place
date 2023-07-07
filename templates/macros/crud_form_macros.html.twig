@@ -1,0 +1,19 @@
+{% macro formField(label, widget, classes='') %}
+    <div class="form-field {{ classes }}">
+        {{ form_label(label) }}
+        {{ form_widget(widget) }}
+    </div>
+{% endmacro %}
+
+{% macro formGroup(content, classes='') %}
+    <div class="form-group {{ classes }}">
+        {{ content }}
+    </div>
+{% endmacro %}
+
+{% macro crudCollection(prototype) %}
+    <div class="form-field crud-collection" data-prototype="{{ prototype|e('html_attr') }}">
+        <p class="required">Images du produit</p>
+        <span></span>
+    </div>
+{% endmacro %}

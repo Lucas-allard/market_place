@@ -25,6 +25,7 @@
                     {% endfor %}
                 </div>
             </div>
+            {% if form.birthDate is defined %}
             <div class="form-group small">
                 <div>
                     {{ form_label(form.birthDate, 'Date de naissance') }}
@@ -34,6 +35,7 @@
                     <span class="form-error">{{ error.message }}</span>
                 {% endfor %}
             </div>
+            {% endif %}
             <div class="form-group">
                 <div class="form-field">
                     {{ form_label(form.phone, 'Téléphone') }}
