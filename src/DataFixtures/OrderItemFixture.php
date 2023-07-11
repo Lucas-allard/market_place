@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Order;
 use App\Entity\OrderItem;
+use App\Entity\OrderItemSeller;
 use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -19,7 +20,7 @@ class OrderItemFixture extends Fixture implements DependentFixtureInterface
     {
         $faker = Faker\Factory::create();
 
-        for ($i = 0000; $i < 2000; $i++) {
+        for ($i = 0; $i < 4000; $i++) {
             $orderItem = new OrderItem();
             $orderItem->setQuantity($faker->numberBetween(1, 10));
 
@@ -33,6 +34,16 @@ class OrderItemFixture extends Fixture implements DependentFixtureInterface
             $orderItem->setOrder($order);
             $manager->persist($orderItem);
 
+            $orderItemSeller = new OrderItemSeller();
+            $orderItemSeller
+                ->setSeller($product->getSeller())
+                ->setOrder($order);
+
+            if ($order->getStatus() === Order::STATUS_COMPLETED) {
+                $orderItemSeller->setStatus(OrderItemSeller::STATUS_PENDING);
+            }
+
+            $manager->persist($orderItemSeller);
         }
 
         $manager->flush();

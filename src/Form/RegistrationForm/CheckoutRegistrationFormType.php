@@ -2,16 +2,19 @@
 
 namespace App\Form\RegistrationForm;
 
-use App\DataTransformer\StripTagTransformer;
-use App\DataTransformer\TrimTransformer;
 use App\Entity\Customer;
-use App\Entity\User;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CheckoutRegistrationFormType extends RegistrationFormType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -20,9 +23,10 @@ class CheckoutRegistrationFormType extends RegistrationFormType
                 'label' => 'Ville',
                 'attr' => [
                     'placeholder' => 'Ville',
-
                 ],
                 'required' => true,
+                'input_sanitizer' => true,
+                'input_transformer' => true,
             ])
             ->add('street', TextType::class, [
                 'label' => 'Rue',
@@ -30,6 +34,7 @@ class CheckoutRegistrationFormType extends RegistrationFormType
                     'placeholder' => 'Rue',
                 ],
                 'required' => true,
+                'input_sanitizer' => true,
             ])
             ->add('streetNumber', TextType::class, [
                 'label' => 'Numéro',
@@ -37,6 +42,7 @@ class CheckoutRegistrationFormType extends RegistrationFormType
                     'placeholder' => 'Numéro',
                 ],
                 'required' => true,
+                'input_sanitizer' => true,
             ])
             ->add('postalCode', TextType::class, [
                 'label' => 'Code postal',
@@ -44,19 +50,24 @@ class CheckoutRegistrationFormType extends RegistrationFormType
                     'placeholder' => 'Code postal',
                 ],
                 'required' => true,
+                'input_sanitizer' => true,
             ])
-            ->add('phone', TextType::class, [
+            ->add('phone', TelType::class, [
                 'label' => 'Téléphone',
                 'attr' => [
                     'placeholder' => 'Téléphone',
                 ],
                 'required' => true,
+                'input_sanitizer' => true,
             ])
         ;
 
-        $this->addModelTransformers($builder);
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

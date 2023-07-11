@@ -10,6 +10,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -22,11 +23,19 @@ use Doctrine\Persistence\ManagerRegistry;
 class ProductRepository extends ServiceEntityRepository
 {
 
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
     }
 
+    /**
+     * @param Product $product
+     * @param bool $flush
+     * @return void
+     */
     public function save(Product $product, bool $flush = false): void
     {
         $this->getEntityManager()->persist($product);
@@ -35,6 +44,11 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param Product $product
+     * @param bool $flush
+     * @return void
+     */
     public function remove(Product $product, bool $flush = false): void
     {
         $this->getEntityManager()->remove($product);
@@ -43,6 +57,10 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param int $maxResults
+     * @return float|int|mixed|string
+     */
     public function findTopProductsOrdered(int $maxResults = 9)
     {
 
@@ -55,6 +73,7 @@ class ProductRepository extends ServiceEntityRepository
             ->innerJoin('p.categories', 'c')
             ->innerJoin('p.brand', 'b')
             ->where('o.createdAt <= :oneMonthAgo')
+            ->andWhere('p.quantity > 0')
             ->groupBy('p.id')
             ->orderBy('MAX(oi.quantity)', 'DESC')
             ->setMaxResults($maxResults);
@@ -65,6 +84,11 @@ class ProductRepository extends ServiceEntityRepository
     }
 
 
+    /**
+     * @param int $maxResults
+     * @param int|null $offset
+     * @return float|int|mixed|string
+     */
     public function findNewsArrivalsProducts(int $maxResults = 9, ?int $offset = 0)
     {
 
@@ -75,6 +99,7 @@ class ProductRepository extends ServiceEntityRepository
             ->innerJoin('p.categories', 'c')
             ->innerJoin('p.orderItems', 'oi')
             ->where('p.createdAt >= :createdAt')
+            ->andWhere('p.quantity > 0')
             ->andWhere($queryBuilder->expr()->in(
                 'c.id',
                 $this->getEntityManager()->createQueryBuilder()
@@ -95,6 +120,10 @@ class ProductRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
+    /**
+     * @param int $maxResult
+     * @return float|int|mixed|string
+     */
     public function findSellsProductsHasDiscount(int $maxResult)
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
@@ -103,6 +132,7 @@ class ProductRepository extends ServiceEntityRepository
             ->from(Product::class, 'p')
             ->innerJoin('p.categories', 'c')
             ->innerJoin('p.orderItems', 'oi')
+            ->andWhere('p.quantity > 0')
             ->where($queryBuilder->expr()->isNotNull('p.discount'))
             ->andWhere($queryBuilder->expr()->in(
                 'c.id',
@@ -122,35 +152,68 @@ class ProductRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function getProductsByCategorySlugQuery(string $categorySlug, string $order): QueryBuilder
+    /**
+     * @param string $categoryId
+     * @param string|null $parentCategoryId
+     * @param string $order
+     * @return QueryBuilder
+     */
+    public function getProductsByCategoryIdQuery(string $categoryId, ?string $parentCategoryId = null, string $order = "DESC"): QueryBuilder
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $queryBuilder
-            ->select('p, b')
+            ->select('p')
             ->from(Product::class, 'p')
             ->innerJoin('p.categories', 'c')
-            ->innerJoin('p.brand', 'b')
-            ->where('c.slug = :categorySlug')
-            ->orderBy('p.createdAt', $order)
-            ->setParameter('categorySlug', $categorySlug);
+            ->where('c.id = :categoryId')
+            ->andWhere('p.quantity > 0')
+            ->setParameter('categoryId', $categoryId)
+            ->orderBy('p.createdAt', $order);
+
+        if ($parentCategoryId) {
+            $queryBuilder
+                ->innerJoin('c.parent', 'cp')
+                ->andWhere('cp.id = :parentCategoryId')
+                ->setParameter('parentCategoryId', $parentCategoryId);
+        }
 
         return $queryBuilder;
     }
 
+
+    /**
+     * @param string $categoryId
+     * @param string|null $parentCategoryId
+     * @param int|null $minPrice
+     * @param int|null $maxPrice
+     * @param array|null $brandsId
+     * @param array|null $caracteristicsId
+     * @param string $order
+     * @return QueryBuilder
+     */
     public function getProductsByFilterQuery(
-        Category $category,
-        ?int     $minPrice = null,
-        ?int     $maxPrice = null,
-        ?array   $brand = null,
-        ?array   $caracteristic = null,
-        string   $order = 'DESC'): QueryBuilder
+        string  $categoryId,
+        ?string $parentCategoryId = null,
+        ?int    $minPrice = null,
+        ?int    $maxPrice = null,
+        ?array  $brandsId = null,
+        ?array  $caracteristicsId = null,
+        string  $order = 'DESC'): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('p')
             ->innerJoin('p.categories', 'c')
             ->innerJoin('p.brand', 'b')
-            ->innerJoin('p.caracteristics', 'car')
-            ->where('c.id = :category')
-            ->setParameter('category', $category->getId());
+            ->innerJoin('p.caracteristics', 'car');
+
+        if ($parentCategoryId) {
+            $queryBuilder
+                ->innerJoin('c.parent', 'cp')
+                ->where('cp.id = :parentCategoryId')
+                ->setParameter('parentCategoryId', $parentCategoryId);
+        }
+
+        $queryBuilder->andWhere('c.id = :categoryId')
+            ->setParameter('categoryId', $categoryId);
 
         if ($minPrice) {
             $queryBuilder
@@ -164,19 +227,20 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('maxPrice', $maxPrice);
         }
 
-        if ($brand) {
+        if ($brandsId) {
             $queryBuilder
-                ->andWhere('b.id IN (:brand)')
-                ->setParameter('brand', $brand);
+                ->andWhere('b.id IN (:brandsId)')
+                ->setParameter('brandsId', $brandsId);
         }
 
-        if ($caracteristic) {
+        if ($caracteristicsId) {
             $queryBuilder
-                ->andWhere('car.id IN (:caracteristic)')
-                ->setParameter('caracteristic', $caracteristic);
+                ->andWhere('car.id IN (:caracteristicsId)')
+                ->setParameter('caracteristicsId', $caracteristicsId);
         }
 
         $queryBuilder
+            ->andWhere('p.quantity > 0')
             ->orderBy('p.price', $order);
 
         return $queryBuilder;
@@ -211,6 +275,10 @@ class ProductRepository extends ServiceEntityRepository
     }
 
 
+    /**
+     * @param array $categoryIds
+     * @return float|int|mixed|string
+     */
     public function findBestProductsByCategoryIds(array $categoryIds)
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
@@ -220,11 +288,33 @@ class ProductRepository extends ServiceEntityRepository
             ->innerJoin('p.categories', 'c')
             ->innerJoin('p.orderItems', 'oi')
             ->where($queryBuilder->expr()->in('c.id', $categoryIds))
+            ->andWhere('p.quantity > 0')
             ->andWhere('c.parent IS NOT NULL')
             ->groupBy('p.id')
             ->orderBy('SUM(oi.quantity)', 'DESC');
 
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserInterface|null $user
+     * @param string|null $sort
+     * @param string|null $order
+     * @return QueryBuilder
+     */
+    public function getProductsBySellerQuery(?UserInterface $user, ?string $sort, ?string $order): QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->innerJoin('p.seller', 's')
+            ->where('s.id = :seller');
+
+        if ($sort) {
+            $queryBuilder->orderBy('p.' . $sort, $order);
+        }
+
+        $queryBuilder
+            ->setParameter('seller', $user->getId());
+        return $queryBuilder;
     }
 }

@@ -1,0 +1,49 @@
+@import '../_variables.scss';
+
+.pagination-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: $spacing-md;
+  margin-bottom: $spacing-md;
+
+
+  .pagination-counter {
+    font-size: $font-size-sm;
+  }
+
+  .pagination-list-paginator {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .pagination-list-paginator-item {
+      margin-left: $spacing-md;
+      margin-right: $spacing-md;
+      font-size: $font-size-sm;
+      color: $color-gray;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      span {
+        margin-left: $spacing-xs;
+        margin-right: $spacing-xs;
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      &:hover {
+        color: $color-blue;
+      }
+
+      &.active {
+        color: $color-blue;
+      }
+    }
+  }
+}

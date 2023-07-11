@@ -16,24 +16,40 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
+    /**
+     * @var EmailVerifier
+     */
     private EmailVerifier $emailVerifier;
 
+    /**
+     * @var FormProcessor
+     */
     private FormProcessor $formProcessor;
 
-    public function __construct(EmailVerifier $emailVerifier, FormProcessor $formProcessor)
+    /**
+     * @var ValidatorInterface
+     */
+    private ValidatorInterface $validator;
+
+    /**
+     * @param EmailVerifier $emailVerifier
+     * @param FormProcessor $formProcessor
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(EmailVerifier $emailVerifier, FormProcessor $formProcessor, ValidatorInterface $validator)
     {
         $this->emailVerifier = $emailVerifier;
         $this->formProcessor = $formProcessor;
+        $this->validator = $validator;
     }
 
     /**
@@ -53,7 +69,7 @@ class RegistrationController extends AbstractController
 
         if ($this->checkFormValid($form)) {
             $user = $form->getData();
-            $password = $form->get('plainPassword')->getData();
+            $password = $form->get('password')->getData();
             $user->setPassword($password);
             $this->persistUser($user, $entityManager);
             $this->sendEmailConfirmation($user);
@@ -72,6 +88,10 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+    /**
+     * @param string $type
+     * @return FormInterface
+     */
     public function createFormType(string $type): FormInterface
     {
         if ($type === 'customer') {
@@ -83,12 +103,31 @@ class RegistrationController extends AbstractController
         }
     }
 
+    /**
+     * @param FormInterface $form
+     * @return bool
+     */
     public function checkFormValid(FormInterface $form): bool
     {
-        return $form->isSubmitted() && $form->isValid();
+        if (!$form->isSubmitted() ) {
+            return false;
+        }
+        //use the validator service to check the form
+        $errors = $this->validator->validate($form, null, ['registration']);
+
+        if (count($errors) > 0) {
+            return false;
+        }
+
+        return true;
     }
 
 
+    /**
+     * @param UserInterface $user
+     * @param EntityManagerInterface $entityManager
+     * @return void
+     */
     public function persistUser(UserInterface $user, EntityManagerInterface $entityManager): void
     {
         $entityManager->persist($user);
@@ -103,11 +142,16 @@ class RegistrationController extends AbstractController
             (new TemplatedEmail())
                 ->from(new Address('noreply@marketplace.fr', 'Market Place'))
                 ->to($user->getEmail())
-                ->subject('Please Confirm your Email')
+                ->subject('Merci de confirmer votre email')
                 ->htmlTemplate('registration/confirmation_email.html.twig')
         );
     }
 
+    /**
+     * @param Request $request
+     * @param TranslatorInterface $translator
+     * @return Response
+     */
     #[Route('/verification/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
     {
@@ -126,8 +170,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('success', 'Votre email a bien été vérifié.');
 
         return $this->redirectToRoute('app_register');
     }

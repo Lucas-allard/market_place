@@ -2,9 +2,9 @@
 
 namespace App\Tests\Units\Service\Payment;
 
+use App\Bundle\Stripe\StripeConnexion;
 use App\Entity\Payment;
-use App\Service\Payment\PaymentProcessor;
-use App\Service\Stripe\StripeConnexion;
+use App\Service\Payment\StripePaymentProcessor;
 use Exception;
 use LogicException;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ use Stripe\Exception\ApiErrorException;
 
 class PaymentProcessorTest extends TestCase
 {
-    private PaymentProcessor $paymentProcessor;
+    private StripePaymentProcessor $paymentProcessor;
     private Payment $payment;
     private string $stripeToken;
 
@@ -24,7 +24,7 @@ class PaymentProcessorTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->paymentProcessor = new PaymentProcessor();
+        $this->paymentProcessor = new StripePaymentProcessor();
         $this->payment = new Payment();
         StripeConnexion::init();
         $this->stripeToken = Stripe\Token::create([

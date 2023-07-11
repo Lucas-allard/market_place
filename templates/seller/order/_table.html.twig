@@ -1,0 +1,66 @@
+{% import 'macros/table_macros.html.twig' as macros %}
+
+{% set parameters = app.request.query.all %}
+{% set sortArray = parameters['sort'] ?? {} %}
+{% set sort = sortArray|first ? sortArray|keys|first : 'status' %}
+{% set order = sortArray|first ? sortArray|first : 'ASC' %}
+
+{{ macros.tableStart() }}
+
+{{ macros.tableHeader([
+    macros.tableHeaderItem(macros.tableHeaderSpan('Client')),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Date de la commande',
+            order == 'ASC' and sort == 'orderDate' ? 'fa-arrow-up' : order == 'DESC' and sort == 'orderDate' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_seller_order_index', {'sort[orderDate]': order == 'ASC' and sort == 'orderDate' ? 'DESC' : 'ASC', })),
+    ),
+    macros.tableHeaderItem(
+      macros.tableHeaderSpan('Montant de la commande')
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Statut',
+            order == 'ASC' and sort == 'status' ? 'fa-arrow-up' : order == 'DESC' and sort == 'status' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_seller_order_index', {'sort[status]': order == 'ASC' and sort == 'status' ? 'DESC' : 'ASC', })),
+    ),
+    macros.tableHeaderItem(macros.tableHeaderSpan('Paiement')),
+    macros.tableHeaderItem(macros.tableHeaderSpan('Actions', 'sr-only')),
+]) }}
+
+{{ macros.tableBodyStart() }}
+
+{% for order in orders %}
+    {{ macros.tableRow([
+        macros.tableRowItem(order.customer.userIdentifier, 'Client'),
+        macros.tableRowItem(order.orderDate|date('d/m/Y H:i'), 'Date de la commande'),
+        macros.tableRowItem(order.getTotalForSeller(app.user.id)|number_format(2, ','), 'Montant de la commande', '€'),
+        macros.tableRowItem(order.getOrderItemSeller(app.user.id).status == 'cart' ? 'panier' : order.getOrderItemSeller(app.user.id).status == 'pending' ? 'à traiter' : 'expédié', 'Statut', '', 'order-status badge badge-' ~ (order.getOrderItemSeller(app.user.id).status == 'pending' ? 'blue' : 'green') ~ ' badge-lowercase'),
+        macros.tableRowItem(order.payment.status == 'pending' ? 'en attente' : order.payment.status == 'failed' ? 'échoué' : 'payé', 'Paiement', '', 'badge badge-' ~ (order.payment.status == 'failed' ? 'red ' : order.payment.status == 'pending' ? 'blue ' : 'green ') ~ 'badge-lowercase'),
+        macros.tableActionDropdown([
+            macros.tableActionDropdownItem(
+                path('app_seller_order_show', {slug: order.slug}),
+                'Aperçu',
+                'action-show',
+                'fa-eye',
+            ),
+            order.getOrderItemSeller(app.user.id).status != "on_delivery" ? macros.tableActionDropDownItem(
+                path('app_seller_order_ship', {id: order.getOrderItemSeller(app.user.id).id, '_csrf_token': csrf_token('order-ship-' ~ order.id)}),
+                'Expédié',
+                'action-edit',
+                'fa-envelope',
+            ) : null,
+            macros.tableActionDropdownItem(
+                path('app_seller_order_delete', {slug: order.slug}),
+                'Supprimer',
+                'action-delete',
+                'fa-trash',
+                csrf_token('order-delete-' ~ order.id)
+            ),
+        ])
+    ]) }}
+{% endfor %}
+
+{{ macros.tableBodyEnd() }}
+
+{{ macros.tableEnd() }}

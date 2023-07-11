@@ -94,6 +94,135 @@
     }
   }
 
+  .content-section {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-xxl 0;
+
+    .content-header {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: $spacing-lg;
+
+      h2 {
+        font-size: $font-size-xxl;
+        font-weight: $font-weight-bold;
+        color: $color-blue-darker;
+        margin-bottom: $spacing-lg;
+      }
+
+      a {
+        margin: $spacing-lg 0 $spacing-lg auto;
+
+      }
+
+      @media (min-width: $breakpoint-tablet) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: $spacing-xxl;
+      }
+    }
+
+    section {
+      max-width: 1300px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .content-section-text {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+        color: $color-blue;
+        padding-bottom: $spacing-xxl
+      }
+
+
+      #dynamic_user_form_birthDate {
+        display: flex;
+        flex: 1;
+        gap: $spacing-md;
+
+        select {
+          border: 1px solid $color-gray;
+          border-radius: $border-radius-md;
+          padding: $spacing-md;
+          margin: $spacing-md 0;
+          font-size: $font-size-lg;
+          color: $color-blue-darker;
+          flex: 1;
+
+          option {
+            font-size: $font-size-lg;
+            color: $color-blue-darker;
+          }
+        }
+      }
+
+      .content-image {
+        display: none;
+
+        @media (min-width: $breakpoint-desktop) {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: $spacing-xxxl;
+          margin: $spacing-xxxl;
+          flex: 1;
+
+          img {
+            object-fit: cover;
+          }
+        }
+      }
+
+      &.row-section {
+        flex-direction: row;
+      }
+    }
+
+
+    .content-table {
+      position: relative;
+    }
+
+    .content-chart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      div {
+        width: 100%;
+        padding: $spacing-xxl 0;
+
+        h3 {
+          font-size: $font-size-xxl;
+          font-weight: $font-weight-bold;
+          color: $color-blue-darker;
+          margin-bottom: $spacing-lg;
+        }
+      }
+
+      @media (min-width: $breakpoint-desktop) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+
+        div {
+          width: 48%;
+        }
+      }
+    }
+
+    @media (min-width: $breakpoint-tablet) {
+      align-items: center;
+    }
+  }
+
   .account-orders-section {
     display: flex;
     flex-direction: column;
@@ -245,162 +374,6 @@
             font-size: $font-size-lg;
             font-weight: $font-weight-bold;
             color: $color-blue-darker;
-          }
-        }
-      }
-    }
-  }
-
-  .account-section {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xxxl;
-    padding: $spacing-xxxl 0;
-
-    h2 {
-      text-align: center;
-      padding: $spacing-md;
-
-      @media (min-width: $breakpoint-desktop) {
-        text-align: left;
-      }
-    }
-
-    h2 {
-      font-size: $font-size-xxl;
-      font-weight: $font-weight-bold;
-      color: $color-blue-darker;
-    }
-
-    .account-section-text {
-      font-size: $font-size-lg;
-      font-weight: $font-weight-bold;
-      color: $color-blue;
-      padding-bottom: $spacing-xxl
-    }
-
-    .account-form-container {
-      display: flex;
-      flex-direction: row;
-
-      .account-form {
-        display: flex;
-        flex-direction: column;
-        gap: $spacing-md;
-        padding: $spacing-md;
-        max-width: 600px;
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-          gap: $spacing-md;
-
-          .form-field {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
-            gap: $spacing-md;
-            width: 100%;
-
-
-            label {
-              margin: 0 $spacing-md;
-            }
-
-          }
-
-          label {
-            font-size: $font-size-lg;
-            color: $color-blue;
-            flex: 1;
-            margin: 0 $spacing-md;
-          }
-
-          input {
-            border: 1px solid $color-gray;
-            border-radius: $border-radius-md;
-            padding: $spacing-md;
-            font-size: $font-size-lg;
-            color: $color-blue-darker;
-            flex: 1;
-          }
-
-          .form-error {
-            color: $color-red;
-            font-size: $font-size-md;
-            font-weight: $font-weight-bold;
-            margin: $spacing-md;
-          }
-
-          #dynamic_user_form_birthDate {
-            display: flex;
-            flex: 1;
-            gap: $spacing-md;
-
-            select {
-              border: 1px solid $color-gray;
-              border-radius: $border-radius-md;
-              padding: $spacing-md;
-              margin: $spacing-md 0;
-              font-size: $font-size-lg;
-              color: $color-blue-darker;
-              flex: 1;
-
-              option {
-                font-size: $font-size-lg;
-                color: $color-blue-darker;
-              }
-            }
-          }
-
-
-          @media (min-width: $breakpoint-desktop) {
-            flex-direction: row;
-            align-items: center;
-          }
-        }
-
-        .form-group.small {
-          flex-direction: column;
-          align-items: flex-start;
-          div {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            width: 100%;
-          }
-          label {
-            flex: none;
-          }
-        }
-
-        .form-group.form-button {
-          justify-content: center;
-          align-items: center;
-          padding: $spacing-xl 0;
-
-          button {
-            margin: $spacing-xl auto;
-          }
-        }
-
-        @media (min-width: $breakpoint-desktop) {
-          flex: 1;
-        }
-      }
-
-      .account-image {
-        display: none;
-
-        @media (min-width: $breakpoint-desktop) {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          flex: 1;
-
-          img {
-            object-fit: cover;
           }
         }
       }

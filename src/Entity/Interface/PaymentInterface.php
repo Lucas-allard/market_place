@@ -22,9 +22,9 @@ interface PaymentInterface
     public function getDescription(): string;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getStatus(): string;
+    public function getStatus(): ?string;
 
     /**
      * @return Order|null

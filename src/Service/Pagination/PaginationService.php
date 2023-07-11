@@ -8,20 +8,38 @@ use Exception;
 
 class PaginationService
 {
+    /**
+     * @var int
+     */
     private int $currentPage;
+    /**
+     * @var int
+     */
     private int $limit;
 
+    /**
+     * @param int $currentPage
+     * @param int $limit
+     */
     public function __construct(int $currentPage = 1, int $limit = 16)
     {
         $this->currentPage = $currentPage;
         $this->limit = $limit;
     }
 
+    /**
+     * @param int $currentPage
+     * @return void
+     */
     public function setCurrentPage(int $currentPage): void
     {
         $this->currentPage = $currentPage;
     }
 
+    /**
+     * @param int $limit
+     * @return void
+     */
     public function setLimit(int $limit): void
     {
         $this->limit = $limit;
@@ -29,7 +47,10 @@ class PaginationService
 
 
     /**
-     * @throws Exception
+     * @param QueryBuilder $query
+     * @param int $page
+     * @param int $limit
+     * @return array
      */
     public function getPaginatedResult(QueryBuilder $query, int $page, int $limit): array
     {
@@ -38,12 +59,24 @@ class PaginationService
         $paginatedQuery = $this->paginateResults($query);
         $paginationData = $this->calculatePaginationData($paginatedQuery);
 
+        $data = [];
+
+        try {
+            $data = $paginatedQuery->getIterator()->getArrayCopy();
+        } catch (Exception $e) {
+        }
+
+
         return [
-            'data' => $paginatedQuery->getIterator()->getArrayCopy(),
+            'data' => $data,
             'pagination' => $paginationData,
         ];
     }
 
+    /**
+     * @param QueryBuilder $query
+     * @return Paginator
+     */
     private function paginateResults(QueryBuilder $query): Paginator
     {
         $paginator = new Paginator($query);
@@ -54,6 +87,10 @@ class PaginationService
         return $paginator;
     }
 
+    /**
+     * @param Paginator $paginator
+     * @return array
+     */
     private function calculatePaginationData(Paginator $paginator): array
     {
         $totalItems = count($paginator);

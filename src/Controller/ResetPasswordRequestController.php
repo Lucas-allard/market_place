@@ -25,8 +25,14 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 class ResetPasswordRequestController extends AbstractController
 {
 
+    /**
+     * @var FormProcessor
+     */
     private FormProcessor $formProcessor;
 
+    /**
+     * @param FormProcessor $formProcessor
+     */
     public function __construct(FormProcessor $formProcessor)
     {
         $this->formProcessor = $formProcessor;
@@ -148,7 +154,7 @@ class ResetPasswordRequestController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('user/reset_password.html.twig', [
+        return $this->render('user/security/reset_password.html.twig', [
             'resetForm' => $form->createView(),
         ]);
     }

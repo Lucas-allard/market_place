@@ -8,13 +8,15 @@ use App\Entity\Payment;
 
 class PaymentFactory
 {
+    /**
+     * @param Order $order
+     * @return PaymentInterface
+     */
     public function create(Order $order): PaymentInterface
     {
         $payment = new Payment();
         $payment
             ->setStatus(Payment::STATUS_PENDING)
-            ->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime())
             ->setAmount($order->getTotal())
             ->setCurrency(Payment::CURRENCY_EUR)
             ->setDescription('Order #' . $order->getId())

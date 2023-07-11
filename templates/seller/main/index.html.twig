@@ -1,0 +1,35 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block section %}
+    <section class="content-section">
+        <div class="content-header">
+            <h2>Statistiques de vente et performance</h2>
+        </div>
+        <section class="content-chart">
+            <div>
+                <h3>Revenus par mois</h3>
+                {{ render_chart(incomesChart) }}
+            </div>
+            <div>
+                <h3>Commandes par mois</h3>
+                {{ render_chart(ordersChart) }}
+            </div>
+            <div>
+                <h3>Panier moyen par mois</h3>
+                {{ render_chart(cartAverageChart) }}
+            </div>
+            <div>
+                <h3>Top 10 des ventes</h3>
+                {{ render_chart(topProductsChart) }}
+            </div>
+            <div>
+                <h3>Répartition des ventes par catégorie</h3>
+                {{ render_chart(productPerParentCategoryChart) }}
+            </div>
+            <div>
+                <h3>Répartition des ventes par sous-catégorie</h3>
+                {{ render_chart(productPerCategoryChart) }}
+            </div>
+        </section>
+    </section>
+{% endblock %}

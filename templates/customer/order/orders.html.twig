@@ -1,0 +1,44 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block section %}
+    <section class="account-orders-section">
+        {% for order in orders %}
+            <article class="order">
+                <div class="order-header">
+                    <h2>Commande #{{ order.id }}</h2>
+                    <p>Passée le <strong>{{ order.createdAt|date('d/m/Y') }}</strong> à
+                        <strong>{{ order.createdAt|date('H:i') }}</strong></p>
+                    {% if order.orderStatus == "pending" %}
+                        <p class="badge badge-red">En attente de livraison</p>
+                    {% elseif order.orderStatus == "completed" %}
+                        <p class="badge badge-green">Livré</p>
+                    {% endif %}
+                </div>
+                <div class="order-list">
+                    {% for orderItem in order.orderItems %}
+                        <div class="order-item">
+                            <div class="order-item-image-container">
+                                <div class="order-item-image">
+                                    <img src="{{ orderItem.product.pictures[0].path }}"
+                                         alt="{{ orderItem.product.pictures[0].alt }}">
+                                </div>
+                                <p><strong>{{ orderItem.product.name }}</strong></p>
+                            </div>
+                            <div class="order-item-description">
+
+                                <p class="order-item-description-details">
+                                    <span>Quantité : {{ orderItem.quantity }}</span>
+                                    <span>Prix : {{ orderItem.product.priceWithDiscount|number_format(2, ',') }} €</span>
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="order-total">
+                        <p>Total :</p>
+                        <p>{{ order.total|number_format(2, ',') }} €</p>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </section>
+{% endblock %}

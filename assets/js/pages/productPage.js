@@ -1,6 +1,6 @@
 import '../../styles/pages/singleProductPage/productPage.scss'
 import Button from "../classes/Button";
-import QuantityInput from "../classes/QuantityInput";
+import QuantityInputManager from "../classes/QuantityInputManager";
 
 window.addEventListener('load', () => {
     const addToCartButton = document.querySelectorAll('.add-to-cart');
@@ -17,7 +17,7 @@ window.addEventListener('load', () => {
         buttonsElements.push(buttonElement);
     })
 
-    const quantityInput = new QuantityInput(quantityElement, minusButton, plusButton, buttonsElements);
+    const quantityInput = new QuantityInputManager(quantityElement, minusButton, plusButton, buttonsElements);
     quantityInput.updateQuantity();
 
     buttonsElements.forEach(({button}) => {

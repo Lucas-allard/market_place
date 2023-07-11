@@ -11,7 +11,7 @@ class DropdownManager {
 
             dropDownIcon.addEventListener('click', (event) => {
                 event.stopPropagation()
-                this.toggleDropDown(dropDownList);
+                this.toggleDropDown(dropDownList, container);
             });
         });
 
@@ -20,27 +20,29 @@ class DropdownManager {
         });
     }
 
-    toggleDropDown(dropdown) {
+    toggleDropDown(dropdown, container) {
         if (dropdown.classList.contains('hidden')) {
             this.closeAllDropDowns();
-            this.showDropDown(dropdown);
+            this.showDropDown(dropdown, container);
         } else {
-            this.closeDropDown(dropdown);
+            this.closeDropDown(dropdown, container);
         }
     }
 
-    showDropDown(dropdown) {
+    showDropDown(dropdown, container) {
         dropdown.classList.remove('hidden');
+        container.classList.add('active');
     }
 
-    closeDropDown(dropdown) {
+    closeDropDown(dropdown, container) {
         dropdown.classList.add('hidden');
+        container.classList.remove('active');
     }
 
     closeAllDropDowns() {
         this.dropDownContainers.forEach((container) => {
             const dropDownList = container.querySelector('.dropdown-menu');
-            this.closeDropDown(dropDownList);
+            this.closeDropDown(dropDownList, container);
         })
     }
 

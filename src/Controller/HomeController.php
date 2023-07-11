@@ -5,13 +5,19 @@ namespace App\Controller;
 use App\Service\Brand\BrandService;
 use App\Service\Category\CategoryService;
 use App\Service\Product\ProductService;
-use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class HomeController extends AbstractController
 {
+    /**
+     * @param ProductService $productService
+     * @param CategoryService $categoryService
+     * @param BrandService $brandService
+     * @return Response
+     */
     #[Route('/', name: 'app_home')]
     public function index(
         ProductService  $productService,

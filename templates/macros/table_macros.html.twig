@@ -1,0 +1,103 @@
+{% macro tableStart(classes="") %}
+<table class="crud-table {{ classes }}">
+{% endmacro %}
+
+{% macro tableEnd() %}
+</table>
+{% endmacro %}
+
+{% macro tableHeader(headers) %}
+    <thead class="table-head">
+    <tr class="table-row">
+        {% for header in headers %}
+            {{ header }}
+        {% endfor %}
+    </tr>
+    </thead>
+{% endmacro %}
+
+{% macro tableHeaderItem(item, classes="") %}
+    <th class="{{ classes }}">
+            {{ item }}
+    </th>
+{% endmacro %}
+
+{% macro tableHeaderSpan(label, classes="") %}
+    <span class="{{ classes }}">
+        {{ label }}
+    </span>
+{% endmacro %}
+
+{% macro tableHeaderLink(label, classIcon, path) %}
+    <a href="{{ path }}">
+        {{ label }} <i class="fa-solid {{ classIcon }}"></i>
+    </a>
+{% endmacro %}
+
+{% macro tableBodyStart(classes="") %}
+<tbody class="table-body {{ classes }}">
+{% endmacro %}
+
+{% macro tableBodyEnd() %}
+</tbody>
+{% endmacro %}
+
+{% macro tableRowStart(classes="") %}
+    <tr class="table-row {{ classes }}">
+{% endmacro %}
+
+{% macro tableRowEnd() %}
+    </tr>
+{% endmacro %}
+
+{% macro tableRow(data, classes="") %}
+    <tr class="table-row {{ classes }}">
+        {% for item in data %}
+            {{ item }}
+        {% endfor %}
+    </tr>
+{% endmacro %}
+
+{% macro tableRowItem(data, label, symbol="", classes="") %}
+    <td data-label="{{ label }}">
+        <span class="{{ classes }}">{{ data }} {{ symbol }}</span>
+    </td>
+{% endmacro %}
+
+{% macro tableRowCollection(data, label) %}
+    <td data-label="{{ label }}">
+        {% for item in data %}
+            <span class="badge badge-green badge-lowercase">{{ item }}</span>
+        {% endfor %}
+    </td>
+{% endmacro %}
+
+{% macro tableActionDropdown(data) %}
+    <td class="dropdown">
+        <a class="dropdown-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" height="21" width="21" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+            </svg>
+        </a>
+        <div class="dropdown-menu hidden">
+            {% for item in data %}
+                {{ item }}
+            {% endfor %}
+        </div>
+    </td>
+{% endmacro %}
+
+{% macro tableActionDropdownItem(path, label, classes="", classIcon="", token="") %}
+    <span class="dropdown-item">
+        <a href="{{ path }}" class="action {{classes}}" data-token="{{ token }}">{{ label|raw }}</a> <i class="fa-solid {{ classIcon }}"></i>
+    </span>
+{% endmacro %}
+
+
+
+
+
+
+
+
+

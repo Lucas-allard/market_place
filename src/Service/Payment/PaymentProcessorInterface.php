@@ -6,5 +6,9 @@ use App\Entity\Interface\PaymentInterface;
 
 interface PaymentProcessorInterface
 {
-    public function process(PaymentInterface $payment);
+    /**
+     * @param PaymentInterface $payment
+     * @return mixed
+     */
+    public function process(PaymentInterface $payment): mixed;
 }

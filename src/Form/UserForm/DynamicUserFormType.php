@@ -3,6 +3,8 @@
 namespace App\Form\UserForm;
 
 use App\Entity\User;
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -15,6 +17,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DynamicUserFormType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if (!$options['notFirstname'])
@@ -32,6 +39,8 @@ class DynamicUserFormType extends AbstractType
                             'maxMessage' => 'Votre prénom doit contenir au maximum {{ limit }} caractères',
                         ])
                     ],
+                    'input_sanitizer' => true,
+                    'input_transformer' => true,
                 ]);
         if (!$options['notLastname'])
             $builder
@@ -48,8 +57,10 @@ class DynamicUserFormType extends AbstractType
                             'maxMessage' => 'Votre nom doit contenir au maximum {{ limit }} caractères',
                         ])
                     ],
+                    'input_sanitizer' => true,
+                    'input_transformer' => true,
                 ]);
-        if (!$options['notBirthDate'])
+        if (!$options['notBirthDate'] && $this->hasProperty('birthDate', $options))
             $builder
                 ->add('birthDate', DateType::class, [
                     'label' => 'Date de naissance',
@@ -69,16 +80,18 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre email',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notPhone'])
             $builder
-                ->add('phone', TelType::class, [
+                ->add('phone', TextType::class, [
                     'label' => 'Téléphone',
                     'constraints' => [
                         new NotBlank([
                             'message' => 'Veuillez saisir votre numéro de téléphone',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notPostalCode'])
             $builder
@@ -89,6 +102,7 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre code postal',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notStreet'])
             $builder
@@ -99,6 +113,7 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre rue',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notStreetNumber'])
             $builder
@@ -109,6 +124,7 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre numéro',
                         ]),
                     ],
+                    'input_sanitizer' => true,
                 ]);
         if (!$options['notCity'])
             $builder
@@ -119,9 +135,15 @@ class DynamicUserFormType extends AbstractType
                             'message' => 'Veuillez saisir votre ville',
                         ]),
                     ],
+                    'input_sanitizer' => true,
+                    'input_transformer' => true,
                 ]);
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -138,4 +160,17 @@ class DynamicUserFormType extends AbstractType
         ]);
     }
 
+
+    //check if a given property exist in the data class
+
+
+    public function hasProperty(string $property, array $options): bool
+    {
+        try {
+            $entity = new ReflectionClass($options['data_class']);
+        } catch (ReflectionException $e) {
+            return false;
+        }
+        return $entity->hasProperty($property);
+    }
 }

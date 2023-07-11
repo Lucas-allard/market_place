@@ -1,6 +1,6 @@
-import RangeSlider from "../classes/RangeSlider";
+import RangeSliderManager from "../classes/RangeSliderManager";
 import Button from "../classes/Button";
-import Inputs from "../classes/Inputs";
+import InputManager from "../classes/InputManager";
 import '../../styles/pages/productsPage/productsPage.scss';
 
 window.addEventListener('load', () => {
@@ -13,16 +13,16 @@ window.addEventListener('load', () => {
     let maxCaracteristicTypes = 1;
     let maxBrandInputs = 5
 
-    const rangeSlider = new RangeSlider(range, minInput, maxInput);
+    const rangeSlider = new RangeSliderManager(range, minInput, maxInput);
 
     const moreBrandButton = new Button({buttonLabel: 'Voir plus', lastElement: brandInputs});
     const moreCaracteristicButton = new Button({buttonLabel: 'Voir plus', lastElement: caracteristicTypes});
     moreBrandButton.createButton();
     moreCaracteristicButton.createButton();
 
-    const brandInputsDisplay = new Inputs(brandInputs, maxBrandInputs);
+    const brandInputsDisplay = new InputManager(brandInputs, maxBrandInputs);
 
-    const caracteristicTypesDisplay = new Inputs(caracteristicTypes, maxCaracteristicTypes);
+    const caracteristicTypesDisplay = new InputManager(caracteristicTypes, maxCaracteristicTypes);
 
     brandInputsDisplay.displayInputs(moreBrandButton);
     caracteristicTypesDisplay.displayInputs(moreCaracteristicButton);

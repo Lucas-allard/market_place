@@ -59,11 +59,6 @@ interface UserInterface extends PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self;
 
     /**
-     * @return string|null
-     */
-    public function getPassword(): ?string;
-
-    /**
      * @param string $password
      * @return $this
      */

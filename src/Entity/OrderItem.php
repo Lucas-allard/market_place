@@ -2,9 +2,13 @@
 
 namespace App\Entity;
 
+use App\Annotation\SlugProperty;
 use App\Repository\OrderItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @SlugProperty(property="id")
+ */
 #[ORM\Entity(repositoryClass: OrderItemRepository::class)]
 class OrderItem extends AbstractEntity {
 
@@ -21,6 +25,9 @@ class OrderItem extends AbstractEntity {
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $order = null;
 
+    /**
+     * @var Product|null
+     */
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
@@ -72,11 +79,18 @@ class OrderItem extends AbstractEntity {
         return $this;
     }
 
+    /**
+     * @return Product|null
+     */
     public function getProduct(): ?Product
     {
         return $this->product;
     }
 
+    /**
+     * @param Product|null $product
+     * @return $this
+     */
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
@@ -84,11 +98,18 @@ class OrderItem extends AbstractEntity {
         return $this;
     }
 
+    /**
+     * @param OrderItem $item
+     * @return bool
+     */
     public function equals(OrderItem $item): bool
     {
         return $this->getProduct()->getId() === $item->getProduct()->getId();
     }
 
+    /**
+     * @return float
+     */
     public function getTotal(): float
     {
         if ($this->getProduct()->getPriceWithDiscount() !== null) {

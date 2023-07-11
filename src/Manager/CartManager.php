@@ -4,7 +4,9 @@ namespace App\Manager;
 
 use App\Entity\Order;
 use App\Entity\OrderItem;
+use App\Entity\OrderItemSeller;
 use App\Entity\Product;
+use App\Entity\Seller;
 use App\Factory\OrderFactory;
 use App\Service\Cart\CartSessionStorage;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,12 +16,30 @@ use Symfony\Bundle\SecurityBundle\Security;
 class CartManager
 {
 
+    /**
+     * @var CartSessionStorage
+     */
     private CartSessionStorage $cartSessionStorage;
+    /**
+     * @var Security
+     */
     private Security $security;
+    /**
+     * @var OrderFactory
+     */
     private OrderFactory $orderFactory;
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
 
-    public function __construct(CartSessionStorage $cartSessionStorage,Security $security, OrderFactory $orderFactory, EntityManagerInterface $entityManager)
+    /**
+     * @param CartSessionStorage $cartSessionStorage
+     * @param Security $security
+     * @param OrderFactory $orderFactory
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(CartSessionStorage $cartSessionStorage, Security $security, OrderFactory $orderFactory, EntityManagerInterface $entityManager)
     {
         $this->cartSessionStorage = $cartSessionStorage;
         $this->security = $security;
@@ -27,6 +47,9 @@ class CartManager
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @return Order
+     */
     public function getCurrentCart(): Order
     {
         try {
@@ -43,6 +66,10 @@ class CartManager
         return $cart;
     }
 
+    /**
+     * @param Product $product
+     * @return OrderItem|null
+     */
     public function getOrderItemByProduct(Product $product): ?OrderItem
     {
         $cart = $this->getCurrentCart();
@@ -56,6 +83,27 @@ class CartManager
         return null;
     }
 
+    /**
+     * @param Seller $seller
+     * @return OrderItemSeller|null
+     */
+    public function getOrderItemSellerBySeller(Seller $seller): ?OrderItemSeller
+    {
+        $cart = $this->getCurrentCart();
+
+        foreach ($cart->getOrderItemSellers() as $cartItemSeller) {
+            if ($cartItemSeller->getSeller() === $seller) {
+                return $cartItemSeller;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Order $cart
+     * @return void
+     */
     public function saveCart(Order $cart): void
     {
         $this->entityManager->persist($cart);
@@ -64,6 +112,9 @@ class CartManager
         $this->cartSessionStorage->setCart($cart);
     }
 
+    /**
+     * @return OrderFactory
+     */
     public function getCartFactory(): OrderFactory
     {
         return $this->orderFactory;

@@ -4,9 +4,7 @@ namespace App\Form\SearchForm;
 
 use App\DataTransformer\StripTagTransformer;
 use App\DataTransformer\TrimTransformer;
-use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,15 +12,30 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProductSearchFormType extends AbstractType
 {
+    /**
+     * @var StripTagTransformer
+     */
     private StripTagTransformer $stripTagTransformer;
+    /**
+     * @var TrimTransformer
+     */
     private TrimTransformer $trimTransformer;
 
+    /**
+     * @param StripTagTransformer $stripTagTransformer
+     * @param TrimTransformer $trimTransformer
+     */
     public function __construct(StripTagTransformer $stripTagTransformer, TrimTransformer $trimTransformer)
     {
         $this->stripTagTransformer = $stripTagTransformer;
         $this->trimTransformer = $trimTransformer;
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $choices = $this->getChoices($options['categories']);
@@ -50,6 +63,10 @@ class ProductSearchFormType extends AbstractType
         $this->addModelTransformer($builder);
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     * @return void
+     */
     private function addModelTransformer(FormBuilderInterface $builder): void
     {
         foreach ($builder->all() as $child) {
@@ -58,6 +75,10 @@ class ProductSearchFormType extends AbstractType
         }
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -66,6 +87,10 @@ class ProductSearchFormType extends AbstractType
         ]);
     }
 
+    /**
+     * @param array $categories
+     * @return array
+     */
     private function getChoices(array $categories): array
     {
         $choices = [];

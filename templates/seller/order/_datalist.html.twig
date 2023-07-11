@@ -1,0 +1,86 @@
+{% import 'macros/datalist_macros.html.twig' as datalist %}
+{% import 'macros/table_macros.html.twig' as table %}
+
+{{ datalist.datalistStart() }}
+
+{{ datalist.datalistRow(datalist.datalistItem('Date de la commande', order.orderDate|date('d/m/Y H:i'))) }}
+
+{{ datalist.datalistRow(datalist.datalistItem(
+    'Status',
+    order.orderItemSellers.first.status == 'cart' ? 'panier' : order.orderItemSellers.first.status == 'pending' ? 'à traiter' : 'expédié',
+    'order-status badge badge-' ~ (order.orderItemSellers.first.status == 'pending' ? 'blue' : 'green') ~ ' badge-lowercase'
+)) }}
+
+{{ datalist.datalistRow(datalist.datalistItem(
+    'Paiement',
+    order.payment.status == 'pending' ? 'en attente' : order.payment.status == 'failed' ? 'échoué' : 'payé',
+    'badge badge-' ~ (order.payment.status == 'failed' ? 'red ' : order.payment.status == 'pending' ? 'blue ' : 'green ') ~ 'badge-lowercase')
+) }}
+
+{{ datalist.datalistRowStart() }}
+
+{{ datalist.datalistItemStart('Commande') }}
+
+{{ datalist.dataListArray(
+    table.tableStart('datalist-table') ~
+    table.tableHeader([
+        table.tableHeaderItem('Produit'),
+        table.tableHeaderItem('Quantité'),
+        table.tableHeaderItem('Prix unitaire'),
+        table.tableHeaderItem('Promotion'),
+        table.tableHeaderItem('Prix remisé'),
+        table.tableHeaderItem('Prix total')
+    ]) ~
+    table.tableBodyStart()
+) }}
+
+{% for orderItem in order.orderItems %}
+    {{ table.tableRowStart() }}
+    {{ table.tableRowItem(orderItem.product.name, 'Produit') }}
+    {{ table.tableRowItem(orderItem.quantity ~ ' pièce(s)', 'Quantité') }}
+    {{ table.tableRowItem(orderItem.product.price|number_format(2, ',') ~ ' €', 'Prix unitaire') }}
+    {{ table.tableRowItem(orderItem.product.discount ~ ' %', 'Promotion') }}
+    {{ table.tableRowItem(orderItem.product.priceWithDiscount|number_format(2, ',') ~ ' €', 'Prix remisé') }}
+    {{ table.tableRowItem(orderItem.total|number_format(2, ',') ~ ' €', 'Prix total') }}
+    {{ table.tableRowEnd() }}
+{% endfor %}
+
+{{ datalist.dataListArray(
+    table.tableBodyEnd() ~
+    table.tableEnd()
+) }}
+
+{{ datalist.datalistItemEnd() }}
+
+{{ datalist.datalistRowEnd() }}
+
+{{ datalist.datalistRow(
+    datalist.datalistItemRaw(
+        'Informations de livraison',
+        datalist.dataListArray(
+            table.tableStart('datalist-table') ~
+            table.tableHeader([
+                table.tableHeaderItem('Nom'),
+                table.tableHeaderItem('Prénom'),
+                table.tableHeaderItem('Adresse'),
+                table.tableHeaderItem('Ville'),
+                table.tableHeaderItem('Code postal'),
+                table.tableHeaderItem('Numéro de téléphone'),
+                table.tableHeaderItem('Email')
+            ]) ~
+            table.tableBodyStart() ~
+            table.tableRowItem(order.customer.lastname, 'Nom') ~
+            table.tableRowItem(order.customer.firstname, 'Prénom') ~
+            table.tableRowItem(order.customer.getAddress, 'Adresse') ~
+            table.tableRowItem(order.customer.city, 'Ville') ~
+            table.tableRowItem(order.customer.postalCode, 'Code postal') ~
+            table.tableRowItem(order.customer.phone, 'Numéro de téléphone') ~
+            table.tableRowItem(order.customer.email, 'Email') ~
+            table.tableBodyEnd() ~
+            table.tableEnd()
+        )
+    )
+) }}
+
+{{ datalist.datalistEnd() }}
+

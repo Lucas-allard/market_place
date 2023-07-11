@@ -18,20 +18,11 @@ export async function addItemToCart(buttonItem) {
         {
             quantity: productQuantity
         })
-        .then(response =>response);
+        .then(response => response)
 
-    if (response.success) {
-        await swal({
-            title: "Produit ajouté au panier",
-            icon: "success",
-            button: "OK",
-        });
-    }
-    if (!response.success) {
-        await swal({
-            title: "Une erreur est survenue lors de l'ajout du produit au panier",
-            icon: "error",
-            button: "OK",
-        });
-    }
+    await swal({
+        title: response.message,
+        icon: response.status,
+        button: 'OK',
+    });
 }

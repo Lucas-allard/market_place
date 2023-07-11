@@ -37,6 +37,7 @@ $font-weight-extrabold: 800;
 
 // Line Heights
 
+$line-height-xxs: 0.8;
 $line-height-xs: 1.2;
 $line-height-sm: 1.4;
 $line-height-md: 1.6;
@@ -108,7 +109,7 @@ $transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 // Colors
 
 $color-white: rgba(255, 255, 255, 1);
-$color-black: rgba(0, 0, 0, 1);
+$color-black: rgb(42, 39, 39);
 $color-transparent: rgba(0, 0, 0, 0);
 $color-dark-blue: rgba(31, 46, 77, 1);
 $color-blue: rgba(92, 116, 166, 1);

@@ -16,33 +16,51 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/mon-compte', name: 'app_user')]
 class UserController extends AbstractController
 {
+    /**
+     * @var FormProcessor
+     */
     private FormProcessor $formProcessor;
 
+    /**
+     * @param FormProcessor $formProcessor
+     */
     public function __construct(FormProcessor $formProcessor)
     {
         $this->formProcessor = $formProcessor;
     }
 
+    /**
+     * @param OrderService $orderService
+     * @return Response
+     */
     #[Route('/mes-commandes-en-cours', name: '_order')]
     public function index(OrderService $orderService): Response
     {
         $orders = $orderService->getOrdersByUser($this->getUser(), Order::STATUS_PENDING);
 
-        return $this->render('user/orders.html.twig', [
+        return $this->render('customer/order/orders.html.twig', [
             'orders' => $orders,
         ]);
     }
 
+    /**
+     * @param OrderService $orderService
+     * @return Response
+     */
     #[Route('/mes-commandes-terminees', name: '_order_history')]
     public function orderHistory(OrderService $orderService): Response
     {
         $orders = $orderService->getOrdersByUser($this->getUser(), Order::STATUS_COMPLETED);
 
-        return $this->render('user/orders.html.twig', [
+        return $this->render('customer/order/orders.html.twig', [
             'orders' => $orders,
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/mes-informations', name: '_info')]
     public function info(Request $request): Response
     {
@@ -53,7 +71,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_user_info');
         }
 
-        return $this->render('user/info.html.twig', [
+        return $this->render('user/info/info.html.twig', [
             'form' => $form->createView(),
         ]);
     }

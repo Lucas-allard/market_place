@@ -1,0 +1,41 @@
+{% set currentUrl = app.request.getUri %}
+
+<div class="pagination-list">
+    <div class="pagination-counter">
+        <strong>{{ pagination.totalItems }}</strong> résultats
+    </div>
+    <nav class="pagination-list-paginator">
+        {% if pagination.hasPreviousPage %}
+            {% set previousPageUrl = query_replace(currentUrl, {'page': pagination.currentPage - 1}) %}
+            <a href="{{ previousPageUrl }}" class="pagination-list-paginator-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
+                     stroke="currentColor"
+                     fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M15 6l-6 6l6 6"></path>
+                </svg>
+                <span>Précédent</span>
+            </a>
+        {% endif %}
+
+        {% for page in 1..pagination.totalPages %}
+            {% set pageUrl = query_replace(currentUrl, {'page': page}) %}
+            <a href="{{ pageUrl }}"
+               class="pagination-list-paginator-item {{ page == pagination.currentPage ? 'active' : '' }}">
+                {{ page }}
+            </a>
+        {% endfor %}
+
+        {% if pagination.hasNextPage %}
+            {% set nextPageUrl = query_replace(currentUrl, {'page': pagination.currentPage + 1}) %}
+            <a href="{{ nextPageUrl }}" class="pagination-list-paginator-item">
+                <span>Suivant</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
+                     stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M9 6l6 6l-6 6"></path>
+                </svg>
+            </a>
+        {% endif %}
+    </nav>
+</div>

@@ -1,0 +1,48 @@
+{% import 'macros/crud_form_macros.html.twig' as macros %}
+
+{% extends 'user/base_user.html.twig' %}
+
+{% block section %}
+    <section class="content-section">
+        <div class="content-header">
+            <h2>Modifier mes informations</h2>
+        </div>
+        <section class="row-section">
+            {{ form_start(form, {'attr': {'class': 'crud-form'}}) }}
+            <p class="content-section-text">Changer votre prénom, nom, email ou autres informations, c'est ici que ça se
+                passe.</p>
+            <p class="content-section-text">Attention, les informations que vous modifiez ici seront utilisées pour la
+                livraison de vos commandes.</p>
+            {{ macros.formGroup(
+                macros.formField(form.lastname.vars.label, form.lastname, 'form-field') ~
+                macros.formField(form.firstname.vars.label, form.firstname, 'form-field'),
+            ) }}
+            {% if form.birthDate is defined %}
+                {{ macros.formGroup(
+                    macros.formField(form.birthDate.vars.label, form.birthDate, 'form-field'),
+                ) }}
+            {% endif %}
+            {{ macros.formGroup(
+                macros.formField(form.phone.vars.label, form.phone, 'form-field') ~
+                macros.formField(form.email.vars.label, form.email, 'form-field'),
+            ) }}
+            {{ macros.formGroup(
+                macros.formField(form.city.vars.label, form.city, 'form-field') ~
+                macros.formField(form.postalCode.vars.label, form.postalCode, 'form-field'),
+            ) }}
+            {{ macros.formGroup(
+                macros.formField(form.streetNumber.vars.label, form.streetNumber, 'form-field') ~
+                macros.formField(form.street.vars.label, form.street, 'form-field'),
+            ) }}
+            {{ macros.formGroup(
+                macros.formButton('Modifier mes informations', 'button-blue'),
+                'form-button'
+            )}}
+            {{ form_end(form) }}
+            <div class="content-image">
+                <img src="{{ asset('images/user-information.svg') }}"
+                     alt="Attention, les informations que vous modifiez ici seront utilisées pour la livraison de vos commandes.">
+            </div>
+        </section>
+    </section>
+{% endblock %}

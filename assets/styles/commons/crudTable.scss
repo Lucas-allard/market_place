@@ -1,0 +1,219 @@
+@import '../_variables.scss';
+
+.crud-table {
+  width: 100%;
+  margin-bottom: 1rem;
+
+  th, td {
+    font-size: $font-size-sm;
+  }
+
+  .table-head {
+    color: $color-blue;
+    display: none;
+
+    tr {
+      border: 0 solid inherit;
+
+      th {
+        box-shadow: 0 -2px 0 $color-gray inset;
+        font-weight: $font-weight-bold;
+        text-align: left;
+        border: 0;
+      }
+
+      a, span {
+        padding: $spacing-lg $spacing-md;
+        white-space: nowrap;
+        display: block;
+      }
+
+      i {
+        margin-left: $spacing-sm;
+      }
+
+      .sorted {
+        box-shadow: 0 -2 0 $color-blue;
+      }
+    }
+  }
+
+  .table-body, tr, td {
+    display: block;
+  }
+
+  .table-body {
+    tr {
+      box-shadow: 0 -1px 0 $color-gray inset;
+      transition: background-color 0.2s ease-in-out;
+      margin-bottom: $spacing-md;
+      border: 1px solid $color-gray;
+      border-radius: $border-radius-md;
+
+      &:hover {
+        background-color: $color-gray-lighter;
+      }
+
+      td {
+        vertical-align: middle;
+        line-height: $line-height-xxs;
+        padding: $spacing-md $spacing-md $spacing-md 35%;
+        border: 1px solid $color-gray;
+        position: relative;
+
+        &:last-child {
+          padding: $spacing-xs $spacing-md;
+        }
+
+        &:before {
+          bottom: 0;
+          content: attr(data-label);
+          font-weight: 500;
+          left: 0;
+          overflow: hidden;
+          padding: 8px;
+          position: absolute;
+          text-align: left;
+          text-overflow: ellipsis;
+          top: 0;
+          white-space: nowrap;
+          width: 35%;
+        }
+      }
+
+    }
+  }
+
+  .dropdown {
+    position: relative;
+
+    .dropdown-icon {
+      display: block;
+      font-size: $font-size-md;
+      font-weight: $font-weight-bold;
+      vertical-align: middle;
+      cursor: pointer;
+      padding: 0 $spacing-sm;
+      border: 1px solid $color-transparent;
+      max-width: 37px;
+
+      &:hover {
+        border-radius: $border-radius-md;
+        background: $color-white;
+        border-color: $color-gray;
+        color: $color-blue-darker;
+      }
+    }
+
+    &:before {
+      display: none;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      inset: 0 auto auto 0;
+      transform: translate3d(9px, 29px, 0px);
+      z-index: 1000;
+      padding: $spacing-xs;
+      font-size: $font-size-sm;
+      text-align: left;
+      border-radius: $border-radius-md;
+      box-shadow: $shadow-xl;
+      border: 1px solid $color-gray;
+      background-color: $color-white;
+
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: $spacing-md $spacing-lg;
+        font-weight: $font-weight-normal;
+        border-radius: $border-radius-md;
+        cursor: pointer;
+
+        i {
+          margin: 0 $spacing-sm;
+        }
+
+        &:hover {
+          background-color: $color-gray-lighter;
+        }
+      }
+
+      hr {
+        margin-top: 0;
+        margin-bottom: $spacing-xs;
+      }
+
+      @media (min-width: $breakpoint-desktop) {
+        inset: 0 0 auto auto;
+        transform: translate3d(-13.5px, 35px, 0px);
+      }
+    }
+
+    &.active .dropdown-icon {
+      border-radius: $border-radius-md;
+      background: $color-white;
+      border-color: $color-gray;
+      color: $color-blue-darker;
+    }
+  }
+
+  @media (min-width: $breakpoint-desktop) {
+    .table-head {
+      display: table-header-group;
+    }
+
+    .table-body {
+      display: table-row-group;
+    }
+
+    tr {
+      display: table-row;
+      margin-bottom: 0;
+    }
+
+    td {
+      display: table-cell;
+
+      &:before {
+        display: none;
+      }
+    }
+
+    .table-body tr, .table-body tr td {
+      border: 0;
+      border-radius: 0;
+      padding-left: $spacing-md;
+
+    }
+  }
+}
+
+.datalist-table {
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+
+  .table-head tr th, .table-body tr td {
+    padding: $spacing-md $spacing-md $spacing-md 35%;
+    border: 1px solid $color-gray;
+
+    &:last-child {
+      padding: $spacing-md $spacing-md $spacing-md 35%;
+    }
+  }
+
+  @media (min-width: $breakpoint-desktop) {
+    border: 2px solid $color-gray;
+
+    .table-head tr th, .table-body tr td {
+      padding-left: $spacing-md;
+
+        &:last-child {
+            padding-left: $spacing-md;
+        }
+    }
+  }
+}
