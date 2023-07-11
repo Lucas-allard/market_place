@@ -1,0 +1,14 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block section %}
+
+    <section class="content-section">
+        <div class="content-header">
+            <h2>Commande n° {{ order.id }}</h2>
+            <a href="{{ path('app_seller_order_index') }}" class="button button-blue">Retour</a>
+        </div>
+        <section>
+            {{ include('seller/order/_datalist.html.twig') }}
+        </section>
+    </section>
+{% endblock %}

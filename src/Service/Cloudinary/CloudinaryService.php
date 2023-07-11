@@ -12,31 +12,18 @@ class CloudinaryService
     /**
      * @throws ApiError
      */
-    public function upload(File $file): string
+    public function upload(?File $file, string $folder, string $fileName, array $transformation): string
     {
         $cloudinary = CloudinaryConnexion::getCloudinary();
 
-        $filePath = $file->getPathname();
+        $result = $cloudinary->uploadApi()->upload($file->getPathname(), [
+            'folder' => $folder,
+            'public_id' => $fileName,
+            'resource_type' => 'auto',
+            'transformation' => $transformation,
+        ]);
 
-        $result = $cloudinary->uploadApi()->upload($filePath);
 
         return $result['secure_url'];
-    }
-
-    /**
-     * @throws ApiError
-     */
-    public function uploadMultiple(array $uploadedFiles): array
-    {
-        $cloudinary = CloudinaryConnexion::getCloudinary();
-        $uploadedUrls = [];
-
-        foreach ($uploadedFiles as $uploadedFile) {
-            $filePath = $uploadedFile->getPathname();
-            $result = $cloudinary->uploadApi()->upload($filePath);
-            $uploadedUrls[] = $result['secure_url'];
-        }
-
-        return $uploadedUrls;
     }
 }

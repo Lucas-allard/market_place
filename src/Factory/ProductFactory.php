@@ -8,8 +8,14 @@ use Symfony\Bundle\SecurityBundle\Security;
 class ProductFactory
 {
 
+    /**
+     * @var Security
+     */
     private Security $security;
 
+    /**
+     * @param Security $security
+     */
     public function __construct(Security $security)
     {
         $this->security = $security;

@@ -12,9 +12,19 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class StripeCheckoutSessionFactory
 {
+    /**
+     * @var UrlGeneratorInterface
+     */
     private UrlGeneratorInterface $urlGenerator;
+    /**
+     * @var Security
+     */
     private Security $security;
 
+    /**
+     * @param UrlGeneratorInterface $urlGenerator
+     * @param Security $security
+     */
     public function __construct(UrlGeneratorInterface $urlGenerator, Security $security)
     {
         $this->urlGenerator = $urlGenerator;

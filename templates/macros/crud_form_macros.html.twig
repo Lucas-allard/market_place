@@ -1,19 +1,58 @@
-{% macro formField(label, widget, classes='') %}
-    <div class="form-field {{ classes }}">
-        {{ form_label(label) }}
-        {{ form_widget(widget) }}
+{% macro formField(label, widget, classes="", inputClass='') %}
+    <div class="{{ classes }}">
+        {{ form_label(widget, label) }}
+        {{ form_widget(widget, {'attr': {'class': inputClass}}) }}
+    </div>
+{% endmacro %}
+
+{% macro formFieldCollection(content) %}
+        <div class="crud-collection-item">
+           {{ content|raw }}
+        </div>
+{% endmacro %}
+
+{% macro formFieldCollectionDelete() %}
+<div class="crud-collection-item-remove">
+    <button type="button" class="button button-red">
+        <i class="fa fa-trash-o"></i>
+    </button>
+</div>
+{% endmacro %}
+
+{% macro formFieldSymbol(label, widget, classes="", inputClass='') %}
+    <div class="{{ classes }}">
+        {{ form_label(widget, label) }}
+        <span class="{{ inputClass }}">
+            {{ form_widget(widget) }}
+        </span>
     </div>
 {% endmacro %}
 
 {% macro formGroup(content, classes='') %}
     <div class="form-group {{ classes }}">
-        {{ content }}
+        {{ content|raw }}
     </div>
 {% endmacro %}
 
-{% macro crudCollection(prototype) %}
-    <div class="form-field crud-collection" data-prototype="{{ prototype|e('html_attr') }}">
-        <p class="required">Images du produit</p>
-        <span></span>
+{% macro crudCollectionStart(widget) %}
+<div class="form-field crud-collection" data-prototype="{{ form_widget(widget.vars.prototype)|e('html_attr') }}">
+    <p class="required">{{ widget.vars.label }}</p>
+    {% endmacro %}
+
+    {% macro crudCollectionEnd() %}
+</div>
+{% endmacro %}
+
+{% macro crudCollectionThumbnail(label, path, alt) %}
+    <label for="">{{ label }}</label>
+    <div>
+        <img src="{{ path }}" alt="{{ alt }}"/>
     </div>
 {% endmacro %}
+
+{% macro formButton(content, classes="") %}
+<button type="submit" class="button {{ classes }}">
+    {{ content }}
+</button>
+{% endmacro %}
+

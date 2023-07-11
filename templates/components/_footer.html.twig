@@ -89,7 +89,7 @@
                         </a>
                     <ul>
                         {% for subcategory in category.children %}
-                            <a href="{{ path('app_product_index', {'categorySlug': category.slug, 'subcategorySlug': subcategory.slug}) }}">{{ subcategory.name }}</a>
+                            <a href="{{ path('app_product_index', {'categorySlug': category.slug, 'subCategorySlug': subcategory.slug}) }}">{{ subcategory.name }}</a>
                             {% if not loop.last %}|{% endif %}
                         {% endfor %}
                     </ul>

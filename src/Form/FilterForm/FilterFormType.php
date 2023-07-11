@@ -2,22 +2,21 @@
 
 namespace App\Form\FilterForm;
 
-use App\DataTransformer\StripTagTransformer;
-use App\DataTransformer\TrimTransformer;
 use App\Entity\Brand;
 use App\Entity\Caracteristic;
 use Doctrine\ORM\EntityRepository;
-use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterFormType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -65,6 +64,10 @@ class FilterFormType extends AbstractType
 
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

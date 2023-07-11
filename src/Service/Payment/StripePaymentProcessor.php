@@ -10,8 +10,14 @@ use Stripe\Exception\ApiErrorException;
 
 class StripePaymentProcessor implements PaymentProcessorInterface
 {
+    /**
+     * @var StripeCheckoutSessionFactory
+     */
     private StripeCheckoutSessionFactory $stripeCheckoutSessionFactory;
 
+    /**
+     * @param StripeCheckoutSessionFactory $stripeCheckoutSessionFactory
+     */
     public function __construct(StripeCheckoutSessionFactory $stripeCheckoutSessionFactory)
     {
         $this->stripeCheckoutSessionFactory = $stripeCheckoutSessionFactory;

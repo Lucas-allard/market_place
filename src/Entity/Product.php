@@ -2,12 +2,18 @@
 
 namespace App\Entity;
 
+use App\Annotation\SlugProperty;
 use App\Repository\ProductRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @SlugProperty(property="name")
+ */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product extends AbstractEntity
 {
@@ -22,6 +28,7 @@ class Product extends AbstractEntity
         minMessage: 'Le nom du produit doit contenir au moins {{ limit }} caractères',
         maxMessage: 'Le nom du produit doit contenir au maximum {{ limit }} caractères',
     )]
+    #[Groups(['product:list'])]
     private string $name = '';
 
     /**
@@ -37,6 +44,7 @@ class Product extends AbstractEntity
     #[ORM\Column(type: 'float')]
     #[Assert\NotBlank(message: 'Veuillez saisir le prix du produit')]
     #[Assert\Positive(message: 'Le prix du produit doit être positif')]
+    #[Groups(['product:list'])]
     private float $price = 0.0;
 
     /**
@@ -45,43 +53,72 @@ class Product extends AbstractEntity
     #[ORM\Column(type: 'integer')]
     #[Assert\NotBlank(message: 'Veuillez saisir la quantité du produit')]
     #[Assert\Positive(message: 'La quantité du produit doit être positive')]
+    #[Groups(['product:list'])]
     private int $quantity = 0;
 
 
-    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'products')]
-    private Collection $categories;
-
+    /**
+     * @var Seller|null
+     */
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Seller $seller = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
+    /**
+     * @var Collection|ArrayCollection
+     */
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderItem::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $orderItems;
-
-    #[ORM\ManyToOne(inversedBy: 'products')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    private ?Brand $brand = null;
-
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class, orphanRemoval: true)]
+    /**
+     * @var Collection|ArrayCollection
+     */
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $pictures;
 
+    /**
+     * @var int|null
+     */
     #[ORM\Column(nullable: true)]
     #[Assert\Positive(message: 'Le pourcentage de réduction doit être positif')]
+    #[Groups(['product:list'])]
     private ?int $discount = null;
 
+    /**
+     * @var Collection|ArrayCollection
+     */
     #[ORM\ManyToMany(targetEntity: Caracteristic::class, inversedBy: 'products')]
     private Collection $caracteristics;
 
+    /**
+     * @var float|null
+     */
     #[ORM\Column(nullable: true)]
     private ?float $shippingFee = null;
+
+    /**
+     * @var Collection|ArrayCollection
+     */
+    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'products')]
+    private Collection $categories;
+
+    /**
+     * @var Brand|null
+     */
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Brand $brand = null;
 
 
     public function __construct()
     {
         parent::__construct();
+        $this->updatedAt = new DateTime();
         $this->categories = new ArrayCollection();
         $this->orderItems = new ArrayCollection();
         $this->pictures = new ArrayCollection();
@@ -171,45 +208,17 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @return Collection<int, Category>
+     * @return Seller|null
      */
-    public function getCategories(): Collection
-    {
-        return $this->categories;
-    }
-
-    public function addCategory(Category $category): self
-    {
-        if (!$this->categories->contains($category)) {
-            $this->categories->add($category);
-            $category->addProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function setCategories(Collection $categories): self
-    {
-        foreach ($categories as $category) {
-            $this->addCategory($category);
-        }
-        return $this;
-    }
-
-    public function removeCategory(Category $category): self
-    {
-        if ($this->categories->removeElement($category)) {
-            $category->removeProduct($this);
-        }
-
-        return $this;
-    }
-
     public function getSeller(): ?Seller
     {
         return $this->seller;
     }
 
+    /**
+     * @param Seller|null $seller
+     * @return $this
+     */
     public function setSeller(?Seller $seller): self
     {
         $this->seller = $seller;
@@ -217,11 +226,18 @@ class Product extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSlug(): ?string
     {
         return $this->slug;
     }
 
+    /**
+     * @param string $slug
+     * @return $this
+     */
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
@@ -237,6 +253,10 @@ class Product extends AbstractEntity
         return $this->orderItems;
     }
 
+    /**
+     * @param OrderItem $orderItem
+     * @return $this
+     */
     public function addOrderItem(OrderItem $orderItem): self
     {
         if (!$this->orderItems->contains($orderItem)) {
@@ -247,6 +267,10 @@ class Product extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @param OrderItem $orderItem
+     * @return $this
+     */
     public function removeOrderItem(OrderItem $orderItem): self
     {
         if ($this->orderItems->removeElement($orderItem)) {
@@ -259,17 +283,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    public function getBrand(): ?Brand
-    {
-        return $this->brand;
-    }
-
-    public function setBrand(?Brand $brand): self
-    {
-        $this->brand = $brand;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Picture>
@@ -279,6 +292,10 @@ class Product extends AbstractEntity
         return $this->pictures;
     }
 
+    /**
+     * @param Picture $picture
+     * @return $this
+     */
     public function addPicture(Picture $picture): self
     {
         if (!$this->pictures->contains($picture)) {
@@ -289,6 +306,10 @@ class Product extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @param Collection $pictures
+     * @return $this
+     */
     public function setPictures(Collection $pictures): self
     {
         foreach ($pictures as $picture) {
@@ -297,6 +318,10 @@ class Product extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @param Picture $picture
+     * @return $this
+     */
     public function removePicture(Picture $picture): self
     {
         if ($this->pictures->removeElement($picture)) {
@@ -309,11 +334,18 @@ class Product extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getDiscount(): ?int
     {
         return $this->discount;
     }
 
+    /**
+     * @param int|null $discount
+     * @return $this
+     */
     public function setDiscount(?int $discount): self
     {
         $this->discount = $discount;
@@ -329,6 +361,10 @@ class Product extends AbstractEntity
         return $this->caracteristics;
     }
 
+    /**
+     * @param Caracteristic $caracteristic
+     * @return $this
+     */
     public function addCaracteristic(Caracteristic $caracteristic): self
     {
         if (!$this->caracteristics->contains($caracteristic)) {
@@ -338,6 +374,10 @@ class Product extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @param Caracteristic $caracteristic
+     * @return $this
+     */
     public function removeCaracteristic(Caracteristic $caracteristic): self
     {
         $this->caracteristics->removeElement($caracteristic);
@@ -345,6 +385,9 @@ class Product extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return float
+     */
     public function getPriceWithDiscount(): float
     {
         if ($this->discount === null) {
@@ -354,14 +397,75 @@ class Product extends AbstractEntity
         return round($newPrice, 2);
     }
 
+    /**
+     * @return float|null
+     */
     public function getShippingFee(): ?float
     {
         return $this->shippingFee;
     }
 
+    /**
+     * @param float $shippingFee
+     * @return $this
+     */
     public function setShippingFee(float $shippingFee): self
     {
         $this->shippingFee = $shippingFee;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Category $category
+     * @return $this
+     */
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+            $category->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Category $category
+     * @return $this
+     */
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->removeElement($category)) {
+            $category->removeProduct($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Brand|null
+     */
+    public function getBrand(): ?Brand
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand|null $brand
+     * @return $this
+     */
+    public function setBrand(?Brand $brand): static
+    {
+        $this->brand = $brand;
 
         return $this;
     }

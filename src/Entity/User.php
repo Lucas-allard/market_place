@@ -24,12 +24,16 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
      * @var string
      */
     #[ORM\Column(type: 'string', length: 50)]
-    #[Assert\NotBlank(message: "Le prénom est obligatoire !")]
+    #[Assert\NotBlank(
+        message: "Le prénom est obligatoire !",
+        groups: ['registration']
+    )]
     #[Assert\Length(
         min: 2,
         max: 50,
         minMessage: "Le prénom doit contenir au moins {{ limit }} caractères !",
-        maxMessage: "Le prénom doit contenir au maximum {{ limit }} caractères !"
+        maxMessage: "Le prénom doit contenir au maximum {{ limit }} caractères !",
+        groups: ['registration']
     )]
     private string $firstName = "";
 
@@ -37,12 +41,16 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
      * @var string
      */
     #[ORM\Column(type: 'string', length: 50)]
-    #[Assert\NotBlank(message: "Le nom est obligatoire !")]
+    #[Assert\NotBlank(
+        message: "Le nom est obligatoire !",
+        groups: ['registration']
+    )]
     #[Assert\Length(
         min: 2,
         max: 50,
         minMessage: "Le nom doit contenir au moins {{ limit }} caractères !",
-        maxMessage: "Le nom doit contenir au maximum {{ limit }} caractères !"
+        maxMessage: "Le nom doit contenir au maximum {{ limit }} caractères !",
+        groups: ['registration']
     )]
     private string $lastName = "";
 
@@ -50,13 +58,20 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
      * @var string
      */
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Assert\NotBlank(message: "L'adresse email est obligatoire !")]
-    #[Assert\Email(message: "L'adresse email n'est pas valide !")]
+    #[Assert\NotBlank(
+        message: "L'adresse email est obligatoire !",
+        groups: ['registration']
+    )]
+    #[Assert\Email(
+        message: "L'adresse email n'est pas valide !",
+        groups: ['registration']
+    )]
     #[Assert\Length(
         min: 2,
         max: 180,
         minMessage: "L'adresse email doit contenir au moins {{ limit }} caractères !",
-        maxMessage: "L'adresse email doit contenir au maximum {{ limit }} caractères !"
+        maxMessage: "L'adresse email doit contenir au maximum {{ limit }} caractères !",
+        groups: ['registration']
     )]
     private string $email = "";
 
@@ -110,12 +125,6 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
      */
     #[ORM\Column(type: 'string', length: 10)]
     #[Assert\NotBlank(message: "Le numéro de téléphone est obligatoire !")]
-    #[Assert\Length(
-        min: 12,
-        max: 12,
-        minMessage: "Le numéro de téléphone doit contenir au moins {{ limit }} caractères !",
-        maxMessage: "Le numéro de téléphone doit contenir au maximum {{ limit }} caractères !"
-    )]
     #[Assert\Regex(pattern: '/^\+33[67][0-9]{8}$/', message: "Le numéro de téléphone n'est pas valide !")]
     private string $phone = "";
 
@@ -126,11 +135,22 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
     #[ORM\Column]
     private array $roles = [];
 
+    /**
+     * @var bool
+     */
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $resetToken = null;
+
+    public function __toString(): string
+    {
+        return $this->getFullName();
+    }
 
     /**
      * @return string|null
@@ -351,11 +371,18 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
         return null;
     }
 
+    /**
+     * @return bool
+     */
     public function isVerified(): bool
     {
         return $this->isVerified;
     }
 
+    /**
+     * @param bool $isVerified
+     * @return $this
+     */
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
@@ -363,15 +390,35 @@ abstract class User extends AbstractEntity implements EntityInterface, UserInter
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getResetToken(): ?string
     {
         return $this->resetToken;
     }
 
+    /**
+     * @param string|null $resetToken
+     * @return $this
+     */
     public function setResetToken(?string $resetToken): self
     {
         $this->resetToken = $resetToken;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return $this->firstName . " " . $this->lastName;
+    }
+
+    public function getAddress(): string
+    {
+        return $this->streetNumber . ', ' . $this->street;
     }
 }

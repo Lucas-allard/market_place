@@ -7,8 +7,14 @@ use Cloudinary\Configuration\Configuration;
 
 class CloudinaryConnexion
 {
+    /**
+     * @var Cloudinary|null
+     */
     private static ?Cloudinary $cloudinary = null;
 
+    /**
+     * @return void
+     */
     public static function init(): void
     {
         $configuration = Configuration::instance([
@@ -22,6 +28,9 @@ class CloudinaryConnexion
         self::$cloudinary = new Cloudinary($configuration);
     }
 
+    /**
+     * @return Cloudinary
+     */
     public static function getCloudinary(): Cloudinary
     {
         if (self::$cloudinary === null) {

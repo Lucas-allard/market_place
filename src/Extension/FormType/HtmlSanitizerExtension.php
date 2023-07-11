@@ -4,7 +4,6 @@ namespace App\Extension\FormType;
 
 use App\DataTransformer\HtmlPurifierTransformer;
 use App\DataTransformer\TrimTransformer;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -15,7 +14,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HtmlSanitizerExtension implements FormTypeExtensionInterface
 {
+    /**
+     * @var HtmlPurifierTransformer
+     */
     private HtmlPurifierTransformer $htmlPurifierTransformer;
+    /**
+     * @var TrimTransformer
+     */
     private TrimTransformer $trimTransformer;
 
     public function __construct(HtmlPurifierTransformer $htmlPurifierTransformer, TrimTransformer $trimTransformer)
@@ -26,7 +31,9 @@ class HtmlSanitizerExtension implements FormTypeExtensionInterface
     }
 
     /**
-     * @inheritDoc
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -37,7 +44,7 @@ class HtmlSanitizerExtension implements FormTypeExtensionInterface
     }
 
     /**
-     * @inheritDoc
+     * @return iterable
      */
     public static function getExtendedTypes(): iterable
     {
@@ -45,7 +52,10 @@ class HtmlSanitizerExtension implements FormTypeExtensionInterface
     }
 
     /**
-     * @inheritDoc
+     * @param FormView $view
+     * @param FormInterface $form
+     * @param array $options
+     * @return void
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
@@ -53,17 +63,22 @@ class HtmlSanitizerExtension implements FormTypeExtensionInterface
     }
 
     /**
-     * @inheritDoc
+     * @param FormView $view
+     * @param FormInterface $form
+     * @param array $options
+     * @return void
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         // TODO: Implement finishView() method.
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined('html_sanitizer');
     }
-
-
 }

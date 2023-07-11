@@ -7,6 +7,9 @@ use Twig\TwigFunction;
 
 class TwigQueryReplace extends AbstractExtension
 {
+    /**
+     * @return TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [
@@ -14,6 +17,11 @@ class TwigQueryReplace extends AbstractExtension
         ];
     }
 
+    /**
+     * @param $url
+     * @param $parameters
+     * @return string
+     */
     public function queryReplace($url, $parameters): string
     {
         $parsedUrl = parse_url($url);

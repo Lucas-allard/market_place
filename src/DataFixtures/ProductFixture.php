@@ -44,14 +44,14 @@ class ProductFixture extends Fixture implements DependentFixtureInterface
             $product->setPrice($faker->randomFloat(2, 0, 1000));
             $product->setQuantity($faker->numberBetween(0, 1000));
             $product->setShippingFee($faker->randomFloat(2, 0, 20));
-            /** @var Seller $seller */
+
             $seller = $this->getReference('seller_' . $faker->numberBetween(0, 19));
             $product->setSeller($seller);
-            /** @var Category $subCategory */
-            $subCategory = $this->getReference('sub_cat_' . $faker->numberBetween(0, 29));
-            $product->addCategory($subCategory);
-            $product->addCategory($subCategory->getParent());
-            $product->setBrand($subCategory->getParent()->getBrands()[$faker->numberBetween(0, 5)]);
+
+            $brand = $this->getReference('brand__' . $faker->numberBetween(0, 76));
+            $product->setBrand($brand);
+            $product->addCategory($brand->getCategories()->first());
+            $product->addCategory($brand->getCategories()->last());
             $product->setPictures($productPictures);
             $manager->persist($product);
 

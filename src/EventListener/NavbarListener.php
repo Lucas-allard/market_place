@@ -7,11 +7,19 @@ use App\Service\Category\CategoryService;
 use Symfony\Component\Form\FormFactoryInterface;
 use Twig\Environment;
 
-
 class NavbarListener
 {
+    /**
+     * @var Environment
+     */
     private Environment $twig;
+    /**
+     * @var CategoryService
+     */
     private CategoryService $categoryService;
+    /**
+     * @var FormFactoryInterface
+     */
     private FormFactoryInterface $form;
 
     public function __construct(
@@ -25,6 +33,9 @@ class NavbarListener
         $this->form = $form;
     }
 
+    /**
+     * @return void
+     */
     public function onKernelRequest(): void
     {
         $categories = $this->categoryService->getParentsAndChildrenCategoriesInSeparatedArrays();

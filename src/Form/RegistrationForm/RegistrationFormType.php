@@ -2,10 +2,9 @@
 
 namespace App\Form\RegistrationForm;
 
-use App\DataTransformer\StripTagTransformer;
-use App\DataTransformer\TrimTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,10 +15,15 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 abstract class RegistrationFormType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', TextType::class, [
+            ->add('email', EmailType::class, [
                 'label' => 'Adresse email',
                 'attr' => [
                     'placeholder' => 'Adresse email',

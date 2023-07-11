@@ -39,7 +39,7 @@ services:
 
     App\EventListener\EntityUpdateListener:
         tags:
-            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: onFlush }
 
     App\EventListener\NavbarListener:
         arguments:
@@ -50,7 +50,7 @@ services:
 
     App\EventListener\UserRegistrationListener:
         tags:
-            - { name: postPersist, entity: App\Entity\User }
+            - { name: postPersist, event: prePersist }
 
     App\EventListener\AuthenticationSuccessListener:
         arguments:
@@ -59,7 +59,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: security.interactive_login }
 
-    App\EventListener\OrderPendingListener:
+    App\EventListener\OrderReceivedListener:
         arguments:
             $adminEmail: '%admin_email%'
         tags:
@@ -76,4 +76,3 @@ services:
 
     App\Extension\FormType\HtmlSanitizerExtension:
         tags: [ 'form.type' ]
-

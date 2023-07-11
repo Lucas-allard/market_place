@@ -18,17 +18,16 @@ class OrderFixture extends Fixture implements DependentFixtureInterface
 
         for ($i = 0; $i < 500; $i++) {
             $order = new Order();
-            $createdAt = $faker->dateTimeBetween('-1 year', 'now');
-            $orderDate = $faker->dateTimeBetween('-1 year', 'now');
+            $createdAt = $faker->dateTimeBetween('-1 year', '-1 month');
+            $orderDate = $faker->dateTimeBetween($createdAt, 'now');
 
 
             $order->setCreatedAt($createdAt);
             $order->setOrderDate($orderDate);
-            $order->setDeliveryDate($faker->dateTimeBetween($orderDate, '+1 month'));
-            if ($order->getDeliveryDate() < new \DateTime('now')) {
-                $order->setOrderStatus(Order::STATUS_DELIVERED);
+            if ($order->getOrderDate() < $faker->dateTimeBetween('-2 month', 'now')) {
+                $order->setStatus(Order::STATUS_COMPLETED);
             } else {
-                $order->setOrderStatus(Order::STATUS_PENDING);
+                $order->setStatus(Order::STATUS_CART);
             }
             /** @var Customer $customer */
             $customer = $this->getReference('customer_' . $faker->numberBetween(0, 99));

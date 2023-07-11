@@ -3,11 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Category;
-use App\Entity\OrderItem;
-use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Exception;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,11 +17,19 @@ use Doctrine\Persistence\ManagerRegistry;
 class CategoryRepository extends ServiceEntityRepository
 {
 
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Category::class);
     }
 
+    /**
+     * @param Category $entity
+     * @param bool $flush
+     * @return void
+     */
     public function save(Category $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -35,6 +39,11 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param Category $entity
+     * @param bool $flush
+     * @return void
+     */
     public function remove(Category $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -45,6 +54,10 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
 
+    /**
+     * @param Category $category
+     * @return array
+     */
     public function getChildrenCategories(Category $category): array
     {
         return $this->createQueryBuilder('c')
@@ -54,6 +67,9 @@ class CategoryRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return array
+     */
     public function findParentsAndChildrenCategoriesInSeparatedArrays(): array
     {
         $qb = $this->createQueryBuilder('parent');
@@ -135,6 +151,10 @@ class CategoryRepository extends ServiceEntityRepository
 //        return $stmt->executeQuery()->fetchAllAssociative();
 //    }
 
+    /**
+     * @param int $maxResults
+     * @return array
+     */
     public function findCategoriesHasOrder(int $maxResults = 24): array
     {
         $qb = $this->createQueryBuilder('c');
@@ -150,6 +170,9 @@ class CategoryRepository extends ServiceEntityRepository
 
     }
 
+    /**
+     * @return float|int|mixed|string
+     */
     public function findChildrenCategories()
     {
         $qb = $this->createQueryBuilder('c')

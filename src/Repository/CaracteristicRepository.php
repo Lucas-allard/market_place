@@ -16,11 +16,19 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CaracteristicRepository extends ServiceEntityRepository
 {
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Caracteristic::class);
     }
 
+    /**
+     * @param Caracteristic $entity
+     * @param bool $flush
+     * @return void
+     */
     public function save(Caracteristic $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,11 @@ class CaracteristicRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param Caracteristic $entity
+     * @param bool $flush
+     * @return void
+     */
     public function remove(Caracteristic $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);

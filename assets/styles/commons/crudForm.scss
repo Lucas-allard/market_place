@@ -5,6 +5,8 @@
   flex-direction: column;
   justify-content: center;
   max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
 
   .form-field, .form-group {
     display: flex;
@@ -115,6 +117,10 @@
     }
   }
 
+  .form-group.crud-collection-thumbnail {
+    flex-direction: column;
+  }
+
   .form-group {
     flex-direction: row;
     flex-wrap: wrap;
@@ -126,6 +132,22 @@
       @media (min-width: $breakpoint-tablet) {
         width: calc(50% - #{$spacing-md});
       }
+    }
+  }
+
+  .field-title {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .form-group.form-button {
+    justify-content: center;
+    align-items: center;
+    padding: $spacing-xl 0;
+
+    button {
+      margin: $spacing-xl auto;
     }
   }
 }

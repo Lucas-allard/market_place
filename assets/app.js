@@ -20,6 +20,7 @@ import {addItemToCart} from './js/utils/addToCart.js';
 import DropdownManager from './js/classes/DropdownManager.js';
 import MenuManager from "./js/classes/MenuManager";
 import ModalManager from "./js/classes/ModalManager";
+import {captureFlashMessages} from "./js/utils/captureFlashMessage";
 
 window.onload = () => {
     const mobileMenu = document.getElementById('mobileMenu');
@@ -36,4 +37,7 @@ window.onload = () => {
             addItemToCart(buttonItem);
         });
     });
+
+    captureFlashMessages();
+
 }

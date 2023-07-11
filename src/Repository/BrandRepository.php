@@ -16,11 +16,19 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BrandRepository extends ServiceEntityRepository
 {
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Brand::class);
     }
 
+    /**
+     * @param Brand $entity
+     * @param bool $flush
+     * @return void
+     */
     public function save(Brand $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,11 @@ class BrandRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param Brand $entity
+     * @param bool $flush
+     * @return void
+     */
     public function remove(Brand $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -39,6 +52,9 @@ class BrandRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return array|null
+     */
     public function findBrandsWithPictures(): ?array
     {
         return $this->createQueryBuilder('b')
@@ -49,6 +65,10 @@ class BrandRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param int $limit
+     * @return array|null
+     */
     public function findTopBrands(int $limit = 16): ?array
     {
         $queryBuilder = $this->createQueryBuilder('b')

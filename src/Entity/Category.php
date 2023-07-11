@@ -2,11 +2,16 @@
 
 namespace App\Entity;
 
+use App\Annotation\SlugProperty;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @SlugProperty(property="name")
+ */
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category extends AbstractEntity
 {
@@ -14,6 +19,7 @@ class Category extends AbstractEntity
      * @var string
      */
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['product:list'])]
     private string $name = '';
 
     /**
@@ -22,35 +28,53 @@ class Category extends AbstractEntity
     #[ORM\Column(type: 'text')]
     private string $description = '';
 
-    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'categories')]
-    private Collection $products;
-
+    /**
+     * @var Category|null
+     */
     #[ORM\ManyToOne(targetEntity: self::class, cascade: ['persist', 'remove'], inversedBy: 'children')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?self $parent = null;
 
+    /**
+     * @var ArrayCollection|Collection
+     */
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'], orphanRemoval: true)]
-    private Collection $children;
+    private Collection|ArrayCollection $children;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
+    /**
+     * @var ArrayCollection|Collection
+     */
     #[ORM\ManyToMany(targetEntity: Brand::class, mappedBy: 'categories')]
-    private Collection $brands;
+    private Collection|ArrayCollection $brands;
 
+    /**
+     * @var Product
+     */
     private Product $bestProduct;
+
+    /**
+     * @var ArrayCollection|Collection
+     */
+    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'categories')]
+    private Collection|ArrayCollection $products;
 
     public function __construct()
     {
         parent::__construct();
-        $this->products = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->brands = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function __toString(): string
     {
-        return $this->getName();
+        return $this->getParent() ? $this->getParent()->getName() . ' > ' . $this->getName() : $this->getName();
     }
 
     /**
@@ -90,34 +114,17 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @return Collection<int, Product>
+     * @return self|null
      */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function addProduct(Product $product): self
-    {
-        if (!$this->products->contains($product)) {
-            $this->products->add($product);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): self
-    {
-        $this->products->removeElement($product);
-
-        return $this;
-    }
-
     public function getParent(): ?self
     {
         return $this->parent;
     }
 
+    /**
+     * @param Category|null $parent
+     * @return $this
+     */
     public function setParent(?self $parent): self
     {
         $this->parent = $parent;
@@ -133,6 +140,10 @@ class Category extends AbstractEntity
         return $this->children;
     }
 
+    /**
+     * @param Category $child
+     * @return $this
+     */
     public function addChild(self $child): self
     {
         if (!$this->children->contains($child)) {
@@ -143,6 +154,10 @@ class Category extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @param Category $child
+     * @return $this
+     */
     public function removeChild(self $child): self
     {
         if ($this->children->removeElement($child)) {
@@ -155,11 +170,18 @@ class Category extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSlug(): ?string
     {
         return $this->slug;
     }
 
+    /**
+     * @param string $slug
+     * @return $this
+     */
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
@@ -175,6 +197,10 @@ class Category extends AbstractEntity
         return $this->brands;
     }
 
+    /**
+     * @param Brand $brand
+     * @return $this
+     */
     public function addBrand(Brand $brand): self
     {
         if (!$this->brands->contains($brand)) {
@@ -185,6 +211,10 @@ class Category extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @param Brand $brand
+     * @return $this
+     */
     public function removeBrand(Brand $brand): self
     {
         if ($this->brands->removeElement($brand)) {
@@ -220,5 +250,37 @@ class Category extends AbstractEntity
     public function getTotalProducts(): int
     {
         return $this->products->count();
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    /**
+     * @param Product $product
+     * @return $this
+     */
+    public function addProduct(Product $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Product $product
+     * @return $this
+     */
+    public function removeProduct(Product $product): self
+    {
+        $this->products->removeElement($product);
+
+        return $this;
     }
 }

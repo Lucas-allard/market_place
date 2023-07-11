@@ -35,8 +35,17 @@ class Seller extends User
     #[ORM\Column(type: 'float')]
     private float $rating = 0.0;
 
+    /**
+     * @var Collection|ArrayCollection
+     */
     #[ORM\OneToMany(mappedBy: 'seller', targetEntity: Product::class, orphanRemoval: true)]
     private Collection $products;
+
+    /**
+     * @var Collection|ArrayCollection
+     */
+    #[ORM\OneToMany(mappedBy: 'seller', targetEntity: OrderItemSeller::class, orphanRemoval: true)]
+    private Collection $orderItemSellers;
 
 
     public function __construct()
@@ -44,6 +53,7 @@ class Seller extends User
         parent::__construct();
         $this->products = new ArrayCollection();
         $this->setRoles(['ROLE_SELLER']);
+        $this->orderItemSellers = new ArrayCollection();
     }
 
     /**
@@ -126,6 +136,10 @@ class Seller extends User
         return $this->products;
     }
 
+    /**
+     * @param Product $product
+     * @return $this
+     */
     public function addProduct(Product $product): self
     {
         if (!$this->products->contains($product)) {
@@ -136,12 +150,54 @@ class Seller extends User
         return $this;
     }
 
+    /**
+     * @param Product $product
+     * @return $this
+     */
     public function removeProduct(Product $product): self
     {
         if ($this->products->removeElement($product)) {
             // set the owning side to null (unless already changed)
             if ($product->getSeller() === $this) {
                 $product->setSeller(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrderItemSeller>
+     */
+    public function getOrderItemSellers(): Collection
+    {
+        return $this->orderItemSellers;
+    }
+
+    /**
+     * @param OrderItemSeller $orderItemSeller
+     * @return $this
+     */
+    public function addOrderItemSeller(OrderItemSeller $orderItemSeller): static
+    {
+        if (!$this->orderItemSellers->contains($orderItemSeller)) {
+            $this->orderItemSellers->add($orderItemSeller);
+            $orderItemSeller->setSeller($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param OrderItemSeller $orderItemSeller
+     * @return $this
+     */
+    public function removeOrderItemSeller(OrderItemSeller $orderItemSeller): static
+    {
+        if ($this->orderItemSellers->removeElement($orderItemSeller)) {
+            // set the owning side to null (unless already changed)
+            if ($orderItemSeller->getSeller() === $this) {
+                $orderItemSeller->setSeller(null);
             }
         }
 

@@ -15,11 +15,11 @@ class PaymentFixture extends Fixture implements DependentFixtureInterface
     /**
      * @inheritDoc
      */
-    public function load(ObjectManager $manager) : void
+    public function load(ObjectManager $manager): void
     {
         $faker = Faker\Factory::create();
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 500; $i++) {
             $payment = new Payment();
 
             /**
@@ -28,6 +28,11 @@ class PaymentFixture extends Fixture implements DependentFixtureInterface
             $order = $this->getReference('order_' . $i);
             $payment->setDescription($faker->text);
             $payment->setAmount($order->getTotal());
+            if ($order->getStatus() === Order::STATUS_CART) {
+                $payment->setStatus(Payment::STATUS_PENDING);
+            } elseif ($order->getStatus() === Order::STATUS_COMPLETED) {
+                $payment->setStatus(Payment::STATUS_PAID);
+            }
             $payment->setStatus(Payment::STATUS_PAID);
             $payment->setOrder($order);
 
@@ -35,20 +40,6 @@ class PaymentFixture extends Fixture implements DependentFixtureInterface
 
             $this->addReference('payment_' . $i, $payment);
 
-        }
-
-        for ($i = 50; $i < 100; $i++) {
-            $payment = new Payment();
-            /**
-             * @var Order $order
-             */
-            $order = $this->getReference('order_' . $i);
-            $payment->setDescription($faker->text);
-            $payment->setAmount($order->getTotal());
-            $payment->setStatus(Payment::STATUS_PENDING);
-            $payment->setOrder($order);
-
-            $manager->persist($payment);
         }
 
         $manager->flush();
@@ -59,7 +50,7 @@ class PaymentFixture extends Fixture implements DependentFixtureInterface
      */
     public function getDependencies(): array
     {
-    return [
+        return [
             OrderFixture::class,
         ];
     }

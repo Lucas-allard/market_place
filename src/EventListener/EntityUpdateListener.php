@@ -2,8 +2,10 @@
 
 namespace App\EventListener;
 
-use Doctrine\ORM\Event\PreUpdateEventArgs;
+use DateTime;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\UnitOfWork;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class EntityUpdateListener implements EventSubscriberInterface
@@ -15,18 +17,38 @@ class EntityUpdateListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-             Events::preUpdate => 'preUpdate',
+            Events::onFlush => 'onFlush',
         ];
     }
 
-    public function preUpdate(PreUpdateEventArgs $event): void
+    /**
+     * @param OnFlushEventArgs $args
+     * @return void
+     */
+    public function onFlush(OnFlushEventArgs $args): void
     {
-        $entity = $event->getObject();
+        $entityManager = $args->getObjectManager();
+        $unitOfWork = $entityManager->getUnitOfWork();
 
-        if (!method_exists($entity, 'setUpdatedAt')) {
-            return;
+        foreach ($unitOfWork->getScheduledEntityUpdates() as $entity) {
+            if ($this->isRootEntity($entity,$unitOfWork) && method_exists($entity, 'setUpdatedAt')) {
+                $entity->setUpdatedAt(new DateTime());
+                $entityManager->persist($entity);
+                $unitOfWork->recomputeSingleEntityChangeSet($entityManager->getClassMetadata(get_class($entity)), $entity);
+            }
         }
-
-        $entity->setUpdatedAt(new \DateTime());
     }
+
+    /**
+     * @param object $entity
+     * @param UnitOfWork $unitOfWork
+     * @return bool
+     */
+    private function isRootEntity(object $entity, UnitOfWork $unitOfWork): bool
+    {
+        $entityChangeSet = $unitOfWork->getEntityChangeSet($entity);
+
+        return count($entityChangeSet) > 0;
+    }
+
 }

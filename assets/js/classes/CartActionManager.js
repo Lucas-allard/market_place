@@ -50,7 +50,7 @@ class CartActionManager {
             }
         ).then(response => response);
 
-        if (!response.success) {
+        if (!response.ok) {
             itemTotalPrice.innerHTML = initialTotalPrice;
         }
     }
@@ -75,22 +75,18 @@ class CartActionManager {
             }
         ).then(response => response);
 
-        if (response.success) {
-            await swal({
-                title: "Produit supprimé du panier",
-                icon: "success",
-                button: "OK",
-            });
-        } else {
+        let title, icon, buttonText;
+
+        if (response.status !== "success") {
             cartItemParent.append(cartItem);
 
-            await swal({
-                title: "Une erreur est survenue",
-                text: "Le produit n'a pas pu être supprimé du panier",
-                icon: "error",
-                button: "OK",
-            });
         }
+
+        await swal({
+            title: response.message,
+            icon: response.status,
+            button: 'OK',
+        });
     }
 
     attachClearCartEventListener() {
@@ -115,25 +111,25 @@ class CartActionManager {
             }
         ).then(response => response);
 
-        if (response.success) {
-            await swal({
-                title: "Panier vidé",
-                icon: "success",
-                button: "OK",
-            });
-        } else {
+
+        if (response.status !== "success") {
             this.cartItems.forEach(cartItem => {
                 cartItemsParent.append(cartItem);
             });
 
-            await swal({
-                title: "Une erreur est survenue",
-                text: "Le panier n'a pas pu être vidé",
-                icon: "error",
-                button: "OK",
-            });
+        } else {
+            this.updateTotal('.cart-checkout-subtotal');
+            this.updateTotal('.cart-checkout-total');
+
         }
+
+        await swal({
+            title: response.message,
+            icon: response.status,
+            button: 'OK',
+        })
     }
+
 
     getCartItemInfo(button) {
         const csrfToken = button.getAttribute('data-token');

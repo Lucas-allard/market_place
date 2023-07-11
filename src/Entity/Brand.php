@@ -10,41 +10,64 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
 class Brand extends AbstractEntity
 {
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $name = null;
-
-    #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Product::class, cascade: ['persist', 'remove'])]
-    private Collection $products;
-
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
+    /**
+     * @var Picture|null
+     */
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Picture $picture = null;
 
+    /**
+     * @var ArrayCollection|Collection
+     */
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'brands')]
-    private Collection $categories;
+    private Collection|ArrayCollection $categories;
 
+    /**
+     * @var ArrayCollection|Collection
+     */
+    #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Product::class, orphanRemoval: true)]
+    private Collection|ArrayCollection $products;
 
 
     public function __construct()
     {
         parent::__construct();
-        $this->products = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -53,40 +76,17 @@ class Brand extends AbstractEntity
     }
 
     /**
-     * @return Collection<int, Product>
+     * @return string|null
      */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function addProduct(Product $product): self
-    {
-        if (!$this->products->contains($product)) {
-            $this->products->add($product);
-            $product->setBrand($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): self
-    {
-        if ($this->products->removeElement($product)) {
-            // set the owning side to null (unless already changed)
-            if ($product->getBrand() === $this) {
-                $product->setBrand(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getSlug(): ?string
     {
         return $this->slug;
     }
 
+    /**
+     * @param string $slug
+     * @return $this
+     */
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
@@ -94,11 +94,18 @@ class Brand extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return Picture|null
+     */
     public function getPicture(): ?Picture
     {
         return $this->picture;
     }
 
+    /**
+     * @param Picture $picture
+     * @return $this
+     */
     public function setPicture(Picture $picture): self
     {
         $this->picture = $picture;
@@ -114,6 +121,10 @@ class Brand extends AbstractEntity
         return $this->categories;
     }
 
+    /**
+     * @param Category $category
+     * @return $this
+     */
     public function addCategory(Category $category): self
     {
         if (!$this->categories->contains($category)) {
@@ -123,9 +134,51 @@ class Brand extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @param Category $category
+     * @return $this
+     */
     public function removeCategory(Category $category): self
     {
         $this->categories->removeElement($category);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    /**
+     * @param Product $product
+     * @return $this
+     */
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setBrand($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Product $product
+     * @return $this
+     */
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getBrand() === $this) {
+                $product->setBrand(null);
+            }
+        }
 
         return $this;
     }

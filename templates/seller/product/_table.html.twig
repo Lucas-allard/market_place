@@ -1,0 +1,89 @@
+{% import 'macros/table_macros.html.twig' as macros %}
+
+{% set parameters = app.request.query.all %}
+{% set sortArray = parameters['sort'] ?? {} %}
+{% set sort = sortArray|first ? sortArray|keys|first : 'name' %}
+{% set order = sortArray|first ? sortArray|first : 'ASC' %}
+
+{{ macros.tableStart() }}
+
+{{ macros.tableHeader([
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Nom',
+            order == 'ASC' and sort == 'name' ? 'fa-arrow-up' : order == 'DESC' and sort == 'name' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_seller_product_index', {'sort[name]': order == 'ASC' and sort == 'name' ? 'DESC' : 'ASC', }),
+        ),
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Prix',
+            order == 'ASC' and sort == 'price' ? 'fa-arrow-up' : order == 'DESC' and sort == 'price' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_seller_product_index', {'sort[price]': order == 'ASC' and sort == 'price' ? 'DESC' : 'ASC', })),
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Promotion',
+            order == 'ASC' and sort == 'discount' ? 'fa-arrow-up' : order == 'DESC' and sort == 'discount' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_seller_product_index', {'sort[discount]': order == 'ASC' and sort == 'discount' ? 'DESC' : 'ASC', })),
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Quantité',
+            order == 'ASC' and sort == 'quantity' ? 'fa-arrow-up' : order == 'DESC' and sort == 'quantity' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_seller_product_index', {'sort[quantity]': order == 'ASC' and sort == 'quantity' ? 'DESC' : 'ASC', })),
+    ),
+    macros.tableHeaderItem(macros.tableHeaderSpan('Catégories')),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Dernière modification',
+            order == 'ASC' and sort == 'updatedAt' ? 'fa-arrow-up' : order == 'DESC' and sort == 'updatedAt' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_seller_product_index', {'sort[updatedAt]': order == 'ASC' and sort == 'updatedAt' ? 'DESC' : 'ASC', })),
+    ),
+    macros.tableHeaderItem(macros.tableHeaderSpan('Actions', 'sr-only')),
+]) }}
+
+{{ macros.tableBodyStart() }}
+
+{% for product in products %}
+    {% set parentCategories = product.categories|filter(c => c.parent is not null) %}
+    {% if parentCategories is not empty %}
+        {% set categoriesRow = macros.tableRowCollection(parentCategories,'Catégories', 'name', ) %}
+    {% else %}
+        {% set categoriesRow = macros.tableRowItem('Aucune', 'Catégories') %}
+    {% endif %}
+
+    {{ macros.tableRow([
+        macros.tableRowItem(product.name, 'Nom'),
+        macros.tableRowItem(product.price, 'Prix', "€"),
+        macros.tableRowItem(product.discount is null ? 'Aucune' : product.discount, 'Promotion', "%" ),
+        macros.tableRowItem(product.quantity, 'Quantité', "pièces"),
+        categoriesRow,
+        macros.tableRowItem(product.updatedAt|date('d/m/Y H:i'), 'Dernière modification'),
+        macros.tableActionDropdown([
+            macros.tableActionDropdownItem(
+                path('app_seller_product_show', {slug: product.slug}),
+                'Consulter',
+                'action-show',
+                'fa-eye'
+            ),
+            macros.tableActionDropdownItem(
+                path('app_seller_product_edit', {slug: product.slug}),
+                'Modifier',
+                'action-update',
+                'fa-edit'
+            ),
+            macros.tableActionDropdownItem(
+                path('app_seller_product_delete', {slug: product.slug}),
+                'Supprimer',
+                'action-delete',
+                'fa-trash',
+                csrf_token('product-delete-' ~ product.id)
+            ),
+        ])
+    ]) }}
+{% endfor %}
+
+{{ macros.tableBodyEnd() }}
+
+{{ macros.tableEnd() }}

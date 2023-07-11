@@ -1,0 +1,14 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block section %}
+
+    <section class="content-section">
+        <div class="content-header">
+            <h2>Liste des ventes</h2>
+        </div>
+        <section class="content-table">
+            {{ include('seller/order/_table.html.twig') }}
+            {{ include('components/_pagination.html.twig') }}
+        </section>
+    </section>
+{% endblock %}

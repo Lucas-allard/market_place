@@ -5,9 +5,9 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Form\FilterForm\FilterFormType;
+use App\Service\Category\CategoryService;
 use App\Service\Form\FormProcessor;
 use App\Service\Product\ProductService;
-use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,39 +17,58 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/produits', name: 'app_product')]
 class ProductController extends AbstractController
 {
+    /**
+     * @var ProductService
+     */
     private ProductService $productService;
+    /**
+     * @var CategoryService
+     */
+    private CategoryService $categoryService;
+    /**
+     * @var FormProcessor
+     */
     private FormProcessor $formProcessor;
 
-    public function __construct(ProductService $productService, FormProcessor $formProcessor)
+    /**
+     * @param ProductService $productService
+     * @param CategoryService $categoryService
+     * @param FormProcessor $formProcessor
+     */
+    public function __construct(ProductService $productService, CategoryService $categoryService, FormProcessor $formProcessor)
     {
         $this->productService = $productService;
+        $this->categoryService = $categoryService;
         $this->formProcessor = $formProcessor;
     }
 
     /**
      * @param Request $request
      * @param Category $category
-     * @param Category|null $subCategory
+     * @param string|null $subCategorySlug
      * @return Response
-     * @throws Exception
      */
     #[Route('/{categorySlug}/{subCategorySlug?}', name: '_index', requirements: [
         'categorySlug' => '[a-zA-Z0-9-_]+',
         'subCategorySlug' => '[a-zA-Z0-9-_]+'
     ])]
     #[ParamConverter('category', options: ['mapping' => ['categorySlug' => 'slug']])]
-    #[ParamConverter('subCategory', options: ['mapping' => ['subCategorySlug' => 'slug']])]
     public function index(
-        Request   $request,
-        Category  $category,
-        ?Category $subCategory = null
-    ): Response
-    {
+        Request $request,
+        Category $category,
+        ?string $subCategorySlug = null
+    ): Response {
         $order = $request->query->get('order');
         $page = $request->query->get('page');
         $limit = $request->query->get('limit');
 
-        $products = $this->productService->getProductsByCategorySlug($category, $subCategory, $order, $page, $limit);
+        $subCategory = null;
+        if ($subCategorySlug !== null) {
+            // Récupérer la sous-catégorie en fonction du slug et de la catégorie parente
+            $subCategory = $this->categoryService->getSubCategoryBySlug($subCategorySlug, $category);
+        }
+
+        $products = $this->productService->getProductsByCategory($category, $subCategory, $order, $page, $limit);
 
         $minPrice = $this->productService->getMinPrice();
         $maxPrice = $this->productService->getMaxPrice();
@@ -74,6 +93,12 @@ class ProductController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Category $category
+     * @param Category $subCategory
+     * @param Product $product
+     * @return Response
+     */
     #[Route('/{categorySlug}/{subCategorySlug}/{productSlug}', name: '_show', requirements: [
         'categorySlug' => '[a-zA-Z0-9-_]+',
         'subCategorySlug' => '[a-zA-Z0-9-_]+',

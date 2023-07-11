@@ -15,6 +15,42 @@ class FormProcessor
     private EntityManagerInterface $entityManager;
 
     /**
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
+    }
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @return FormProcessor
+     */
+    public function setEntityManager(EntityManagerInterface $entityManager): FormProcessor
+    {
+        $this->entityManager = $entityManager;
+        return $this;
+    }
+
+    /**
+     * @return FormFactoryInterface
+     */
+    public function getFormFactory(): FormFactoryInterface
+    {
+        return $this->formFactory;
+    }
+
+    /**
+     * @param FormFactoryInterface $formFactory
+     * @return FormProcessor
+     */
+    public function setFormFactory(FormFactoryInterface $formFactory): FormProcessor
+    {
+        $this->formFactory = $formFactory;
+        return $this;
+    }
+
+    /**
      * @var FormFactoryInterface
      */
     private FormFactoryInterface $formFactory;
@@ -44,6 +80,7 @@ class FormProcessor
     public function process(Request $request, FormInterface $form): bool
     {
         $this->handleRequest($request, $form);
+
 
         if ($this->isValid($form)) {
             /** @var object $entity */

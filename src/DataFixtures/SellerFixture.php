@@ -43,9 +43,9 @@ class SellerFixture extends Fixture
             $seller->setCompany($faker->company);
             $seller->setSiret($faker->numerify('##############'));
             $seller->setVat($faker->numerify('FR###########'));
-            $seller->setPassword($this->passwordHasher->hashPassword($seller, 'password'));
+            $seller->setPassword($this->passwordHasher->hashPassword($seller, 'Azerty123'));
             $seller->setRating($faker->randomFloat(1, 0, 5));
-            $seller->setRoles(['ROLE_COMPANY']);
+            $seller->setRoles(['ROLE_SELLER']);
 
             $this->addReference('seller_' . $s, $seller);
             $manager->persist($seller);

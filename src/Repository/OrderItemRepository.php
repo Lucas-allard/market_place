@@ -16,11 +16,19 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 class OrderItemRepository extends ServiceEntityRepository
 {
 
+    /**
+     * @param \Doctrine\Persistence\ManagerRegistry $registry
+     */
     public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
     {
         parent::__construct($registry, OrderItem::class);
     }
 
+    /**
+     * @param OrderItem $entity
+     * @param bool $flush
+     * @return void
+     */
     public function save(OrderItem $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,11 @@ class OrderItemRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param OrderItem $entity
+     * @param bool $flush
+     * @return void
+     */
     public function remove(OrderItem $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);

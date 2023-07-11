@@ -2,7 +2,6 @@
 
 namespace App\EventListener;
 
-use App\Entity\Picture;
 use App\Service\Cloudinary\CloudinaryService;
 use Cloudinary\Api\Exception\ApiError;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -13,6 +12,9 @@ use Symfony\Component\Form\FormEvents;
 class AddPictureFieldListener implements EventSubscriberInterface
 {
 
+    /**
+     * @var CloudinaryService
+     */
     private CloudinaryService $cloudinaryService;
 
     public function __construct(CloudinaryService $cloudinaryService)
@@ -27,31 +29,51 @@ class AddPictureFieldListener implements EventSubscriberInterface
     {
         return [
             FormEvents::POST_SUBMIT => 'onPostSubmit',
+            FormEvents::POST_SET_DATA => 'onPostSetData',
         ];
     }
 
+    /**
+     * @param FormEvent $event
+     * @return void
+     */
     public function onPostSubmit(FormEvent $event): void
     {
         $product = $event->getData();
         $form = $event->getForm();
-        $picturesData = $form->get('pictures')->getData();
 
-        foreach ($picturesData as $pictureData) {
-            $file = $pictureData['path'];
-            $alt = $pictureData['alt'];
+        $pictures = $form->get('pictures')->getData();
+
+
+        foreach ($pictures as $picture) {
+            if (null === $picture->getFile()) {
+                continue;
+            }
+
+            $file = $picture->getFile();
+
+            $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $uniqueFileName = $originalFileName . '_' . uniqid();
 
             try {
-                $imageUrl = $this->cloudinaryService->upload($file);
+                $imageUrl = $this->cloudinaryService->upload($file, 'seller-' . $product->getSeller()->getId() . '/products', $uniqueFileName, ['width' => 800, 'height' => 800, 'crop' => 'fill']);
+                $imageThumbnailUrl = $this->cloudinaryService->upload($file, 'seller-' . $product->getSeller()->getId() . '/products/thumbnails', $uniqueFileName, ['width' => 200, 'height' => 200, 'crop' => 'fill']);
 
-                $picture = new Picture();
                 $picture->setPath($imageUrl);
-                $picture->setAlt($alt);
-
-                $product->addPicture($picture);
+                $picture->setThumbnail($imageThumbnailUrl);
 
             } catch (ApiError $e) {
                 $form->addError(new FormError($e->getMessage()));
             }
         }
+    }
+
+    /**
+     * @param FormEvent $event
+     * @return void
+     */
+    public function onPostSetData(FormEvent $event): void
+    {
+
     }
 }

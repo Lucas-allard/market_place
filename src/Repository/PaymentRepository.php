@@ -16,11 +16,19 @@ use Doctrine\Persistence\ManagerRegistry;
 class PaymentRepository extends ServiceEntityRepository
 {
 
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Payment::class);
     }
 
+    /**
+     * @param Payment $payment
+     * @param bool $flush
+     * @return void
+     */
     public function save(Payment $payment, bool $flush = true): void
     {
         $this->getEntityManager()->persist($payment);
@@ -29,6 +37,11 @@ class PaymentRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param Payment $payment
+     * @param bool $flush
+     * @return void
+     */
     public function remove(Payment $payment, bool $flush = true): void
     {
         $this->getEntityManager()->remove($payment);

@@ -21,51 +21,45 @@ class BrandFixture extends Fixture implements DependentFixtureInterface
 
         $brandData = [
             'Électronique' => [
-                'Téléphones' => ['Apple', 'Samsung', 'Sony'],
-                'Ordinateurs' => ['HP', 'Dell'],
-                'Télévisions' => ['Samsung', 'LG'],
+                'Téléphones' => ['Apple', 'Samsung', 'Huawei', 'Xiaomi'],
+                'Ordinateurs' => ['HP', 'Dell', 'Asus', 'Acer', 'Lenovo'],
+                'Télévisions' => ['LG', 'Panasonic', 'Philips', 'TCL', 'Hisense'],
                 'Appareils photo' => ['Sony', 'Canon', 'Nikon'],
-                'Audio' => ['Bose', 'Sony', 'JBL'],
+                'Audio' => ['Bose', 'JBL', 'Beats'],
                 'Accessoires' => ['Belkin', 'Logitech', 'Anker'],
             ],
             'Mode' => [
                 'Homme' => ['Nike', 'Adidas', 'Zara'],
-                'Femme' => ['Zara', 'H&M', 'Gucci'],
-                'Enfant' => ['Nike', 'Adidas', 'Disney'],
-                'Accessoires' => ['Gucci', 'Prada'],
+                'Femme' => ['H&M', 'Gucci', 'Prada'],
+                'Accessoires' => ['Chanel', 'Dior', 'Hermès'],
             ],
             'Maison' => [
-                'Cuisine' => ['Ikea', 'Tefal', 'Moulinex'],
-                'Décoration' => ['Ikea', 'Zara Home'],
-                'Linge de maison' => ['Ikea', 'Leroy Merlin'],
-                'Meubles' => ['Ikea', 'Leroy Merlin'],
-                'Electroménager' => ['Bosch', 'Philips'],
-                'Jardin' => ['Leroy Merlin', 'Truffaut'],
-                'Bricolage' => ['Leroy Merlin', 'Castorama'],
+                'Cuisine' => ['Tefal', 'Moulinex', 'Bosch', 'Seb'],
+                'Décoration' => ['Ikea', 'Zara Home', 'Maisons du Monde'],
+                'Linge de maison' => ['Leroy Merlin', 'Castorama', 'Truffaut'],
+                'Meubles' => ['Conforama', 'Alinéa', 'Fly'],
+                'Electroménager' => ['Siemens', 'Whirlpool', 'Electrolux', 'Miele'],
+                'Jardin' => ['Jardiland', 'Botanic', 'Gamm Vert'],
+                'Bricolage' => ['Brico Dépôt', 'Bricomarché', 'Bricorama'],
             ],
             'Sport' => [
-                'Vêtements' => ['Nike', 'Adidas', 'Under Armour'],
-                'Chaussures' => ['Nike', 'Adidas', 'Reebok'],
-                'Accessoires' => ['Decathlon', 'Nike', 'Puma'],
-                'Equipements' => ['Decathlon', 'Salomon', 'Wilson'],
+                'Chaussures' => ['Reebok', 'Asics', 'New Balance'],
+                'Accessoires' => ['Decathlon', 'Salomon', 'Wilson'],
+                'Equipements' => ['Intersport', 'Go Sport', 'Sport 2000'],
             ],
             'Loisirs' => [
                 'Livres' => ['Fnac', 'Amazon', 'Cultura'],
-                'Musique' => ['Fnac', 'Amazon'],
-                'Films' => ['Fnac', 'Amazon'],
                 'Jeux vidéo' => ['Steam', 'PlayStation', 'Xbox'],
                 'Jeux et jouets' => ['Fnac', 'Toys "R" Us'],
-                'Bricolage' => ['Leroy Merlin', 'Castorama'],
-                'Jardin' => ['Leroy Merlin', 'Truffaut'],
             ],
             'Auto-Moto' => [
-                'Pièces détachées' => ['Bosch', 'Valeo', 'Michelin'],
+                'Pièces détachées' => ['Valeo', 'Michelin', 'Castrol'],
                 'Equipements' => ['Norauto', 'Feu Vert'],
-                'Accessoires' => ['Norauto', 'Feu Vert'],
             ],
         ];
         $i = 0;
-        $j= 0;
+        $j = 0;
+        $k = 0;
 
         foreach ($brandData as $categoryName => $subCategories) {
             $category = $this->getReference('cat_' . $i);
@@ -83,24 +77,27 @@ class BrandFixture extends Fixture implements DependentFixtureInterface
 
                 foreach ($brands as $brandName) {
 // check if brand already exists, if true, add cat and subcat to existing brand else create new brand
-                    $brand = $manager->getRepository(Brand::class)->findOneBy(['name' => $brandName]);
-                    if (!$brand) {
 
-                        $brandPicture = new Picture();
-                        $brandPicture->setPath('https://picsum.photos/seed/' . $brandName . '/200/300');
-                        $brandPicture->setAlt($brandName);
-                        $manager->persist($brandPicture);
 
-                        $brand = new Brand();
-                        $brand->setName($brandName);
-                        $brand->setPicture($brandPicture);
-                        $brand->setCreatedAt($faker->dateTimeBetween('-6 months'));
-                        $brand->setSlug($this->slugify($brandName));
-                    }
+                    $brandPicture = new Picture();
+                    $brandPicture->setPath('https://picsum.photos/seed/' . $brandName . '/200/300');
+                    $brandPicture->setAlt($brandName);
+                    $manager->persist($brandPicture);
+
+                    $brand = new Brand();
+                    $brand->setName($brandName);
+                    $brand->setPicture($brandPicture);
+                    $brand->setCreatedAt($faker->dateTimeBetween('-6 months'));
+                    $brand->setSlug($this->slugify($brandName));
+
                     $brand->addCategory($category);
                     $brand->addCategory($subCategory);
                     $brand->setUpdatedAt($faker->dateTimeBetween('-6 months'));
                     $manager->persist($brand);
+
+                    $this->addReference('brand__' . $k, $brand);
+
+                    $k++;
                 }
                 $j++;
             }

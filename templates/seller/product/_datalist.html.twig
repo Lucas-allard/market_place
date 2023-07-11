@@ -1,0 +1,22 @@
+{% import 'macros/datalist_macros.html.twig' as macros %}
+
+{{ macros.datalistStart() }}
+{{ macros.datalistRow(macros.datalistItem('Nom', product.name)) }}
+{{ macros.datalistRow(macros.datalistItemRaw('Description', product.description)) }}
+{{ macros.datalistRow(macros.datalistItem('Price', product.price ~ " €" )) }}
+{{ macros.datalistRow(macros.datalistItem('Promotion', product.discount ~ " %" )) }}
+{{ macros.datalistRow(macros.datalistItem('Prix promotionnel', product.priceWithDiscount ~ " €")) }}
+{{ macros.datalistRow(macros.datalistItem('Quantité', product.quantity ~ ' pièce')) }}
+{{ macros.datalistRow(macros.datalistItem('Catégorie', product.categories[0].name, 'badge badge-green badge-lowercase')) }}
+{{ macros.datalistRow(macros.datalistItem('Sous-catégorie', product.categories[1].name, 'badge badge-green badge-lowercase')) }}
+{{ macros.datalistRow(macros.datalistItem('Marque', product.brand.name)) }}
+{{ macros.datalistRowStart('data-pictures') }}
+{% for picture in product.pictures %}
+{{ macros.datalistPicture('Image n°' ~ loop.index, picture.thumbnail) }}
+{% endfor %}
+{{ macros.datalistRowEnd() }}
+
+{{ macros.datalistRow(macros.datalistItem('Date de création', product.createdAt|date('d/m/Y H:i'))) }}
+{{ macros.datalistRow(macros.datalistItem('Date de modification', product.updatedAt|date('d/m/Y H:i'))) }}
+
+{{ macros.datalistEnd() }}

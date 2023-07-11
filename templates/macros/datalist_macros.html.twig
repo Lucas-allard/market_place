@@ -1,15 +1,58 @@
-{% macro datalistStart %}
-<dl>
+{% macro datalistStart() %}
+<dl class="data-list">
 {% endmacro %}
 
-{% macro datalistEnd %}
+{% macro datalistEnd() %}
 </dl>
 {% endmacro %}
 
-{% macro datalistItem(label, value, classes="") %}
+{% macro datalistRowStart(classes="") %}
 <div class="data-row {{ classes }}">
-    <dt>{{ label }}</dt>
-    <dd>{{ value }}</dd>
+    {% endmacro %}
+
+    {% macro datalistRowEnd() %}
 </div>
+{% endmacro %}
+
+{% macro datalistRow(content, classes="") %}
+    <div class="data-row {{ classes }}">
+        {{ content|raw }}
+    </div>
+{% endmacro %}
+
+{% macro datalistItemStart(label) %}
+    <dt>{{ label }}</dt>
+    <dd>
+        <span>
+{% endmacro %}
+
+{% macro datalistItemEnd() %}
+        </span>
+    </dd>
+{% endmacro %}
+
+{% macro datalistItem(label, value, classes="") %}
+    <dt>{{ label }}</dt>
+    <dd>
+        <span class="{{ classes }}">{{ value }}</span>
+    </dd>
+{% endmacro %}
+
+{% macro dataListArray(content) %}
+    {{ content|raw }}
+{% endmacro %}
+
+{% macro datalistItemRaw(label, value) %}
+    <dt>{{ label }}</dt>
+    <dd>
+        <span>{{ value|raw }}</span>
+    </dd>
+{% endmacro %}
+
+{% macro datalistPicture(label, value, alt) %}
+    <dt>{{ label }}</dt>
+    <dd>
+        <img src="{{ value }}" alt="{{ alt }}"/>
+    </dd>
 {% endmacro %}
 

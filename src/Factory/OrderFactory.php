@@ -5,6 +5,7 @@ namespace App\Factory;
 use App\Entity\Customer;
 use App\Entity\Order;
 use App\Entity\OrderItem;
+use App\Entity\OrderItemSeller;
 use App\Entity\Product;
 
 class OrderFactory
@@ -17,11 +18,7 @@ class OrderFactory
     public function create(Customer $user = null): Order
     {
         $order = new Order();
-        $order
-            ->setOrderStatus(Order::STATUS_CART)
-            ->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime())
-            ->setCustomer($user);
+        $order->setCustomer($user);
 
         return $order;
     }
@@ -36,6 +33,18 @@ class OrderFactory
         $item = new OrderItem();
         $item->setProduct($product);
         $item->setQuantity($quantity);
+
+        return $item;
+    }
+
+    /**
+     * @param Product $product
+     * @return OrderItemSeller
+     */
+    public function createItemSeller(Product $product): OrderItemSeller
+    {
+        $item = new OrderItemSeller();
+        $item->setSeller($product->getSeller());
 
         return $item;
     }

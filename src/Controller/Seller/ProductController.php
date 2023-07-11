@@ -2,47 +2,78 @@
 
 namespace App\Controller\Seller;
 
+use App\Entity\Product;
 use App\Form\ProductForm\ProductFormType;
+use App\Repository\BrandRepository;
 use App\Service\Form\FormProcessor;
 use App\Service\Product\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+
 #[IsGranted('ROLE_SELLER')]
 #[Route('/ma-boutique/produits', name: 'app_seller_product')]
 class ProductController extends AbstractController
 {
+    /**
+     * @var FormProcessor
+     */
     private FormProcessor $formProcessor;
+    /**
+     * @var ProductService
+     */
     private ProductService $productService;
 
+    /**
+     * @param FormProcessor $formProcessor
+     * @param ProductService $productService
+     */
     public function __construct(
         FormProcessor  $formProcessor,
-        ProductService $productService
+        ProductService $productService,
     )
     {
         $this->formProcessor = $formProcessor;
         $this->productService = $productService;
     }
 
-    #[Route('/', name: '_index')]
-    public function index(): Response
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/', name: '_index', methods: ['GET'])]
+    public function index(Request $request): Response
     {
-        $products = $this->productService->getProductsBySeller($this->getUser());
+        $parameters = $request->query->all();
+        $sort = $parameters['sort'] ?? null;
+        $page = $request->query->get('page');
+        $limit = $request->query->get('limit');
+
+        $products = $this->productService->getProductsBySeller($this->getUser(), $sort, $page, $limit);
 
         return $this->render('seller/product/index.html.twig', [
-            'products' => $products,
+            'products' => $products['data'],
+            'pagination' => $products['pagination'],
         ]);
     }
 
-    #[Route('/ajouter', name: '_add')]
-    public function add(Request $request): Response
+    /**
+     * @param Request $request
+     * @param BrandRepository $brandRepository
+     * @return Response
+     */
+    #[Route('/ajouter', name: '_add', methods: ['POST', 'GET'])]
+    public function add(Request $request, BrandRepository $brandRepository): Response
     {
+        $brands = $brandRepository->findAll();
+
         $productFactory = $this->productService->getProductFactory();
 
-        $form = $this->createForm(ProductFormType::class, $productFactory->create());
+        $form = $this->createForm(ProductFormType::class, $productFactory->create(), ['brands' => $brands]);
 
         if ($this->formProcessor->process($request, $form)) {
 
@@ -56,27 +87,64 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/modifier/{slug}', name: '_edit')]
-    public function edit(): Response
+    /**
+     * @param Request $request
+     * @param Product $product
+     * @param BrandRepository $brandRepository
+     * @return Response
+     */
+    #[Route('/modifier/{slug}', name: '_edit', methods: ['POST', 'GET'])]
+    public function edit(Request $request, Product $product, BrandRepository $brandRepository): Response
     {
-        return $this->render('seller/product/index.html.twig', [
-            'controller_name' => 'ProductsController',
+        $brands = $brandRepository->findAll();
+        $form = $this->formProcessor->create(ProductFormType::class, $product, ['thumbnail' => true, 'brands' => $brands]);
+
+        if ($this->formProcessor->process($request, $form)) {
+
+            $this->addFlash('success', 'Le produit a bien été modifié');
+
+            return $this->redirectToRoute('app_seller_product_index');
+        }
+
+        return $this->render('seller/product/edit.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/supprimer/{slug}', name: '_delete')]
-    public function delete(): Response
+    /**
+     * @param Request $request
+     * @param Product $product
+     * @return JsonResponse
+     */
+    #[Route('/supprimer/{slug}', name: '_delete', methods: ['DELETE'])]
+    public function delete(Request $request, Product $product): JsonResponse
     {
-        return $this->render('seller/product/index.html.twig', [
-            'controller_name' => 'ProductsController',
+        $token = $request->headers->get('X-CSRF-TOKEN');
+        if (!$this->isCsrfTokenValid('product-delete-' . $product->getId(), $token)) {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'Le token est invalide'
+            ], 400);
+        }
+
+        $this->productService->delete($product);
+
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Le produit a bien été supprimé',
         ]);
     }
 
-    #[Route('/{slug}', name: '_show')]
-    public function show(): Response
+    /**
+     * @param Product $product
+     * @return Response
+     */
+    #[Route('/{slug}', name: '_show', methods: ['GET'])]
+    public function show(Product $product): Response
     {
-        return $this->render('seller/product/index.html.twig', [
-            'controller_name' => 'ProductsController',
+
+        return $this->render('seller/product/show.html.twig', [
+            'product' => $product,
         ]);
     }
 }

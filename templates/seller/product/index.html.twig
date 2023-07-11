@@ -1,11 +1,15 @@
-{% extends 'seller/base_seller.html.twig' %}
+{% extends 'user/base_user.html.twig' %}
 
 {% block section %}
-    <section class="seller-section">
-        <div class="seller-header">
+
+    <section class="content-section">
+        <div class="content-header">
             <h2>Liste des produits</h2>
             <a href="{{ path('app_seller_product_add') }}" class="button button-blue">Ajouter un produit</a>
         </div>
-        {{ include('components/_table.html.twig', {'className': 'seller-table'}) }}
+        <section class="content-table">
+            {{ include('seller/product/_table.html.twig') }}
+            {{ include('components/_pagination.html.twig') }}
+        </section>
     </section>
 {% endblock %}

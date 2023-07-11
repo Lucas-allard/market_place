@@ -1,0 +1,42 @@
+{% import 'macros/crud_form_macros.html.twig' as macros %}
+
+{{ form_start(form, {'attr': {'class': 'crud-form'}}) }}
+        {{ macros.formField(form.categories.vars.label, form.categories, 'form-field', 'tom-select') }}
+        {{ macros.formField(form.name.vars.label, form.name,'form-field', 'form-input-text') }}
+        {{ macros.formField(form.description.vars.label, form.description, 'form-field') }}
+
+        {{ macros.formGroup(
+            macros.formFieldSymbol(form.price.vars.label, form.price, 'form-field', 'form-input-price') ~
+            macros.formFieldSymbol(form.discount.vars.label, form.discount, 'form-field', 'form-input-percentage')
+        ) }}
+
+        {{ macros.formGroup(
+            macros.formField(form.quantity.vars.label, form.quantity, 'form-field') ~
+            macros.formField(form.brand.vars.label, form.brand, 'form-field', 'tom-select select-unique')
+        ) }}
+
+        {{ macros.formField(form.caracteristics.vars.label, form.caracteristics,'form-field', 'tom-select') }}
+
+        {{ macros.crudCollectionStart(form.pictures) }}
+
+        {% for field in form.pictures %}
+            {{ macros.formGroup(
+                macros.formFieldCollection(
+                    macros.formField(field.thumbnail.vars.label, field.thumbnail) ~
+                    macros.formField(field.file.vars.label, field.file, 'form-field-collection', 'form-input-file') ~
+                    macros.formField(field.alt.vars.label, field.alt, 'form-field-collection', 'form-input-text'),
+                    'crud-collection-field'
+                ) ~
+                macros.formFieldCollectionDelete("crud-collection-item-remove"),
+            ) }}
+            {{ macros.formGroup(
+                macros.crudCollectionThumbnail(field.thumbnail.vars.label,field.thumbnail.vars.value, field.alt.vars.value),
+                'crud-collection-thumbnail'
+            ) }}
+        {% endfor %}
+
+        {{ macros.crudCollectionEnd() }}
+
+        {{ macros.formGroup('<button type="button" id="add-another-item" class="button button-blue">Ajouter une image</button>') }}
+        {{ macros.formGroup('<button type="submit" class="button button-blue">Publier</button>') }}
+{{ form_end(form) }}

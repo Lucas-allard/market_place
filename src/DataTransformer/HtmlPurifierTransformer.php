@@ -4,10 +4,15 @@ namespace App\DataTransformer;
 
 use HTMLPurifier;
 use HTMLPurifier_Config;
+use Symfony\Component\Form\DataTransformerInterface;
 
-class HtmlPurifierTransformer implements \Symfony\Component\Form\DataTransformerInterface
+class HtmlPurifierTransformer implements DataTransformerInterface
 {
+    /**
+     * @var HTMLPurifier
+     */
     private HTMLPurifier $purifier;
+
 
     public function __construct()
     {
@@ -16,18 +21,22 @@ class HtmlPurifierTransformer implements \Symfony\Component\Form\DataTransformer
         $this->purifier = new HTMLPurifier($config);
     }
 
+
     /**
-     * @inheritDoc
+     * @param mixed $value
+     * @return mixed
      */
-    public function transform(mixed $value)
+    public function transform(mixed $value): mixed
     {
         return $value;
     }
 
+
     /**
-     * @inheritDoc
+     * @param mixed $value
+     * @return mixed|string|null
      */
-    public function reverseTransform(mixed $value)
+    public function reverseTransform(mixed $value): mixed
     {
         return $this->purifier->purify($value);
     }

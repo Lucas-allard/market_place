@@ -5,11 +5,6 @@ namespace App\Extension\FormType;
 use App\DataTransformer\StripTagTransformer;
 use App\DataTransformer\TrimTransformer;
 use App\DataTransformer\UcFirstTransformer;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -19,8 +14,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class InputSanitizerExtension implements FormTypeExtensionInterface
 {
+    /**
+     * @var StripTagTransformer
+     */
     private StripTagTransformer $stripTagTransformer;
+    /**
+     * @var TrimTransformer
+     */
     private TrimTransformer $trimTransformer;
+    /**
+     * @var UcFirstTransformer
+     */
     private UcFirstTransformer $ucFirstTransformer;
 
     public function __construct(StripTagTransformer $stripTagTransformer, TrimTransformer $trimTransformer, UcFirstTransformer $ucFirstTransformer)
@@ -30,8 +34,11 @@ class InputSanitizerExtension implements FormTypeExtensionInterface
         $this->ucFirstTransformer = $ucFirstTransformer;
     }
 
+
     /**
-     * @inheritDoc
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -41,27 +48,42 @@ class InputSanitizerExtension implements FormTypeExtensionInterface
         }
     }
 
+    /**
+     * @return iterable
+     */
     public static function getExtendedTypes(): iterable
     {
         return [TextType::class];
     }
 
+
     /**
-     * @inheritDoc
+     * @param FormView $view
+     * @param FormInterface $form
+     * @param array $options
+     * @return void
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         // TODO: Implement buildView() method.
     }
 
+
     /**
-     * @inheritDoc
+     * @param FormView $view
+     * @param FormInterface $form
+     * @param array $options
+     * @return void
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         // TODO: Implement finishView() method.
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined('input_sanitizer');

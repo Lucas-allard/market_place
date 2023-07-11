@@ -29,7 +29,6 @@ class CategoryFixture extends Fixture
             'Mode' => [
                 'Homme',
                 'Femme',
-                'Enfant',
                 'Accessoires',
             ],
             'Maison' => [
@@ -42,24 +41,18 @@ class CategoryFixture extends Fixture
                 'Bricolage',
             ],
             'Sport' => [
-                'Vêtements',
                 'Chaussures',
                 'Accessoires',
                 'Equipements',
             ],
             'Loisirs' => [
                 'Livres',
-                'Musique',
-                'Films',
                 'Jeux vidéo',
                 'Jeux et jouets',
-                'Bricolage',
-                'Jardin',
             ],
             'Auto-Moto' => [
                 'Pièces détachées',
                 'Equipements',
-                'Accessoires',
             ],
         ];
         $i = 0;

@@ -3,26 +3,30 @@
 namespace App\EventListener;
 
 use App\Entity\Product;
-use Doctrine\ORM\Event\PrePersistEventArgs;
-use Doctrine\ORM\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class ProductCategoryListener implements EventSubscriberInterface
 {
 
+    /**
+     * @return string[]
+     */
     public static function getSubscribedEvents(): array
     {
         return [
-            Events::prePersist => 'prePersist',
-            Events::preUpdate => 'preUpdate',
+            FormEvents::POST_SUBMIT => 'onPostSubmit',
         ];
     }
 
-    public function prePersist(PrePersistEventArgs $args): void
+    /**
+     * @param FormEvent $event
+     * @return void
+     */
+    public function onPostSubmit(FormEvent $event): void
     {
-        $product = $args->getObject();
-
-        dd($product);
+        $product = $event->getData();
 
         if (!$product instanceof Product) {
             return;
@@ -31,17 +35,10 @@ class ProductCategoryListener implements EventSubscriberInterface
         $this->updateProductCategories($product);
     }
 
-    public function preUpdate(PrePersistEventArgs $args): void
-    {
-        $product = $args->getObject();
-
-        if (!$product instanceof Product) {
-            return;
-        }
-
-        $this->updateProductCategories($product);
-    }
-
+    /**
+     * @param Product $product
+     * @return void
+     */
     private function updateProductCategories(Product $product): void
     {
         foreach ($product->getCategories() as $category) {

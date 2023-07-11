@@ -12,7 +12,13 @@ use Doctrine\ORM\EntityManagerInterface;
 #[AsDoctrineListener('security.interactive_login', priority: 1)]
 class AuthenticationSuccessListener
 {
+    /**
+     * @var CartSessionStorage
+     */
     private CartSessionStorage $cartSessionStorage;
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
 
     public function __construct(CartSessionStorage $cartSessionStorage, EntityManagerInterface $entityManager)
@@ -22,6 +28,10 @@ class AuthenticationSuccessListener
     }
 
 
+    /**
+     * @param InteractiveLoginEvent $event
+     * @return void
+     */
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event): void
     {
         $customer = $event->getAuthenticationToken()->getUser();

@@ -112,7 +112,6 @@ img {
 .badge {
   text-transform: uppercase;
   padding: $spacing-xs $spacing-sm;
-
 }
 
 .badge.badge-green {
@@ -123,6 +122,18 @@ img {
 .badge.badge-red {
   background-color: $color-red;
   color: $color-white;
+}
+
+.badge.badge-blue {
+  background-color: $color-blue;
+  color: $color-white;
+}
+
+.badge.badge-lowercase {
+  text-transform: lowercase;
+  box-shadow: none;
+  font-size: $font-size-xxs;
+  margin-bottom: $spacing-xs;
 }
 
 .button {
@@ -182,7 +193,6 @@ img {
 .message {
   padding: $spacing-md $spacing-xl;
 
-
   .alert {
     border-radius: $border-radius-md;
     margin: $spacing-md;
@@ -201,4 +211,5 @@ img {
     border: 1px solid $color-green;
   }
 }
+
 

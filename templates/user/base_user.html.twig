@@ -47,12 +47,6 @@
                 <li class="nav-item {% if "app_seller_order" in app.request.attributes.get('_route') %}active{% endif %}">
                     <a href="{{ path('app_seller_order_index', {'page' : 1}) }}" class="nav-link">Mes ventes</a>
                 </li>
-                <li class="nav-item {% if app.request.attributes.get('_route') == "app_user_info" %}active{% endif %}">
-                    <a href="{{ path('app_user_info') }}" class="nav-link">Mes informations</a>
-                </li>
-                <li class="nav-item {% if app.request.attributes.get('_route') == "app_forgot_password_reset_on_logged" %}active{% endif %}">
-                    <a href="{{ path('app_forgot_password_reset_on_logged') }}" class="nav-link">Modifier mon mot de passe</a>
-                </li>   
                 {% endif %}
                 <li class="nav-item {% if app.request.attributes.get('_route') == "app_user_info" %}active{% endif %}">
                     <a href="{{ path('app_user_info') }}" class="nav-link">Mes informations</a>
