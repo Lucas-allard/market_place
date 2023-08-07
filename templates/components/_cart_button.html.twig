@@ -1,3 +1,4 @@
+{% if app.user is null or (app.user is not null and 'ROLE_SELLER' not in app.user.roles) %}
 {% set csrfToken = csrf_token('add-item') %}
 
 <button class="{{ className }} add-to-cart"
@@ -8,3 +9,4 @@
 >
     {{ buttonLabel }}
 </button>
+{% endif %}

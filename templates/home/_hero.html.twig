@@ -23,11 +23,8 @@
                                 {% endfor %}
                             </ul>
                             <div class="item-carousel-cta">
-                                <button type="button"
-                                        class="button button-dark-blue">
-                                    Acheter maintenant
-                                </button>
-                                <a href="#"
+                                {{ include('components/_cart_button.html.twig', {'product': product, 'buttonLabel': 'Ajouter au panier', 'className': 'button button-dark-blue'}) }}
+                                <a href="{{ path('app_product_show', {'categorySlug': product.categories[0].slug, 'subCategorySlug': product.categories[1].slug, 'productSlug': product.slug}) }}"
                                    class="cta-link">Plus
                                     de
                                     détails</a>
@@ -52,7 +49,8 @@
                     <h3>Nouvel arrivage</h3>
                     <p>{{ newProducts[0].name }}</p>
                 </div>
-                <a href="#" class="cta-link">
+                <a href="{{ path('app_product_show', {'categorySlug': newProducts[0].categories[0].slug, 'subCategorySlug': newProducts[0].categories[1].slug, 'productSlug': newProducts[0].slug}) }}"
+                   class="cta-link">
                     Plus de détails
                 </a>
             </article>
@@ -60,7 +58,8 @@
                 <div>
                     <h3>Nouvel arrivage</h3>
                     <p>{{ newProducts[1].name }}</p>
-                    <a href="#" class="cta-link">
+                    <a href="{{ path('app_product_show', {'categorySlug': newProducts[1].categories[0].slug, 'subCategorySlug': newProducts[1].categories[1].slug, 'productSlug': newProducts[1].slug}) }}"
+                       class="cta-link">
                         Plus de détails
                     </a>
                 </div>
@@ -71,7 +70,7 @@
                     <p>{{ newProducts[2].name }}</p>
                 </div>
                 <div>
-                    <a href="#"
+                    <a href="{{ path('app_product_show', {'categorySlug': newProducts[2].categories[0].slug, 'subCategorySlug': newProducts[2].categories[1].slug, 'productSlug': newProducts[2].slug}) }}"
                        class="cta-link">
                         Plus de détails
                     </a>
@@ -83,7 +82,8 @@
                     <p>{{ newProducts[3].name }}</p>
                 </div>
                 <div>
-                    <a href="#" class="cta-link">
+                    <a href="{{ path('app_product_show', {'categorySlug': newProducts[3].categories[0].slug, 'subCategorySlug': newProducts[3].categories[1].slug, 'productSlug': newProducts[3].slug}) }}"
+                    class="cta-link">
                         Plus de détails
                     </a>
                 </div>
@@ -95,7 +95,7 @@
             {% for brand in brands %}
                 <li class="swiper-slide">
                     <div class="max-w-[127px]">
-                        <img class="h-auto max-w-full object-cover" src="{{ brand.picture.path }}"
+                        <img class="h-auto max-w-full object-cover" src="{{ brand.picture.thumbnail }}"
                              alt="{{ brand.picture.alt }}">
                     </div>
                 </li>

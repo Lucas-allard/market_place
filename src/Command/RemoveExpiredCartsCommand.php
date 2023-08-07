@@ -12,7 +12,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-
 #[AsCommand(
     name: 'app:remove-expired-carts',
     description: 'Command to remove expired carts',
@@ -69,12 +68,11 @@ class RemoveExpiredCartsCommand extends Command
 
         while($carts = $this->orderRepository->findCartsNotModifiedSince($limitDate)) {
             foreach ($carts as $cart) {
-                // Items will be deleted on cascade
                 $this->entityManager->remove($cart);
             }
 
-            $this->entityManager->flush(); // Executes all deletions
-            $this->entityManager->clear(); // Detaches all object from Doctrine
+            $this->entityManager->flush();
+            $this->entityManager->clear();
 
             $expiredCartsCount += count($carts);
         };

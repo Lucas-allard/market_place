@@ -1,0 +1,57 @@
+{% import 'macros/table_macros.html.twig' as macros %}
+
+{% set parameters = app.request.query.all %}
+{% set sortArray = parameters['sort'] ?? {} %}
+{% set sort = sortArray|first ? sortArray|keys|first : '' %}
+{% set order = sortArray|first ? sortArray|first : 'ASC' %}
+
+{{ macros.tableStart() }}
+
+{{ macros.tableHeader([
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Nom',
+            order == 'ASC' and sort == 'name' ? 'fa-arrow-up' : order == 'DESC' and sort == 'name' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_category_index', {'sort[name]': order == 'ASC' and sort == 'name' ? 'DESC' : 'ASC', }),
+        ),
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Date de création',
+            order == 'ASC' and sort == 'createdAt' ? 'fa-arrow-up' : order == 'DESC' and sort == 'createdAt' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_category_index', {'sort[createdAt]': order == 'ASC' and sort == 'createdAt' ? 'DESC' : 'ASC', }),
+        )
+    ),
+    macros.tableHeaderItem(macros.tableHeaderSpan('Actions', 'sr-only'))
+]) }}
+
+{{ macros.tableBodyStart() }}
+
+{% for category in categories %}
+
+    {% set CategoryName = category.parent ? category.parent.name ~ ' > ' ~ category.name : category.name %}
+    {{ macros.tableRow([
+        macros.tableRowItem(CategoryName, 'Nom'),
+        macros.tableRowItem(category.createdAt|date('Y-m-d'), 'Date de création'),
+        macros.tableActionDropdown([
+            macros.tableActionDropdownItem(
+                path('app_admin_category_edit', {slug: category.slug}),
+                'Modifier',
+                'action-edit',
+                'fa-pencil',
+            ),
+            macros.tableActionDropdownItem(
+                path('app_admin_category_delete', {id: category.id}),
+                'Supprimer',
+                'action-delete',
+                'fa-trash',
+                csrf_token('category-delete-' ~ category.id)
+            ),
+        ])
+    ]) }}
+
+{% endfor %}
+
+{{ macros.tableBodyEnd() }}
+
+{{ macros.tableEnd() }}

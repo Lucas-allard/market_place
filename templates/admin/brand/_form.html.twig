@@ -1,0 +1,10 @@
+{% import 'macros/crud_form_macros.html.twig' as macros %}
+
+{{ form_start(form, {'attr': {'class': 'crud-form'}}) }}
+        {{ macros.formField(form.name.vars.label, form.name,'form-field') }}
+        {{ macros.formField(form.picture.vars.label, form.picture, 'form-field') }}
+        {% if form.picture.vars.value is not empty %}
+            {{ macros.formGroup(macros.formThumbnail(form.picture.thumbnail.vars.label, form.picture.thumbnail.vars.value, form.picture.alt.vars.value)) }}
+        {% endif %}
+        {{ macros.formGroup(macros.formButton('Enregistrer', 'button-blue')) }}
+{{ form_end(form) }}

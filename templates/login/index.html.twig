@@ -3,60 +3,61 @@
 
 {% block title %}Connexion{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('loginPage') }}
+{% endblock %}
+
 {% block body %}
-    {% if error %}
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 my-4 rounded relative"
-             role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-    <div class="mt-16 font-dm-sans text-custom-blue flex flex-col lg:flex-row lg:h-[calc(100vh-120px)]">
-        <div class="flex-1 px-12">
-            <h1 class="text-3xl font-bold">Connexion</h1>
-            <p class="text-sm">De retour parmi nous ?</p>
-            <div class="w-full max-w-xs my-8">
-                <form action="{{ path('app_login') }}" method="post">
-                    <div class="mb-6">
-                        <label for="username" class="block mb-2 text-sm font-medium">Email</label>
-                        <input type="text" id="username" name="_username" value="{{ last_username }}"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md rounded-md border-custom-blue focus:border-custom-blue focus:ring-0 block w-full p-2.5"
-                        >
+    <section class="login-page-section">
+        <h1>Connexion</h1>
+        <p>De retour parmi nous ?</p>
+        <section class="content-section">
+            <div class="row-section">
+                <form action="{{ path('app_login') }}" method="post" class="form">
+                    {% if error is not null %}
+                        <p class="form-error">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                    {% endif %}
+                    <div class="form-field">
+                        <label for="username">Email</label>
+                        <input type="text" id="username" name="_username" value="{{ last_username }}">
                     </div>
-                    <div class="mb-6">
-                        <label for="password" class="block mb-2 text-sm font-medium">Mot de passe</label>
-                        <input type="password" id="password" name="_password"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md border-custom-blue focus:border-custom-blue focus:ring-0 block w-full p-2.5">
+                    <div class="form-field">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" name="_password">
                     </div>
-                    <div class="mb-6 flex flex-col lg:flex-row lg:justify-between lg:items-center">
-                        <div class="my-2">
-                            <input type="checkbox" id="remember_me" name="_remember_me" value="on"
-                                   class="rounded-md checked:bg-custom-blue focus:ring-0 text-custom-blue">
-                            <label for="remember_me" class="text-sm font-medium">Se souvenir de moi</label>
-                        </div>
-                        <a href="#" class="text-sm underline hover:text-orange-400 transition-all">Mot de passe
+                    <div class="form-field">
+                        <input type="checkbox" id="remember_me" name="_remember_me" value="on">
+                        <label for="remember_me">Se souvenir de moi</label>
+                    </div>
+                    <div class="form-field">
+                        <a href="#">Mot de passe
                             oublié ?
                         </a>
                     </div>
                     <input type="hidden" name="_target_path" value="/">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                    <div class="mb-6">
-                        <button type="submit"
-                                class="bg-custom-blue text-white text-sm font-medium rounded-md px-4 py-2.5 hover:bg-orange-400 focus:outline-none focus:ring-0 transition-all">
-                            Connexion
-                        </button>
+                    <div class="form-field">
+                        <button type="submit" class="button button-blue">Connexion</button>
                     </div>
-                    <a href="{{ path('app_register') }}" class="text-sm underline hover:text-orange-400 my-2 transition-all">Pas encore
-                        inscrit ?</a>
-                    <p class="text-sm group  my-2 ">Pour créer un compteur vendeur, cliquez
-                        <a href="{{ path('app_register', {'type': 'seller'}) }}"
-                           class="underline group-hover:text-orange-400 transition-all">
-                            ici
-                        </a>
-                    </p>
                 </form>
+                <p>Pas encore inscrit ? <a href="{{ path('app_register') }}">C'est par ici !</a>
+                </p>
+                <p>Pour créer un compteur vendeur,
+                    <a href="{{ path('app_register', {'type': 'seller'}) }}">
+                        cliquez ici !
+                    </a>
+                </p>
             </div>
-        </div>
-        <div class="hidden lg:block flex-1">
-            <img src="{{ asset('images/login.svg') }}" alt="login" class="h-auto max-w-full w-2/3 select-none" draggable="false">
-        </div>
-    </div>
+            <div class="login-image-container">
+                <img src="{{ asset('images/login.svg') }}" alt="login" draggable="false">
+            </div>
+        </section>
+    </section>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('loginPage') }}
 {% endblock %}

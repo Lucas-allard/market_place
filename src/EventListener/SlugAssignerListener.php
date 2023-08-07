@@ -23,6 +23,10 @@ class SlugAssignerListener implements EventSubscriberInterface
      */
     private Reader $reader;
 
+    /**
+     * @param SluggerInterface $slugger
+     * @param Reader $reader
+     */
     public function __construct(SluggerInterface $slugger, Reader $reader)
     {
         $this->slugger = $slugger;

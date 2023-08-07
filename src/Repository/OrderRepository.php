@@ -4,6 +4,7 @@ namespace App\Repository;
 
 
 use App\Entity\Order;
+use App\Entity\OrderItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
@@ -106,10 +107,10 @@ class OrderRepository extends ServiceEntityRepository
      */
     public function findOrdersBySellerQuery(
         ?UserInterface $user,
-        string $sort = "createdAt",
-        string $order = "DESC",
-        int $page = null,
-        int $limit = null
+        string         $sort = "createdAt",
+        string         $order = "DESC",
+        int            $page = null,
+        int            $limit = null
     ): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('o')
@@ -155,9 +156,103 @@ class OrderRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * @param UserInterface|null $user
+     * @return float|int|mixed|string
+     */
     public function findOrdersBySeller(?UserInterface $user)
     {
         return $this->findOrdersBySellerQuery($user)->getQuery()->getResult();
 
     }
+
+    /**
+     * @param UserInterface|null $user
+     * @param array $orderIds
+     * @return float|int|mixed|string
+     */
+    public function findTotalIncomesPerMonth(?UserInterface $user, array $orderIds)
+    {
+        $queryBuilder = $this->createQueryBuilder('o');
+        $queryBuilder->select("DATE_FORMAT(o.createdAt, '%M') AS month", 'SUM(oi.quantity * p.price) AS totalIncome')
+            ->leftJoin('o.orderItems', 'oi')
+            ->leftJoin('oi.product', 'p')
+            ->where('p.seller = :seller')
+            ->andWhere($queryBuilder->expr()->in('o.id', $orderIds))
+            ->setParameter('seller', $user)
+            ->groupBy('month');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserInterface|null $user
+     * @param array $orderIds
+     * @param bool $isParent
+     * @return float|int|mixed|string
+     */
+    public function findTotalProductSoldPerCategories(?UserInterface $user, array $orderIds, bool $isParent = false)
+    {
+        $queryBuilder = $this->createQueryBuilder('o');
+
+        $queryBuilder->select('c.name AS categoryName', 'c.id AS categoryId', 'SUM(oi.quantity) AS totalQuantity')
+            ->from(OrderItem::class, 'oi')
+            ->leftJoin('oi.product', 'p')
+            ->leftJoin('p.categories', 'c')
+            ->leftJoin('p.seller', 's')
+            ->where('s = :seller');
+        if ($isParent) {
+            $queryBuilder->andWhere('c.parent IS NULL');
+        }
+
+        $queryBuilder->andWhere($queryBuilder->expr()->in('o.id', $orderIds))
+            ->setParameter('seller', $user)
+            ->groupBy('c.id');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserInterface|null $user
+     * @param array $ordersIds
+     * @return float|int|mixed|string
+     */
+    public function findTotalTopProductsSold(?UserInterface $user, array $ordersIds)
+    {
+        $queryBuilder = $this->createQueryBuilder('o');
+
+        $queryBuilder->select('p.name AS productName', 'SUM(oi.quantity) AS totalQuantity')
+            ->from(OrderItem::class, 'oi')
+            ->leftJoin('oi.product', 'p')
+            ->leftJoin('p.seller', 's')
+            ->where('s = :seller')
+            ->andWhere($queryBuilder->expr()->in('o.id', $ordersIds))
+            ->setParameter('seller', $user)
+            ->groupBy('p.id')
+            ->orderBy('totalQuantity', 'DESC')
+            ->setMaxResults(10);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserInterface $user
+     * @param array $orderIds
+     * @return float|int|mixed|string
+     */
+    public function findCartAveragePerMonth(UserInterface $user, array $orderIds)
+    {
+        $queryBuilder = $this->createQueryBuilder('o');
+
+        $queryBuilder->select("DATE_FORMAT(o.createdAt, '%M') AS month", 'AVG(oi.quantity * p.price) AS averageCart')
+            ->leftJoin('o.orderItems', 'oi')
+            ->leftJoin('oi.product', 'p')
+            ->where('p.seller = :seller')
+            ->andWhere($queryBuilder->expr()->in('o.id', $orderIds))
+            ->setParameter('seller', $user)
+            ->groupBy('month');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
 }

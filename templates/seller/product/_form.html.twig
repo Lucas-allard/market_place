@@ -30,7 +30,7 @@
                 macros.formFieldCollectionDelete("crud-collection-item-remove"),
             ) }}
             {{ macros.formGroup(
-                macros.crudCollectionThumbnail(field.thumbnail.vars.label,field.thumbnail.vars.value, field.alt.vars.value),
+                macros.formThumbnail(field.thumbnail.vars.label,field.thumbnail.vars.value, field.alt.vars.value),
                 'crud-collection-thumbnail'
             ) }}
         {% endfor %}

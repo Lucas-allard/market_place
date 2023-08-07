@@ -28,7 +28,7 @@ class Customer extends User
     /**
      * @var Collection|null
      */
-    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Order::class)]
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Order::class, cascade: ['persist', 'remove'])]
     private ?Collection $orders;
 
     public function __construct()

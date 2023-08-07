@@ -40,7 +40,6 @@ class ProductSearchFormType extends AbstractType
     {
         $choices = $this->getChoices($options['categories']);
 
-
         $builder
             ->add('category', ChoiceType::class, [
                 'required' => false,
@@ -56,7 +55,6 @@ class ProductSearchFormType extends AbstractType
                     'placeholder' => 'Rechercher un produit',
                 ],
                 'label' => null,
-
             ])
         ;
 

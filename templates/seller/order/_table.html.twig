@@ -2,7 +2,7 @@
 
 {% set parameters = app.request.query.all %}
 {% set sortArray = parameters['sort'] ?? {} %}
-{% set sort = sortArray|first ? sortArray|keys|first : 'status' %}
+{% set sort = sortArray|first ? sortArray|keys|first : '' %}
 {% set order = sortArray|first ? sortArray|first : 'ASC' %}
 
 {{ macros.tableStart() }}
@@ -34,7 +34,7 @@
     {{ macros.tableRow([
         macros.tableRowItem(order.customer.userIdentifier, 'Client'),
         macros.tableRowItem(order.orderDate|date('d/m/Y H:i'), 'Date de la commande'),
-        macros.tableRowItem(order.getTotalForSeller(app.user.id)|number_format(2, ','), 'Montant de la commande', '€'),
+        macros.tableRowItem(order.getTotalForSeller(app.user), 'Montant de la commande', '€'),
         macros.tableRowItem(order.getOrderItemSeller(app.user.id).status == 'cart' ? 'panier' : order.getOrderItemSeller(app.user.id).status == 'pending' ? 'à traiter' : 'expédié', 'Statut', '', 'order-status badge badge-' ~ (order.getOrderItemSeller(app.user.id).status == 'pending' ? 'blue' : 'green') ~ ' badge-lowercase'),
         macros.tableRowItem(order.payment.status == 'pending' ? 'en attente' : order.payment.status == 'failed' ? 'échoué' : 'payé', 'Paiement', '', 'badge badge-' ~ (order.payment.status == 'failed' ? 'red ' : order.payment.status == 'pending' ? 'blue ' : 'green ') ~ 'badge-lowercase'),
         macros.tableActionDropdown([

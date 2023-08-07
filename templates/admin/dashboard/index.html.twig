@@ -1,0 +1,61 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+
+    <section class="content-section">
+        <div class="content-header">
+            <h2>Mon dashboard</h2>
+            <p>Bienvenue sur votre tableau de bord, <strong>{{ app.user.firstname ~ " " ~ app.user.lastname }}
+                    !</strong></p>
+            <p>Retrouvez ici les évolutions de votre site, (inscriptions, produits, etc...)</p>
+        </div>
+        <section class="content-body">
+            <section>
+                <h3>
+                    Statistiques utilisateurs
+                </h3>
+                <div class="content-body-charts">
+                    <article>
+                        <h4>Inscriptions par mois</h4>
+                        {{ render_chart(registrationsPerMonth, {'class': 'chart'}) }}
+                    </article>
+                    <article>
+                        <h4>Vendeurs inscrits par mois</h4>
+                        {{ render_chart(sellerRegistrationsPerMonth, {'class': 'chart'}) }}
+                    </article>
+                    <article>
+                        <h4>Acheteurs inscrits par mois</h4>
+                        {{ render_chart(customerRegistrationsPerMonth, {'class': 'chart'}) }}
+                    </article>
+                </div>
+            </section>
+            <section>
+                <h3>
+                    Statistiques produits
+                </h3>
+                <article class="small-chart-container">
+                    <h4>Quantités de produits mis en vente par mois</h4>
+                    {{ render_chart(productsPerMonth, {'class': 'chart'}) }}
+                </article>
+                <article class="small-chart-container">
+                    <h4>Quantités de produits mis en vente par catégories</h4>
+                    {{ render_chart(productsPerCategory, {'class': 'chart'}) }}
+                </article>
+                <article class="small-chart-container">
+                    <h4>Quantités de produits mis en vente par vendeur</h4>
+                    {{ render_chart(productsPerSeller, {'class': 'chart'}) }}
+                </article>
+            </section>
+            <section>
+                <h3>
+                    Statistiques de ventes
+                </h3>
+                <article class="small-chart-container">
+                    <h4>Nombre de ventes par mois</h4>
+                    {{ render_chart(ordersPerMonth, {'class': 'chart'}) }}
+                </article>
+            </section>
+        </section>
+    </section>
+
+{% endblock %}

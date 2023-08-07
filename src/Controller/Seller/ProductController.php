@@ -63,17 +63,15 @@ class ProductController extends AbstractController
 
     /**
      * @param Request $request
-     * @param BrandRepository $brandRepository
      * @return Response
      */
     #[Route('/ajouter', name: '_add', methods: ['POST', 'GET'])]
-    public function add(Request $request, BrandRepository $brandRepository): Response
+    public function add(Request $request): Response
     {
-        $brands = $brandRepository->findAll();
 
         $productFactory = $this->productService->getProductFactory();
 
-        $form = $this->createForm(ProductFormType::class, $productFactory->create(), ['brands' => $brands]);
+        $form = $this->createForm(ProductFormType::class, $productFactory->create());
 
         if ($this->formProcessor->process($request, $form)) {
 
@@ -90,14 +88,12 @@ class ProductController extends AbstractController
     /**
      * @param Request $request
      * @param Product $product
-     * @param BrandRepository $brandRepository
      * @return Response
      */
     #[Route('/modifier/{slug}', name: '_edit', methods: ['POST', 'GET'])]
-    public function edit(Request $request, Product $product, BrandRepository $brandRepository): Response
+    public function edit(Request $request, Product $product): Response
     {
-        $brands = $brandRepository->findAll();
-        $form = $this->formProcessor->create(ProductFormType::class, $product, ['thumbnail' => true, 'brands' => $brands]);
+        $form = $this->formProcessor->create(ProductFormType::class, $product, ['thumbnail' => true]);
 
         if ($this->formProcessor->process($request, $form)) {
 
@@ -120,11 +116,12 @@ class ProductController extends AbstractController
     public function delete(Request $request, Product $product): JsonResponse
     {
         $token = $request->headers->get('X-CSRF-TOKEN');
+
         if (!$this->isCsrfTokenValid('product-delete-' . $product->getId(), $token)) {
             return $this->json([
                 'status' => 'error',
                 'message' => 'Le token est invalide'
-            ], 400);
+            ], Response::HTTP_FORBIDDEN);
         }
 
         $this->productService->delete($product);
@@ -132,7 +129,7 @@ class ProductController extends AbstractController
         return $this->json([
             'status' => 'success',
             'message' => 'Le produit a bien été supprimé',
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**

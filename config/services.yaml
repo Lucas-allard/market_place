@@ -27,6 +27,7 @@ services:
 
     Symfony\Component\Security\Csrf\CsrfTokenManagerInterface: '@security.csrf.token_manager'
 
+
     App\EventListener\AddPictureFieldListener:
         arguments:
             $cloudinaryService: '@App\Service\Cloudinary\CloudinaryService'
@@ -44,13 +45,14 @@ services:
     App\EventListener\NavbarListener:
         arguments:
             $twig: '@twig'
+            $cache: '@cache.app'
             $categoryService: '@App\Service\Category\CategoryService'
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     App\EventListener\UserRegistrationListener:
         tags:
-            - { name: postPersist, event: prePersist }
+            - { name: doctrine.event_listener, event: prePersist }
 
     App\EventListener\AuthenticationSuccessListener:
         arguments:

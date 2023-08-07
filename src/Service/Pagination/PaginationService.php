@@ -61,6 +61,7 @@ class PaginationService
 
         $data = [];
 
+
         try {
             $data = $paginatedQuery->getIterator()->getArrayCopy();
         } catch (Exception $e) {

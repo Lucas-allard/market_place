@@ -1,0 +1,25 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+    <section class="content-section">
+        <div class="content-header">
+            <div>
+                <h2>Liste des caractéristiques</h2>
+                <a href="{{ path('app_admin_caracteristic_create') }}" class="button button-blue">
+                    <i class="fas fa-plus"></i> Ajouter une caractéristique
+                </a>
+            </div>
+            <p>Bienvenue sur la page de gestion des caractéristiques.</p>
+            <p>Vous pouvez ici ajouter, modifier et supprimer des
+                caractéristiques.</p>
+            <p>
+                <strong>Attention :</strong> la suppression d'une caractéristique entraîne la suppression de toutes les
+                valeurs associées à cette caractéristique.
+            </p>
+        </div>
+        <section class="content-table">
+            {{ include('admin/caracteristic/_table.html.twig') }}
+            {{ include('components/_pagination.html.twig') }}
+        </section>
+    </section>
+{% endblock %}

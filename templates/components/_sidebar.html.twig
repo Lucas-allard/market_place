@@ -1,21 +1,24 @@
 <aside class="sidenav-container" id="sidenavMenu">
     <nav class="sidenav">
-        <ul class="sidenav-list ">
+        <ul class="sidenav-list">
             {% for category in categories %}
-                <li class="sidenav-item">
-                    <a href="{{ path('app_product_index', {categorySlug: category.slug})  ~ '?page=1' }}" class="sidenav-link">
-                        {% set svg_file = 'svg/' ~ category.slug ~ '.html.twig' %}
-                        {% include svg_file %}
-                    </a>
-                    <ul class="sidenav-subnav-list">
-                        {% for child in category.children %}
-                            <li class="subnav-list-item">
-                                <a href="{{ path('app_product_index', { categorySlug: category.slug, subCategorySlug: child.slug })  ~ '?page=1' }}"
-                                   class="subnav-list-link">{{ child.name }}</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
+                {% if category.parent is null %}
+                    <li class="sidenav-item">
+                        <a href="{{ path('app_product_index', {categorySlug: category.slug})  ~ '?page=1' }}"
+                           class="sidenav-link">
+                            {% set svg_file = 'svg/' ~ category.slug ~ '.html.twig' %}
+                            {% include svg_file %}
+                        </a>
+                        <ul class="sidenav-subnav-list">
+                            {% for child in category.children %}
+                                <li class="subnav-list-item">
+                                    <a href="{{ path('app_product_index', { categorySlug: category.slug, subCategorySlug: child.slug })  ~ '?page=1' }}"
+                                       class="subnav-list-link">{{ child.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     </nav>

@@ -1,4 +1,5 @@
 import Fetch from "./Fetch";
+import swal from "sweetalert";
 
 class TableActionManager {
     constructor(table) {

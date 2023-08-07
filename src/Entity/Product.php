@@ -71,15 +71,15 @@ class Product extends AbstractEntity
     private ?string $slug = null;
 
     /**
-     * @var Collection|ArrayCollection
+     * @var ArrayCollection|Collection
      */
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderItem::class, cascade: ['persist'], orphanRemoval: true)]
-    private Collection $orderItems;
+    private Collection|ArrayCollection $orderItems;
     /**
-     * @var Collection|ArrayCollection
+     * @var ArrayCollection|Collection
      */
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class, cascade: ['persist'], orphanRemoval: true)]
-    private Collection $pictures;
+    private Collection|ArrayCollection $pictures;
 
     /**
      * @var int|null
@@ -90,10 +90,10 @@ class Product extends AbstractEntity
     private ?int $discount = null;
 
     /**
-     * @var Collection|ArrayCollection
+     * @var ArrayCollection|Collection
      */
     #[ORM\ManyToMany(targetEntity: Caracteristic::class, inversedBy: 'products')]
-    private Collection $caracteristics;
+    private Collection|ArrayCollection $caracteristics;
 
     /**
      * @var float|null
@@ -102,15 +102,15 @@ class Product extends AbstractEntity
     private ?float $shippingFee = null;
 
     /**
-     * @var Collection|ArrayCollection
+     * @var ArrayCollection|Collection
      */
     #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'products')]
-    private Collection $categories;
+    private Collection|ArrayCollection $categories;
 
     /**
      * @var Brand|null
      */
-    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\ManyToOne(targetEntity: Brand::class, cascade: ['persist'], inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Brand $brand = null;
 
@@ -467,6 +467,30 @@ class Product extends AbstractEntity
     {
         $this->brand = $brand;
 
+        return $this;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $categories
+     * @return $this
+     */
+    public function setCategories(ArrayCollection|Collection $categories): static
+    {
+        foreach ($categories as $category) {
+            $this->addCategory($category);
+        }
+        return $this;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $caracteristics
+     * @return $this
+     */
+    public function setCaracteristics(ArrayCollection|Collection $caracteristics): static
+    {
+        foreach ($caracteristics as $caracteristic) {
+            $this->addCaracteristic($caracteristic);
+        }
         return $this;
     }
 }

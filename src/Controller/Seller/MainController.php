@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
 #[IsGranted('ROLE_SELLER')]
 #[Route('/ma-boutique', name: 'app_seller')]
 class MainController extends AbstractController
@@ -32,17 +31,18 @@ class MainController extends AbstractController
     #[Route('/', name: '_index')]
     public function index(): Response
     {
-        $incomesChart = $this->orderService->getTotalIncomesPerMonthChart($this->getUser());
+        $orders = $this->orderService->getOrdersForSeller($this->getUser());
+        $incomesChart = $this->orderService->getTotalIncomesPerMonthChart($this->getUser(), $orders);
 
-        $ordersChart = $this->orderService->getTotalOrdersPerMonthChart($this->getUser());
+        $ordersChart = $this->orderService->getTotalOrdersPerMonthChart($orders);
 
-        $productPerParentCategoryChart = $this->orderService->getTotalProductSoldPerCategoriesChart($this->getUser(), true);
+        $productPerParentCategoryChart = $this->orderService->getTotalProductSoldPerCategoriesChart($this->getUser(), $orders, true);
 
-        $productPerCategoryChart = $this->orderService->getTotalProductSoldPerCategoriesChart($this->getUser(), false);
+        $productPerCategoryChart = $this->orderService->getTotalProductSoldPerCategoriesChart($this->getUser(), $orders, false);
 
-        $topProductsChart = $this->orderService->getTotalTopProductsSoldChart($this->getUser());
+        $topProductsChart = $this->orderService->getTotalTopProductsSoldChart($this->getUser(), $orders);
 
-        $cartAverageChart = $this->orderService->getCartAveragePerMonthChart($this->getUser());
+        $cartAverageChart = $this->orderService->getCartAveragePerMonthChart($this->getUser(), $orders);
 
 
         return $this->render('seller/main/index.html.twig', [

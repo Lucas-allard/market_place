@@ -1,0 +1,16 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+    <section class="content-section">
+        <div class="content-header">
+            <div>
+                <h2>Ajouter une catégorie</h2>
+                <a href="{{ path('app_admin_category_index') }}" class="button button-blue">Retour</a>
+            </div>
+            <p>Pour ajouter une catégorie, veuillez remplir le formulaire ci-dessous.</p>
+        </div>
+        <section>
+            {{ include('admin/category/_form.html.twig') }}
+        </section>
+    </section>
+{% endblock %}

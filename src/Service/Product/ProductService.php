@@ -6,15 +6,24 @@ use App\Entity\Category;
 use App\Entity\Product;
 use App\Factory\ProductFactory;
 use App\Repository\ProductRepository;
+use App\Service\Category\CategoryService;
+use App\Service\Chart\ChartService;
 use App\Service\Pagination\PaginationService;
-use App\Service\SortableInterface;
+use App\Service\Utils\SortHelper;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\PersistentCollection;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
-class ProductService implements SortableInterface
+class ProductService
 {
     /**
      * @var ProductRepository
@@ -24,6 +33,12 @@ class ProductService implements SortableInterface
      * @var PaginationService
      */
     private PaginationService $paginationService;
+
+    /**
+     * @var ChartService
+     */
+    private ChartService $chartService;
+
     /**
      * @var ProductFactory
      */
@@ -34,22 +49,41 @@ class ProductService implements SortableInterface
     private EntityManagerInterface $entityManager;
 
     /**
+     * @var TranslatorInterface
+     */
+    private TranslatorInterface $translator;
+
+    /**
+     * @var SortHelper
+     */
+    private SortHelper $sortHelper;
+
+    /**
      * @param ProductRepository $productRepository
      * @param PaginationService $paginationService
+     * @param ChartService $chartService
      * @param ProductFactory $productFactory
      * @param EntityManagerInterface $entityManager
+     * @param TranslatorInterface $translator
+     * @param SortHelper $sortHelper
      */
     public function __construct(
-        ProductRepository $productRepository,
-        PaginationService $paginationService,
-        ProductFactory $productFactory,
-        EntityManagerInterface $entityManager
+        ProductRepository      $productRepository,
+        PaginationService      $paginationService,
+        ChartService           $chartService,
+        ProductFactory         $productFactory,
+        EntityManagerInterface $entityManager,
+        TranslatorInterface    $translator,
+        SortHelper             $sortHelper,
     )
     {
         $this->productRepository = $productRepository;
         $this->paginationService = $paginationService;
+        $this->chartService = $chartService;
         $this->productFactory = $productFactory;
         $this->entityManager = $entityManager;
+        $this->translator = $translator;
+        $this->sortHelper = $sortHelper;
     }
 
     /**
@@ -79,27 +113,9 @@ class ProductService implements SortableInterface
     /**
      * @return array
      */
-    public function getAllProducts(): array
+    public function getProducts(): array
     {
-        return $this->productRepository->findAll();
-    }
-
-    /**
-     * @param int $id
-     * @return object|Product|null
-     */
-    public function getProductById(int $id): object
-    {
-        return $this->productRepository->find($id);
-    }
-
-    /**
-     * @param string $slug
-     * @return object|Product|null
-     */
-    public function getProductBySlug(string $slug): object
-    {
-        return $this->productRepository->findOneBy(['slug' => $slug]);
+        return $this->productRepository->findBy([], ['createdAt' => 'DESC']);
     }
 
     /**
@@ -109,7 +125,11 @@ class ProductService implements SortableInterface
      */
     public function getNewsArrivalsProducts(int $maxResults, ?int $offset = null): array
     {
-        return $this->productRepository->findNewsArrivalsProducts($maxResults, $offset);
+        $products = $this->productRepository->findNewsArrivalsProducts($maxResults, $offset);
+
+        $this->preLoadAssociatedEntities($products);
+
+        return $products;
     }
 
     /**
@@ -118,7 +138,11 @@ class ProductService implements SortableInterface
      */
     public function getTopProductsOrdered(int $maxResults): array
     {
-        return $this->productRepository->findTopProductsOrdered($maxResults);
+        $products = $this->productRepository->findTopProductsOrdered($maxResults);
+
+        $this->preLoadAssociatedEntities($products);
+
+        return $products;
     }
 
     /**
@@ -127,16 +151,19 @@ class ProductService implements SortableInterface
      */
     public function getSellsProductsHasDiscount(int $maxResults): array
     {
-        return $this->productRepository->findSellsProductsHasDiscount($maxResults);
+        $products = $this->productRepository->findSellsProductsHasDiscount($maxResults);
+
+        $this->preLoadAssociatedEntities($products);
+
+        return $products;
     }
 
     /**
      * @param array $categoryIds
-     * @return float|int|mixed|string
+     * @return array
      */
-    public function getBestProductsByCategoryIds(array $categoryIds)
+    public function getBestProductsByCategoryIds(array $categoryIds): array
     {
-
         return $this->productRepository->findBestProductsByCategoryIds($categoryIds);
     }
 
@@ -151,16 +178,16 @@ class ProductService implements SortableInterface
     public function getProductsByCategory(
         Category  $category,
         ?Category $subCategory = null,
-        ?string $order = null,
-        ?int    $page = null,
-        ?int    $limit = null
+        ?string   $order = null,
+        ?int      $page = null,
+        ?int      $limit = null
     ): array
     {
 
 
-        [$order, $page, $limit] = $this->setDefaultValues($order, $page, $limit);
+        [$order, $page, $limit] = $this->sortHelper->setDefaultValues($order, $page, $limit);
 
-        $query =  $subCategory ?
+        $query = $subCategory ?
             $this->productRepository->getProductsByCategoryIdQuery($subCategory->getId(), $category->getId(), $order) :
             $this->productRepository->getProductsByCategoryIdQuery($category->getId(), null, $order);
 
@@ -186,7 +213,7 @@ class ProductService implements SortableInterface
     ): array
     {
 
-        [$order, $page, $limit] = $this->setDefaultValues($order, $page, $limit);
+        [$order, $page, $limit] = $this->sortHelper->setDefaultValues($order, $page, $limit);
 
         [$minPrice, $maxPrice, $brandArray, $caracteristicArray] = $this->extractFilterData($filterData);
 
@@ -222,18 +249,85 @@ class ProductService implements SortableInterface
      */
     public function getProductsBySeller(
         ?UserInterface $user,
-        ?array $sort = null,
-        ?int $page = null,
-        ?int $limit = null
+        ?array         $sort = null,
+        ?int           $page = null,
+        ?int           $limit = null
     ): array
     {
-        [$sort, $order] = $this->getOrderBy($sort);
+        [$sort, $order] = $this->sortHelper->getOrderBy($sort);
 
-        [$order, $page, $limit] = $this->setDefaultValues($order, $page, $limit);
+        [$order, $page, $limit] = $this->sortHelper->setDefaultValues($order, $page, $limit);
 
         $queryBuilder = $this->productRepository->getProductsBySellerQuery($user, $sort, $order);
 
         return $this->paginationService->getPaginatedResult($queryBuilder, $page, $limit);
+    }
+
+
+    /**
+     * @param array $products
+     * @return Chart
+     */
+    public function getProductsPerMonthChart(array $products): Chart
+    {
+        $total = [];
+
+        foreach ($products as $product) {
+            $month = $product->getCreatedAt()->format('F');
+            $monthName = $this->translator->trans($month);
+
+            if (!isset($total[$monthName])) {
+                $total[$monthName] = 0;
+            }
+
+            $total[$monthName] += $product->getQuantity();
+        }
+
+        return $this->chartService->buildChart($total, Chart::TYPE_BAR, true);
+    }
+
+
+    /**
+     * @param array $products
+     * @return Chart
+     */
+    public function getProductsPerCategoryChart(array $products): Chart
+    {
+        $categoryTotals = [];
+        $productIds = array_map(fn($product) => $product->getId(), $products);
+        $categoryRepository = $this->entityManager->getRepository(Category::class);
+        $results = $categoryRepository->findTotalProductPerCategories($productIds);
+
+        foreach ($results as $result) {
+            $category = $result['category'];
+            $total = $result['total'];
+            $categoryTotals[$category] = $total;
+        }
+
+        return $this->chartService->buildChart($categoryTotals, Chart::TYPE_BAR, true);
+    }
+
+
+    /**
+     * @param array $products
+     * @return Chart
+     */
+    public function getProductsPerSellerChart(array $products): Chart
+    {
+        $total = [];
+
+        foreach ($products as $product) {
+            $seller = $product->getSeller()->getCompany();
+
+            if (!isset($total[$seller])) {
+                $total[$seller] = 0;
+            }
+
+            $total[$seller]++;
+        }
+
+        return $this->chartService->buildChart($total, Chart::TYPE_BAR, true);
+
     }
 
     /**
@@ -251,38 +345,6 @@ class ProductService implements SortableInterface
     public function getProductFactory(): ProductFactory
     {
         return $this->productFactory;
-    }
-
-    /**
-     * @param array|null $criteria
-     * @return array|string[]
-     */
-    public function getOrderBy(?array $criteria): array
-    {
-        if ($criteria) {
-            // the key is the field name and the value is the order
-            $sort = array_key_first($criteria);
-            $order = $criteria[$sort];
-
-            return [$sort, $order];
-        }
-
-        return ['createdAt', 'DESC'];
-    }
-
-    /**
-     * @param string|null $order
-     * @param int|null $page
-     * @param int|null $limit
-     * @return array
-     */
-    public function setDefaultValues(?string &$order, ?int &$page, ?int &$limit): array
-    {
-        $order = $order ?? 'DESC';
-        $page = $page ?? 1;
-        $limit = $limit ?? 16;
-
-        return [$order, $page, $limit];
     }
 
     /**
@@ -318,4 +380,33 @@ class ProductService implements SortableInterface
         return $filterArray;
     }
 
+    /**
+     * @param array $products
+     * @return void
+     */
+    public function preLoadAssociatedEntities(array $products): void
+    {
+        foreach ($products as $product) {
+            $categories = $product->getCategories();
+            $caracteristics = $product->getCaracteristics();
+            $pictures = $product->getPictures();
+
+            // Vérification et conversion des collections d'entités en ArrayCollection
+            if ($categories instanceof PersistentCollection) {
+                $categories = new ArrayCollection($categories->getValues());
+            }
+
+            if ($caracteristics instanceof PersistentCollection) {
+                $caracteristics = new ArrayCollection($caracteristics->getValues());
+            }
+
+            if ($pictures instanceof PersistentCollection) {
+                $pictures = new ArrayCollection($pictures->getValues());
+            }
+
+            $product->setCategories($categories)
+                ->setCaracteristics($caracteristics)
+                ->setPictures($pictures);
+        }
+    }
 }

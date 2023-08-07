@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
-#[IsGranted('ROLE_USER')]
+#[IsGranted('ROLE_CUSTOMER')]
 #[Route('/paiement', name: 'app_payment')]
 class PaymentController extends AbstractController
 {

@@ -1,0 +1,20 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+    <section class="content-section">
+        <div class="content-header">
+            <div>
+                <h2>Liste des catégories</h2>
+                <a href="{{ path('app_admin_category_create') }}" class="button button-blue">
+                    <i class="fas fa-plus"></i> Ajouter une catégorie</a>
+            </div>
+            <p>Bienvenue sur votre liste de catégories, <strong>{{ app.user.firstname ~ " " ~ app.user.lastname }}
+                    !</strong></p>
+            <p>Vous pouvez ici voir la liste des catégories, les modifier ou en créer de nouvelles.</p>
+        </div>
+        <section class="content-table">
+            {{ include('admin/category/_table.html.twig') }}
+            {{ include('components/_pagination.html.twig') }}
+        </section>
+    </section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% import 'macros/table_macros.html.twig' as macros %}
+
+{% set parameters = app.request.query.all %}
+{% set sortArray = parameters['sort'] ?? {} %}
+{% set sort = sortArray|first ? sortArray|keys|first : 'type' %}
+{% set order = sortArray|first ? sortArray|first : 'ASC' %}
+
+{{ macros.tableStart() }}
+
+{{ macros.tableHeader([
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Type',
+            order == 'ASC' and sort == 'type' ? 'fa-arrow-up' : order == 'DESC' and sort == 'type' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_caracteristic_index', {'sort[type]': order == 'ASC' and sort == 'type' ? 'DESC' : 'ASC', }),
+        ),
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Valeur',
+            order == 'ASC' and sort == 'value' ? 'fa-arrow-up' : order == 'DESC' and sort == 'value' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_caracteristic_index', {'sort[value]': order == 'ASC' and sort == 'value' ? 'DESC' : 'ASC', }),
+        ),
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Date de création',
+            order == 'ASC' and sort == 'createdAt' ? 'fa-arrow-up' : order == 'DESC' and sort == 'createdAt' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_caracteristic_index', {'sort[createdAt]': order == 'ASC' and sort == 'createdAt' ? 'DESC' : 'ASC', }),
+        )
+    ),
+    macros.tableHeaderItem(macros.tableHeaderSpan('Actions', 'sr-only'))
+]) }}
+
+{{ macros.tableBodyStart() }}
+
+{% for caracteristic in caracteristics %}
+    {{ macros.tableRow([
+        macros.tableRowItem(caracteristic.type, 'Type'),
+        macros.tableRowItem(caracteristic.value, 'Valeur'),
+        macros.tableRowItem(caracteristic.createdAt|date('Y-m-d'), 'Date de création'),
+        macros.tableActionDropdown([
+            macros.tableActionDropdownItem(
+                path('app_admin_caracteristic_edit', {id: caracteristic.id}),
+                'Modifier',
+                'action-edit',
+                'fa-pencil',
+            ),
+            macros.tableActionDropdownItem(
+                path('app_admin_caracteristic_delete', {id: caracteristic.id}),
+                'Supprimer',
+                'action-delete',
+                'fa-trash',
+                csrf_token('caracteristic-delete-' ~ caracteristic.id)
+            ),
+        ])
+    ]) }}
+
+{% endfor %}
+
+{{ macros.tableBodyEnd() }}
+
+{{ macros.tableEnd() }}

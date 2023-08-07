@@ -4,6 +4,7 @@ namespace App\Controller\Seller;
 
 use App\Entity\Order;
 use App\Entity\OrderItemSeller;
+use App\Entity\Seller;
 use App\Service\Order\OrderService;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-
 
 #[IsGranted('ROLE_SELLER')]
 #[Route('/ma-boutique/mes-ventes', name: 'app_seller_order')]
@@ -58,8 +58,11 @@ class OrderController extends AbstractController
     #[Route('/{slug}', name: '_show', methods: ['GET'])]
     public function show(Order $order): Response
     {
+        /** @var Seller $seller */
+        $seller = $this->getUser();
+
         try {
-            $order = $this->orderService->getOrderForSeller($order, $this->getUser());
+            $order = $this->orderService->getOrderForSeller($order, $seller);
         } catch (NonUniqueResultException $e) {
             $this->addFlash('danger', 'La commande n\'existe pas');
 
@@ -84,14 +87,16 @@ class OrderController extends AbstractController
 
         $order = $orderItemSeller->getOrder();
 
-
         if (!$this->isCsrfTokenValid('order-ship-' . $order->getId(), $token)) {
             $this->addFlash('danger', 'Le token est invalide');
 
             return $this->redirectToRoute('app_seller_order_index');
         }
 
-        $this->orderService->ship($order, $this->getUser());
+        /** @var Seller $seller */
+        $seller = $this->getUser();
+
+        $this->orderService->ship($order, $seller);
 
         $this->addFlash('success', 'La commande a été marqué comme expédiée');
 
@@ -112,15 +117,18 @@ class OrderController extends AbstractController
             return $this->json([
                 'status' => 'error',
                 'message' => 'Le token est invalide',
-            ], 400);
+            ], Response::HTTP_FORBIDDEN);
         }
 
-        $this->orderService->deleteOrderForSeller($order, $this->getUser());
+        /** @var Seller $seller */
+        $seller = $this->getUser();
+
+        $this->orderService->deleteOrderForSeller($order, $seller);
 
         return $this->json([
             'status' => 'success',
             'message' => 'La commande a été supprimée',
-        ]);
+        ], Response::HTTP_OK);
     }
 }
 

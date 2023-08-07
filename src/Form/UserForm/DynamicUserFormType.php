@@ -161,9 +161,11 @@ class DynamicUserFormType extends AbstractType
     }
 
 
-    //check if a given property exist in the data class
-
-
+    /**
+     * @param string $property
+     * @param array $options
+     * @return bool
+     */
     public function hasProperty(string $property, array $options): bool
     {
         try {

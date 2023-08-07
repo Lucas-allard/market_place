@@ -17,10 +17,11 @@ import 'flowbite';
 
 // Import addToCart function
 import {addItemToCart} from './js/utils/addToCart.js';
+import {captureFlashMessages} from "./js/utils/captureFlashMessage";
+
 import DropdownManager from './js/classes/DropdownManager.js';
 import MenuManager from "./js/classes/MenuManager";
 import ModalManager from "./js/classes/ModalManager";
-import {captureFlashMessages} from "./js/utils/captureFlashMessage";
 
 window.onload = () => {
     const mobileMenu = document.getElementById('mobileMenu');
@@ -39,5 +40,4 @@ window.onload = () => {
     });
 
     captureFlashMessages();
-
 }

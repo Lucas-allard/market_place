@@ -59,9 +59,9 @@ class ProductRepository extends ServiceEntityRepository
 
     /**
      * @param int $maxResults
-     * @return float|int|mixed|string
+     * @return Product[]
      */
-    public function findTopProductsOrdered(int $maxResults = 9)
+    public function findTopProductsOrdered(int $maxResults = 9): array
     {
 
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
@@ -87,9 +87,9 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @param int $maxResults
      * @param int|null $offset
-     * @return float|int|mixed|string
+     * @return Product[]
      */
-    public function findNewsArrivalsProducts(int $maxResults = 9, ?int $offset = 0)
+    public function findNewsArrivalsProducts(int $maxResults = 9, ?int $offset = 0): array
     {
 
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
@@ -122,9 +122,9 @@ class ProductRepository extends ServiceEntityRepository
 
     /**
      * @param int $maxResult
-     * @return float|int|mixed|string
+     * @return Product[]
      */
-    public function findSellsProductsHasDiscount(int $maxResult)
+    public function findSellsProductsHasDiscount(int $maxResult): array
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $queryBuilder
@@ -274,28 +274,36 @@ class ProductRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getSingleScalarResult();
     }
 
-
     /**
      * @param array $categoryIds
-     * @return float|int|mixed|string
+     * @return array
      */
-    public function findBestProductsByCategoryIds(array $categoryIds)
+    public function findBestProductsByCategoryIds(array $categoryIds): array
     {
-        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
-        $queryBuilder
-            ->select('p')
-            ->from(Product::class, 'p')
+        $queryBuilder = $this->createQueryBuilder('p');
+        $queryBuilder->select('p')
+            ->addSelect('c.id AS categoryId')
             ->innerJoin('p.categories', 'c')
             ->innerJoin('p.orderItems', 'oi')
             ->where($queryBuilder->expr()->in('c.id', $categoryIds))
             ->andWhere('p.quantity > 0')
             ->andWhere('c.parent IS NOT NULL')
-            ->groupBy('p.id')
+            ->groupBy('c.id')
             ->orderBy('SUM(oi.quantity)', 'DESC');
 
+        $query = $queryBuilder->getQuery();
+        $results = $query->getResult();
 
-        return $queryBuilder->getQuery()->getResult();
+        $productsByCategory = [];
+        foreach ($results as $result) {
+            $categoryId = $result['categoryId'];
+            $product = $result[0];
+            $productsByCategory[$categoryId] = $product;
+        }
+
+        return $productsByCategory;
     }
+
 
     /**
      * @param UserInterface|null $user
@@ -317,4 +325,5 @@ class ProductRepository extends ServiceEntityRepository
             ->setParameter('seller', $user->getId());
         return $queryBuilder;
     }
+
 }

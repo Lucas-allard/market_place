@@ -38,7 +38,7 @@ class Category extends AbstractEntity
     /**
      * @var ArrayCollection|Collection
      */
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection|ArrayCollection $children;
 
     /**
@@ -72,6 +72,9 @@ class Category extends AbstractEntity
         $this->products = new ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         return $this->getParent() ? $this->getParent()->getName() . ' > ' . $this->getName() : $this->getName();

@@ -112,7 +112,6 @@ class RegistrationController extends AbstractController
         if (!$form->isSubmitted() ) {
             return false;
         }
-        //use the validator service to check the form
         $errors = $this->validator->validate($form, null, ['registration']);
 
         if (count($errors) > 0) {

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Brand;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -84,7 +85,22 @@ class BrandRepository extends ServiceEntityRepository
             ->setParameter('createdAt', new \DateTime('-2 months'))
             ->setMaxResults($limit);
 
-
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param string $sort
+     * @param string $order
+     * @return QueryBuilder
+     */
+    public function findAllQueryBuilder(string $sort, string $order): QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('b');
+
+        if ($sort && $order) {
+            $queryBuilder->orderBy('b.' . $sort, $order);
+        }
+
+        return $queryBuilder;
     }
 }

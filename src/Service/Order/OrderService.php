@@ -2,6 +2,7 @@
 
 namespace App\Service\Order;
 
+use App\Entity\Category;
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\OrderItemSeller;
@@ -9,12 +10,14 @@ use App\Entity\Seller;
 use App\Repository\OrderRepository;
 use App\Service\Chart\ChartService;
 use App\Service\Pagination\PaginationService;
-use App\Service\SortableInterface;
+use App\Service\Utils\SortHelper;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-class OrderService implements SortableInterface
+class OrderService
 {
     /**
      * @var OrderRepository
@@ -27,24 +30,58 @@ class OrderService implements SortableInterface
     private PaginationService $paginationService;
 
     /**
+     * @var TranslatorInterface
+     */
+    private TranslatorInterface $translator;
+
+    /**
      * @var ChartService $chartBuilder
      */
     private ChartService $chartService;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+    /**
+     * @var SortHelper
+     */
+    private SortHelper $sortHelper;
+
+    /**
      * @param OrderRepository $orderRepository
      * @param PaginationService $paginationService
+     * @param TranslatorInterface $translator
      * @param ChartService $chartService
+     * @param EntityManagerInterface $entityManager
+     * @param SortHelper $sortHelper
      */
     public function __construct(
-        OrderRepository       $orderRepository,
-        PaginationService     $paginationService,
-        ChartService $chartService
+        OrderRepository        $orderRepository,
+        PaginationService      $paginationService,
+        TranslatorInterface    $translator,
+        ChartService           $chartService,
+        EntityManagerInterface $entityManager,
+        SortHelper             $sortHelper
     )
     {
         $this->orderRepository = $orderRepository;
         $this->paginationService = $paginationService;
+        $this->translator = $translator;
         $this->chartService = $chartService;
+        $this->entityManager = $entityManager;
+        $this->sortHelper = $sortHelper;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getOrders(): array
+    {
+        return $this->orderRepository->findBy([], [
+            'createdAt' => 'DESC',
+        ]);
     }
 
     /**
@@ -75,23 +112,33 @@ class OrderService implements SortableInterface
         ]);
     }
 
+
     /**
-     * @param UserInterface|null $user
+     * @param UserInterface $user
+     * @return array
+     */
+    public function getOrdersForSeller(UserInterface $user): array
+    {
+        return $this->orderRepository->findOrdersBySeller($user);
+    }
+
+    /**
+     * @param Seller|null $user
      * @param array|null $sort
      * @param int|null $page
      * @param int|null $limit
      * @return array
      */
     public function getOrdersBySeller(
-        ?UserInterface $user,
+        ?Seller $user,
         ?array         $sort = null,
         ?int           $page = null,
         ?int           $limit = null
     ): array
     {
-        [$sort, $order] = $this->getOrderBy($sort);
+        [$sort, $order] = $this->sortHelper->getOrderBy($sort);
 
-        [$order, $page, $limit] = $this->setDefaultValues($order, $page, $limit);
+        [$order, $page, $limit] = $this->sortHelper->setDefaultValues($order, $page, $limit);
 
         $query = $this->orderRepository->findOrdersBySellerQuery($user, $sort, $order, $page, $limit);
 
@@ -195,87 +242,79 @@ class OrderService implements SortableInterface
 
     /**
      * @param UserInterface|null $user
+     * @param array $orders
      * @return Chart
      */
-    public function getTotalIncomesPerMonthChart(?UserInterface $user): Chart
+    public function getTotalIncomesPerMonthChart(?UserInterface $user, array $orders): Chart
     {
-        $orders = $this->orderRepository->findOrdersBySeller($user);
-
         $total = [];
 
-        foreach ($orders as $order) {
-            foreach ($order->getOrderItems() as $orderItem) {
-                if ($orderItem->getProduct()->getSeller() === $user) {
-                    $month = $order->getCreatedAt()->format('Y-m');
-                    if (!isset($total[$month])) {
-                        $total[$order->getCreatedAt()->format('Y-m')] = 0;
-                    }
+        $orderIds = array_map(fn($order) => $order->getId(), $orders);
 
-                    $total[$month] += $orderItem->getTotal();
-                }
-            }
-        }
+        $results = $this->orderRepository->findTotalIncomesPerMonth($user, $orderIds);
 
-        return $this->chartService->buildChart($total, Chart::TYPE_BAR,);
-    }
-
-    /**
-     * @param UserInterface|null $user
-     * @return Chart
-     */
-    public function getTotalOrdersPerMonthChart(?UserInterface $user): Chart
-    {
-        $orders = $this->orderRepository->findOrdersBySeller($user);
-
-        $total = [];
-
-        foreach ($orders as $order) {
-            $month = $order->getCreatedAt()->format('Y-m');
-            if (!isset($total[$month])) {
-                $total[$order->getCreatedAt()->format('Y-m')] = 0;
-            }
-
-            $total[$month] += 1;
+        foreach ($results as $result) {
+            $month = $this->translator->trans($result['month']);
+            $totalIncome = $result['totalIncome'];
+            $total[$month] = $totalIncome;
         }
 
         return $this->chartService->buildChart($total, Chart::TYPE_BAR);
     }
 
+    /**
+     * @param array $orders
+     * @return Chart
+     */
+    public function getTotalOrdersPerMonthChart(array $orders): Chart
+    {
+        $total = [];
+
+        foreach ($orders as $order) {
+            $month = $this->translator->trans($order->getCreatedAt()->format('F'));
+            if (!isset($total[$month])) {
+                $total[$month] = 0;
+            }
+
+            $total[$month]++;
+        }
+
+        return $this->chartService->buildChart($total, Chart::TYPE_BAR, true);
+    }
+
 
     /**
      * @param UserInterface|null $user
+     * @param array $orders
      * @param bool $isParent
      * @return Chart
      */
-    public function getTotalProductSoldPerCategoriesChart(?UserInterface $user, bool $isParent): Chart
+    public function getTotalProductSoldPerCategoriesChart(?UserInterface $user, array $orders, bool $isParent): Chart
     {
-        $orders = $this->orderRepository->findOrdersBySeller($user);
-
         $totals = [];
 
-        foreach ($orders as $order) {
-            foreach ($order->getOrderItems() as $orderItem) {
-                if ($orderItem->getProduct()->getSeller() === $user) {
-                    foreach ($orderItem->getProduct()->getCategories() as $category) {
-                        if ($isParent && $category->getParent() === null) {
-                            $categoryKey = $category->getName();
-                        } elseif (!$isParent && $category->getParent() !== null) {
-                            $categoryKey = $category->getParent()->getName() . " > " . $category->getName();
-                        } else {
-                            continue;
-                        }
+        $orderIds = array_map(fn($order) => $order->getId(), $orders);
 
-                        if (!isset($totals[$categoryKey])) {
-                            $totals[$categoryKey] = 0;
-                        }
+        $results = $this->orderRepository->findTotalProductSoldPerCategories($user, $orderIds, $isParent);
+        foreach ($results as $result) {
+            $categoryName = $result['categoryName'];
+            $categoryId = $result['categoryId'];
+            $totalQuantity = $result['totalQuantity'];
 
-                        $totals[$categoryKey] += $orderItem->getQuantity();
-                    }
+            if ($isParent) {
+                $categoryKey = $categoryName;
+            } else {
+                $parentCategory = $this->entityManager->getRepository(Category::class)->find($categoryId)->getParent();
+                if ($parentCategory) {
+                    $categoryKey = $parentCategory->getName() . " > " . $categoryName;
+                } else {
+                    continue;
                 }
             }
-        }
 
-        arsort($totals);
+            ksort($totals);
+            $totals[$categoryKey] = $totalQuantity;
+        }
 
         return $this->chartService->buildChart($totals, Chart::TYPE_PIE, true);
     }
@@ -283,103 +322,50 @@ class OrderService implements SortableInterface
 
     /**
      * @param UserInterface|null $user
+     * @param array $orders
      * @param int $limit
      * @return Chart
      */
-    public function getTotalTopProductsSoldChart(?UserInterface $user, int $limit = 10): Chart
+    public function getTotalTopProductsSoldChart(?UserInterface $user, array $orders, int $limit = 10): Chart
     {
-        $orders = $this->orderRepository->findOrdersBySeller($user);
 
         $totals = [];
 
-        foreach ($orders as $order) {
-            foreach ($order->getOrderItems() as $orderItem) {
-                if ($orderItem->getProduct()->getSeller() === $user) {
-                    $productName = $orderItem->getProduct()->getName();
-                    $quantity = $orderItem->getQuantity();
+        $ordersIds = array_map(fn($order) => $order->getId(), $orders);
 
-                    if (!isset($totals[$productName])) {
-                        $totals[$productName] = 0;
-                    }
+        $results = $this->orderRepository->findTotalTopProductsSold($user, $ordersIds);
 
-                    $totals[$productName] += $quantity;
-                }
-            }
+        foreach ($results as $result) {
+            $productName = $result['productName'];
+            $totalQuantity = $result['totalQuantity'];
+
+            $totals[$productName] = $totalQuantity;
         }
-
-        arsort($totals);
-
-        $totals = array_slice($totals, 0, $limit, true);
 
         return $this->chartService->buildChart($totals, Chart::TYPE_BAR, true);
     }
 
 
-    public function getCartAveragePerMonthChart(?UserInterface $getUser): Chart
+    /**
+     * @param UserInterface $user
+     * @param array $orders
+     * @return Chart
+     */
+    public function getCartAveragePerMonthChart(UserInterface $user, array $orders): Chart
     {
-        $orders = $this->orderRepository->findOrdersBySeller($getUser);
-
         $totals = [];
-        $weeks = [];
 
-        foreach ($orders as $order) {
-            $weekNumber = $order->getOrderDate()->format('m');
+        $orderIds = array_map(fn($order) => $order->getId(), $orders);
 
-            if (!isset($totals[$weekNumber])) {
-                $totals[$weekNumber] = 0;
-                $weeks[$weekNumber] = 0;
-            }
+        $results = $this->orderRepository->findCartAveragePerMonth($user, $orderIds);
 
-            foreach ($order->getOrderItems() as $orderItem) {
-                if ($orderItem->getProduct()->getSeller() === $getUser) {
-                    $totals[$weekNumber] += $orderItem->getTotal();
-                    $weeks[$weekNumber]++;
-                }
-            }
+        foreach ($results as $result) {
+            $month = $this->translator->trans($result['month']);
+            $averageCart = round($result['averageCart'], 2);
 
+            $totals[$month] = $averageCart;
         }
 
-        $averages = [];
-
-        foreach ($totals as $weekNumber => $total) {
-            $average = $total / $weeks[$weekNumber];
-            $averages[$weekNumber] = $average;
-        }
-
-        ksort($averages);
-
-        return $this->chartService->buildChart($averages, Chart::TYPE_LINE);
-    }
-
-
-    /**
-     * @param array|null $criteria
-     * @return array
-     */
-    public function getOrderBy(?array $criteria): array
-    {
-        if ($criteria) {
-            $sort = array_key_first($criteria);
-            $order = $criteria[$sort];
-
-            return [$sort, $order];
-        }
-
-        return ['createdAt', 'DESC'];
-    }
-
-    /**
-     * @param string|null $order
-     * @param int|null $page
-     * @param int|null $limit
-     * @return array
-     */
-    public function setDefaultValues(?string &$order, ?int &$page, ?int &$limit): array
-    {
-        $order = $order ?? 'createdAt';
-        $page = $page ?? 1;
-        $limit = $limit ?? 16;
-
-        return [$order, $page, $limit];
+        return $this->chartService->buildChart($totals, Chart::TYPE_LINE);
     }
 }
