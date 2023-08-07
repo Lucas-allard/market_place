@@ -21,12 +21,15 @@ class AuthenticationSuccessListener
      */
     private EntityManagerInterface $entityManager;
 
+    /**
+     * @param CartSessionStorage $cartSessionStorage
+     * @param EntityManagerInterface $entityManager
+     */
     public function __construct(CartSessionStorage $cartSessionStorage, EntityManagerInterface $entityManager)
     {
         $this->cartSessionStorage = $cartSessionStorage;
         $this->entityManager = $entityManager;
     }
-
 
     /**
      * @param InteractiveLoginEvent $event

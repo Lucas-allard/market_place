@@ -23,6 +23,10 @@ class HtmlSanitizerExtension implements FormTypeExtensionInterface
      */
     private TrimTransformer $trimTransformer;
 
+    /**
+     * @param HtmlPurifierTransformer $htmlPurifierTransformer
+     * @param TrimTransformer $trimTransformer
+     */
     public function __construct(HtmlPurifierTransformer $htmlPurifierTransformer, TrimTransformer $trimTransformer)
     {
         $this->htmlPurifierTransformer = $htmlPurifierTransformer;

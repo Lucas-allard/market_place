@@ -100,18 +100,19 @@ class ProductFormType extends AbstractType
                 'expanded' => false,
                 'by_reference' => false,
             ])
-            ->add('brand', ChoiceType::class, [
+            ->add('brand', EntityType::class, [
                 'label' => 'Marque du produit',
-                'choices' => $options['brands'],
-                'choice_label' => function (Brand $brand) {
-                    return $brand->getName();
+                'class' => Brand::class,
+                'attr' => [
+                    'class' => 'tom-select'
+                ],
+                'query_builder' => function (EntityRepository $brandRepository) {
+                    return $brandRepository->createQueryBuilder('b')
+                        ->orderBy('b.name', 'ASC');
                 },
-                'choice_value' => function (?Brand $brand) {
-                    return $brand ? $brand->getId() : '';
-                },
+                'choice_label' => 'name',
                 'multiple' => false,
                 'expanded' => false,
-                'by_reference' => false,
             ])
             ->add('caracteristics', EntityType::class, [
                 'label' => 'Caractéristiques du produit',
@@ -140,8 +141,7 @@ class ProductFormType extends AbstractType
                 'required' => false,
             ])
             ->addEventSubscriber($this->addPictureFieldListener)
-            ->addEventSubscriber($this->productCategoryListener)
-        ;
+            ->addEventSubscriber($this->productCategoryListener);
 
     }
 
@@ -154,7 +154,6 @@ class ProductFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Product::class,
             'thumbnail' => false,
-            'brands' => [],
         ]);
     }
 }

@@ -48,7 +48,7 @@
                 </header>
                 <hr>
                 <p class="product-page-price">{{ product.price }} €</p>
-                <p class="product-page-description">{{ product.description }}</p>
+                <div class="product-page-description">{{ product.description|raw }}</div>
                 <ul class="product-page-caracteristics">
                     {% for caracteristic in product.caracteristics %}
                         <li class="product-page-caracteristic">

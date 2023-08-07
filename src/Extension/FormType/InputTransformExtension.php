@@ -17,6 +17,9 @@ class InputTransformExtension implements FormTypeExtensionInterface
      */
     private UcFirstTransformer $ucFirstTransformer;
 
+    /**
+     * @param UcFirstTransformer $ucFirstTransformer
+     */
     public function __construct(UcFirstTransformer $ucFirstTransformer)
     {
 

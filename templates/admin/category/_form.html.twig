@@ -1,0 +1,9 @@
+{% import 'macros/crud_form_macros.html.twig' as macros %}
+
+{{ form_start(form, {'attr': {'class': 'crud-form'}}) }}
+        {{ macros.formField(form.name.vars.label, form.name,'form-field', 'form-input-text') }}
+        {{ macros.formField(form.parent.vars.label, form.parent, 'form-field', 'tom-select') }}
+        {{ macros.formField(form.brands.vars.label, form.brands, 'form-field', 'tom-select') }}
+        {{ macros.formField(form.description.vars.label, form.description, 'form-field') }}
+        {{ macros.formGroup(macros.formButton('Enregistrer', 'button-blue')) }}
+{{ form_end(form) }}

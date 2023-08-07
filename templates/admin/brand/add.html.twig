@@ -1,0 +1,16 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+    <section class="content-section">
+        <div class="content-header">
+            <div>
+                <h2>Ajouter une marque</h2>
+                <a href="{{ path('app_admin_brand_index') }}" class="button button-blue">Retour</a>
+            </div>
+            <p>Pour ajouter une marque, veuillez remplir le formulaire ci-dessous.</p>
+        </div>
+        <section>
+            {{ include('admin/brand/_form.html.twig') }}
+        </section>
+    </section>
+{% endblock %}

@@ -2,11 +2,15 @@
 
 namespace App\Entity;
 
+use App\Annotation\SlugProperty;
 use App\Repository\BrandRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @SlugProperty(property="name")
+ */
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
 class Brand extends AbstractEntity
 {
@@ -22,11 +26,11 @@ class Brand extends AbstractEntity
     private ?string $slug = null;
 
     /**
-     * @var Picture|null
+     * @var Picture
      */
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?Picture $picture = null;
+    private Picture $picture;
 
     /**
      * @var ArrayCollection|Collection
@@ -95,9 +99,9 @@ class Brand extends AbstractEntity
     }
 
     /**
-     * @return Picture|null
+     * @return Picture
      */
-    public function getPicture(): ?Picture
+    public function getPicture(): Picture
     {
         return $this->picture;
     }
@@ -162,6 +166,19 @@ class Brand extends AbstractEntity
         if (!$this->products->contains($product)) {
             $this->products->add($product);
             $product->setBrand($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Collection $products
+     * @return $this
+     */
+    public function setProducts(Collection $products): static
+    {
+        foreach ($products as $product) {
+            $this->addProduct($product);
         }
 
         return $this;

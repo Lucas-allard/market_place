@@ -20,6 +20,10 @@ class UserRegistrationListener implements EventSubscriberInterface
      */
     private EntityManagerInterface $entityManager;
 
+    /**
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param EntityManagerInterface $entityManager
+     */
     public function __construct(UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager)
     {
         $this->userPasswordHasher = $userPasswordHasher;
@@ -44,9 +48,11 @@ class UserRegistrationListener implements EventSubscriberInterface
     {
         $user = $args->getObject();
 
+
         if (!$user instanceof UserInterface) {
             return;
         }
+
         $this->encodePassword($user, $user->getPassword());
     }
 

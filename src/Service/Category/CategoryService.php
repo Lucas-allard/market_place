@@ -3,8 +3,13 @@
 namespace App\Service\Category;
 
 use App\Entity\Category;
+use App\Factory\CategoryFactory;
 use App\Repository\CategoryRepository;
+use App\Service\Pagination\PaginationService;
 use App\Service\Product\ProductService;
+use App\Service\Utils\SortHelper;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 
 class CategoryService
 {
@@ -19,13 +24,40 @@ class CategoryService
     private ProductService $productService;
 
     /**
+     * @var PaginationService
+     */
+    private PaginationService $paginationService;
+
+    /**
+     * @var SortHelper
+     */
+    private SortHelper $sortHelper;
+
+    /**
+     * @var CategoryFactory
+     */
+    private CategoryFactory $categoryFactory;
+
+    /**
      * @param CategoryRepository $categoryRepository
      * @param ProductService $productService
+     * @param PaginationService $paginationService
+     * @param SortHelper $sortHelper
+     * @param CategoryFactory $categoryFactory
      */
-    public function __construct(CategoryRepository $categoryRepository, ProductService $productService)
+    public function __construct(
+        CategoryRepository $categoryRepository,
+        ProductService     $productService,
+        PaginationService  $paginationService,
+        SortHelper         $sortHelper,
+        CategoryFactory    $categoryFactory,
+    )
     {
         $this->categoryRepository = $categoryRepository;
         $this->productService = $productService;
+        $this->paginationService = $paginationService;
+        $this->sortHelper = $sortHelper;
+        $this->categoryFactory = $categoryFactory;
     }
 
     /**
@@ -53,27 +85,16 @@ class CategoryService
             $categoryIndex[$category->getId()] = $category;
         }
 
-        $products = $this->productService->getBestProductsByCategoryIds($categoryIds);
+        $productsByCategory = $this->productService->getBestProductsByCategoryIds($categoryIds);
 
-        foreach ($products as $product) {
-            $productCategories = $product->getCategories();
-
-            foreach ($productCategories as $productCategory) {
-                $categoryId = $productCategory->getId();
-
-                if (isset($categoryIndex[$categoryId])) {
-                    $category = $categoryIndex[$categoryId];
-                    $category->setBestProduct($product);
-                    unset($categoryIndex[$categoryId]);
-                    break;
-                }
-            }
-
-            if (empty($categoryIndex)) {
-                break;
+        foreach ($productsByCategory as $categoryId => $product) {
+            if (isset($categoryIndex[$categoryId])) {
+                $category = $categoryIndex[$categoryId];
+                $category->setBestProduct($product);
             }
         }
 
+        $this->preLoadAssociatedEntities($categories);
         return $categories;
     }
 
@@ -82,9 +103,25 @@ class CategoryService
      * @return array
      */
     public
-    function getParentsAndChildrenCategoriesInSeparatedArrays(): array
+    function getCategories(): array
     {
-        return $this->categoryRepository->findParentsAndChildrenCategoriesInSeparatedArrays();
+        $categories = $this->categoryRepository->findAll();
+
+        $categoriesWithChildren = [];
+        foreach ($categories as $category) {
+            if ($category->getParent() === null) {
+                $categoriesWithChildren[] = $category;
+            }
+        }
+        foreach ($categoriesWithChildren as $parentCategory) {
+            foreach ($categories as $category) {
+                if ($category->getParent() === $parentCategory) {
+                    $parentCategory->addChild($category);
+                }
+            }
+        }
+
+        return $categoriesWithChildren;
     }
 
     /**
@@ -101,7 +138,7 @@ class CategoryService
      * @param Category $category
      * @return Category|null
      */
-    public function getSubCategoryBySlug(string $subCategorySlug, Category $category)
+    public function getSubCategoryBySlug(string $subCategorySlug, Category $category): ?Category
     {
         $subCategories = $category->getChildren();
 
@@ -114,4 +151,70 @@ class CategoryService
         return null;
     }
 
+    /**
+     * @param array|null $sort
+     * @param int|null $page
+     * @param int|null $limit
+     * @return array
+     */
+    public function getPaginatedCategories(?array $sort = null, ?int $page = null, ?int $limit = null): array
+    {
+        [$sort, $order] = $this->sortHelper->getOrderBy($sort);
+
+        [$order, $page, $limit] = $this->sortHelper->setDefaultValues($order, $page, $limit);
+
+        $queryBuilder = $this->categoryRepository->findAllQueryBuilder($sort, $order);
+
+        return $this->paginationService->getPaginatedResult($queryBuilder, $page, $limit);
+
+    }
+
+    /**
+     * @param Category $category
+     * @return void
+     */
+    public function deleteCategory(Category $category): void
+    {
+        $this->categoryRepository->remove($category);
+    }
+
+    /**
+     * @return CategoryFactory
+     */
+    public function getCategoryFactory(): CategoryFactory
+    {
+        return $this->categoryFactory;
+    }
+
+    /**
+     * @param array $categories
+     * @return void
+     */
+    private function preLoadAssociatedEntities(array $categories): void
+    {
+        foreach ($categories as $category) {
+            $bestProduct = $category->getBestProduct();
+            $products = $category->getProducts();
+
+            foreach ($products as $product) {
+                $category->addProduct($product);
+            }
+
+            if ($bestProduct) {
+                $categories = $bestProduct->getCategories();
+                $pictures = $bestProduct->getPictures();
+
+                if ($categories instanceof PersistentCollection) {
+                    $categories = new ArrayCollection($categories->getValues());
+                }
+
+                if ($pictures instanceof PersistentCollection) {
+                    $pictures = new ArrayCollection($pictures->getValues());
+                }
+
+                $bestProduct->setCategories($categories);
+                $bestProduct->setPictures($pictures);
+            }
+        }
+    }
 }

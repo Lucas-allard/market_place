@@ -27,6 +27,11 @@ class InputSanitizerExtension implements FormTypeExtensionInterface
      */
     private UcFirstTransformer $ucFirstTransformer;
 
+    /**
+     * @param StripTagTransformer $stripTagTransformer
+     * @param TrimTransformer $trimTransformer
+     * @param UcFirstTransformer $ucFirstTransformer
+     */
     public function __construct(StripTagTransformer $stripTagTransformer, TrimTransformer $trimTransformer, UcFirstTransformer $ucFirstTransformer)
     {
         $this->stripTagTransformer = $stripTagTransformer;

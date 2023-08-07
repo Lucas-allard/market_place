@@ -1,5 +1,4 @@
 // Fonction pour capturer les messages flash
-import {Logger} from "sass";
 
 export function captureFlashMessages() {
     const flashMessages = document.getElementsByClassName('alert');

@@ -46,9 +46,15 @@
             <div class="dropdown-menu hidden">
                 <ul class="dropdown-list ">
                     {% if app.user %}
+                        {%  if 'ROLE_ADMIN' not in app.user.roles %}
                         <li class="dropdown-item">
                             <a href="{{ accountPath }}" class="dropdown-link">Mon compte</a>
                         </li>
+                        {% elseif 'ROLE_ADMIN' in app.user.roles %}
+                            <li class="dropdown-item">
+                                <a href="{{ path('app_admin_dashboard') }}" class="dropdown-link">Espace administration</a>
+                            </li>
+                        {% endif %}
                         <li class="dropdown-item">
                             <a href="{{ path('app_logout') }}" class="dropdown-link">Déconnexion</a>
                         </li>
@@ -63,7 +69,7 @@
                 </ul>
             </div>
         </nav>
-        {% if app.user is not null and "ROLE_SELLER" not in app.user.roles %}
+        {% if app.user is null or (app.user is not null and 'ROLE_SELLER' not in app.user.roles) %}
             <nav class="dropdown">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="dropdown-icon">

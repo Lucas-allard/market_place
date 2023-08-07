@@ -50,18 +50,6 @@ class ChartService
             ],
         ]);
 
-        $chart->setOptions([
-            'scales' => [
-                'yAxes' => [
-                    [
-                        'ticks' => [
-                            'beginAtZero' => true,
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
         return $chart;
     }
 }

@@ -1,0 +1,103 @@
+@import '../../_variables.scss';
+
+body {
+  overflow-x: unset;
+}
+
+button {
+  border: none;
+}
+
+.admin-section {
+  padding-top: 70px;
+  width: 100%;
+
+  @media (min-width: $breakpoint-desktop) {
+    margin-left: 270px;
+    padding-top: 0;
+  }
+}
+
+.content-section {
+  color: $color-blue;
+
+  .content-header {
+    margin-bottom: $spacing-md;
+    border-bottom: 1px solid $color-gray-lighter;
+    padding: $spacing-lg $spacing-xl;
+
+    div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h2 {
+      font-size: $font-size-xxl;
+      font-weight: $font-weight-bold;
+      color: $color-blue-darker;
+      margin-bottom: $spacing-sm;
+    }
+
+    p {
+      font-size: $font-size-md;
+      font-weight: $font-weight-light;
+      margin-bottom: $spacing-md;
+    }
+  }
+
+  .content-table {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: $spacing-lg $spacing-xl;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content-body {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-lg $spacing-xl;
+
+    h3 {
+      font-size: $font-size-xl;
+    }
+
+    h3, h4 {
+      font-weight: $font-weight-bold;
+      color: $color-blue-darker;
+      margin-bottom: $spacing-sm;
+    }
+
+    .content-body-charts {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      align-content: flex-start;
+      padding: $spacing-lg $spacing-lg;
+
+      article {
+        width: 100%;
+        margin-bottom: $spacing-xxl;
+
+        @media (min-width: $breakpoint-tablet) {
+          width: calc(33% - #{$spacing-lg});
+        }
+      }
+
+      .chart {
+        width: 80%
+      }
+    }
+
+    .small-chart-container {
+      width: 80%;
+      margin: 0 auto $spacing-lg auto;
+    }
+  }
+}

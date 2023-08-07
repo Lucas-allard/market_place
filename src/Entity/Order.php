@@ -4,13 +4,13 @@ namespace App\Entity;
 
 
 use App\Annotation\SlugProperty;
+use App\Entity\Interface\UserInterface;
 use App\Repository\OrderRepository;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Utils;
 
 /**
  * @SlugProperty(property="createdAt")
@@ -56,7 +56,7 @@ class Order extends AbstractEntity
     private ?Payment $payment = null;
 
     /**
-     * @var float|int
+     * @var float
      */
     private float $total = 0;
 
@@ -316,24 +316,23 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @param int $id
+     * @param UserInterface $user
      * @return float
      */
-    public function getTotalForSeller(int $id): float
+    public function getTotalForSeller(UserInterface $user): float
     {
-        $total = [];
+        $totalForSeller = 0;
 
-        // parcourir chaque orderItem et vérifier dans chaque produit si le seller du produit exite dans le tableau, si oui faire le total des produits du seller
+
         foreach ($this->getOrderItems() as $orderItem) {
-            $seller = $orderItem->getProduct()->getSeller();
-            if (array_key_exists($seller->getId(), $total)) {
-                $total[$seller->getId()] += $orderItem->getTotal();
-            } else {
-                $total[$seller->getId()] = $orderItem->getTotal();
+          foreach ($orderItem->getProduct()->getSeller() as $seller) {
+            if ($seller === $user->getId()) {
+              $totalForSeller += $orderItem->getTotal();
             }
+          }
         }
 
-        return $total[$id];
+        return $totalForSeller;
     }
 
 

@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
     <title>{% block title %}Welcome!{% endblock %}</title>
-    <script src="https://kit.fontawesome.com/46eab4e946.js"
-            crossorigin="anonymous"></script> {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    <script src="https://kit.fontawesome.com/46eab4e946.js" crossorigin="anonymous"></script>
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
 
 
 </head>
-<body class="bg-gray-50">
+<body>
 
 <!-- Header  -->
 {{ include('components/_header.html.twig') }}
@@ -26,9 +25,9 @@
     <section class="main-section">
         {% for type, messages in app.flashes %}
             {% for message in messages %}
-                    <div class="alert" data-type="{{ type }}">
-                        {{ message }}
-                    </div>
+                <div class="alert" data-type="{{ type }}">
+                    {{ message }}
+                </div>
             {% endfor %}
         {% endfor %}
         {% block body %}{% endblock %}

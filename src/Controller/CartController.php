@@ -9,12 +9,12 @@ use App\Form\UserForm\DynamicUserFormType;
 use App\Manager\CartManager;
 use App\Service\Form\FormProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use App\Security\UserAuthenticator;
-
 
 #[Route('/panier', name: 'app_cart')]
 class CartController extends AbstractController
@@ -47,6 +47,10 @@ class CartController extends AbstractController
     #[Route('/', name: '_index')]
     public function index(Request $request, UserAuthenticatorInterface $userAuthenticator, UserAuthenticator $authenticator): Response
     {
+        if ($this->getUser() && $this->isGranted('ROLE_SELLER')) {
+            return $this->redirectToRoute('app_home');
+        }
+
         $cart = $this->cartManager->getCurrentCart();
 
         if ($this->getUser() && $cart->getCustomer() !== $this->getUser()) {
@@ -82,10 +86,10 @@ class CartController extends AbstractController
     /**
      * @param Request $request
      * @param Product $product
-     * @return Response
+     * @return JsonResponse
      */
     #[Route('/ajouter/{id}', name: '_add', methods: ['POST'])]
-    public function add(Request $request, Product $product): Response
+    public function add(Request $request, Product $product): JsonResponse
     {
         if ($this->getUser() && !$this->isGranted("ROLE_CUSTOMER")) {
             return $this->json([
@@ -126,10 +130,10 @@ class CartController extends AbstractController
     /**
      * @param Request $request
      * @param Product $product
-     * @return Response
+     * @return JsonResponse
      */
     #[Route('/modifier/{id}', name: '_update', methods: ['PUT'])]
-    public function update(Request $request, Product $product): Response
+    public function update(Request $request, Product $product): JsonResponse
     {
         $token = $request->headers->get('X-CSRF-TOKEN');
 
@@ -166,10 +170,10 @@ class CartController extends AbstractController
     /**
      * @param Request $request
      * @param Product $product
-     * @return Response
+     * @return JsonResponse
      */
     #[Route('/supprimer/{id}', name: '_remove', methods: ['DELETE'])]
-    public function remove(Request $request, Product $product): Response
+    public function remove(Request $request, Product $product): JsonResponse
     {
         $token = $request->headers->get('X-CSRF-TOKEN');
 
@@ -204,10 +208,10 @@ class CartController extends AbstractController
 
     /**
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
     #[Route('/vider', name: '_clear', methods: ['DELETE'])]
-    public function clear(Request $request): Response
+    public function clear(Request $request): JsonResponse
     {
         $token = $request->headers->get('X-CSRF-TOKEN');
 

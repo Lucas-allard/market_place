@@ -2,7 +2,7 @@
 
 {% set parameters = app.request.query.all %}
 {% set sortArray = parameters['sort'] ?? {} %}
-{% set sort = sortArray|first ? sortArray|keys|first : 'name' %}
+{% set sort = sortArray|first ? sortArray|keys|first : '' %}
 {% set order = sortArray|first ? sortArray|first : 'ASC' %}
 
 {{ macros.tableStart() }}

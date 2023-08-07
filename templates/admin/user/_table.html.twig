@@ -1,0 +1,88 @@
+{% import 'macros/table_macros.html.twig' as macros %}
+
+{% set parameters = app.request.query.all %}
+{% set sortArray = parameters['sort'] ?? {} %}
+{% set sort = sortArray|first ? sortArray|keys|first : '' %}
+{% set order = sortArray|first ? sortArray|first : 'ASC' %}
+
+{{ macros.tableStart() }}
+
+{{ macros.tableHeader([
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Nom',
+            order == 'ASC' and sort == 'lastName' ? 'fa-arrow-up' : order == 'DESC' and sort == 'lastName' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_user_index', {'sort[lastName]': order == 'ASC' and sort == 'lastName' ? 'DESC' : 'ASC', }),
+        ),
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Prénom',
+            order == 'ASC' and sort == 'firstName' ? 'fa-arrow-up' : order == 'DESC' and sort == 'firstName' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_user_index', {'sort[firstName]': order == 'ASC' and sort == 'firstName' ? 'DESC' : 'ASC', }),
+        )
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Email',
+            order == 'ASC' and sort == 'email' ? 'fa-arrow-up' : order == 'DESC' and sort == 'email' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_user_index', {'sort[email]': order == 'ASC' and sort == 'email' ? 'DESC' : 'ASC', }),
+        )
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Rôle',
+            order == 'ASC' and sort == 'roles' ? 'fa-arrow-up' : order == 'DESC' and sort == 'roles' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_user_index', {'sort[roles]': order == 'ASC' and sort == 'roles' ? 'DESC' : 'ASC', }),
+        )
+    ),
+    macros.tableHeaderItem(
+        macros.tableHeaderLink(
+            'Date de création',
+            order == 'ASC' and sort == 'createdAt' ? 'fa-arrow-up' : order == 'DESC' and sort == 'createdAt' ? 'fa-arrow-down' : 'fa-sort',
+            path('app_admin_user_index', {'sort[createdAt]': order == 'ASC' and sort == 'createdAt' ? 'DESC' : 'ASC', }),
+        )
+    ),
+    macros.tableHeaderItem(macros.tableHeaderSpan('Actions', 'sr-only'))
+]) }}
+
+{{ macros.tableBodyStart() }}
+
+{% for user in users %}
+    {% set userRoles = [] %}
+    {% set badgeClass = '' %}
+    {% for role in user.roles %}
+        {% if role == 'ROLE_ADMIN' %}
+            {% set userRoles = userRoles|merge(['Administrateur']) %}
+            {% set badgeClass = 'badge-red' %}
+        {% elseif role == 'ROLE_CUSTOMER' %}
+            {% set userRoles = userRoles|merge(['Acheteur']) %}
+            {% set badgeClass = 'badge-green' %}
+        {% elseif role == 'ROLE_SELLER' %}
+            {% set userRoles = userRoles|merge(['Vendeur']) %}
+            {% set badgeClass = 'badge-blue' %}
+        {% endif %}
+    {% endfor %}
+
+    {{ macros.tableRow([
+        macros.tableRowItem(user.lastname, 'Nom'),
+        macros.tableRowItem(user.firstname, 'Prénom'),
+        macros.tableRowItem(user.email, 'Email'),
+        macros.tableRowItem(userRoles|join(', '), 'Rôle', '', 'badge badge-lowercase ' ~ badgeClass),
+        macros.tableRowItem(user.createdAt|date('d/m/Y'), 'Date de création'),
+        macros.tableActionDropdown([
+            macros.tableActionDropdownItem(
+                path('app_admin_user_delete', {id: user.id}),
+                'Supprimer',
+                'action-delete',
+                'fa-trash',
+                csrf_token('user-delete-' ~ user.id)
+            ),
+        ])
+    ]) }}
+
+{% endfor %}
+
+{{ macros.tableBodyEnd() }}
+
+{{ macros.tableEnd() }}

@@ -1,0 +1,17 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+    <section class="content-section">
+        <div class="content-header">
+            <h2>Liste des utilisateurs</h2>
+            <p>Bienvenue sur votre liste d'utilisateur, <strong>{{ app.user.firstname ~ " " ~ app.user.lastname }}
+                    !</strong></p>
+            <p>Vous pouvez ici voir la liste des utilisateurs inscrits sur le site.</p>
+            <p>Vous pouvez également supprimer un utilisateur.</p>
+        </div>
+        <section class="content-table">
+            {{ include('admin/user/_table.html.twig') }}
+            {{ include('components/_pagination.html.twig') }}
+        </section>
+    </section>
+{% endblock %}

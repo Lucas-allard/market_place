@@ -1,0 +1,16 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+    <section class="content-section">
+        <div class="content-header">
+            <div>
+                <h2>Ajouter une caractéristique</h2>
+                <a href="{{ path('app_admin_caracteristic_index') }}" class="button button-blue">Retour</a>
+            </div>
+            <p>Pour ajouter une caractéristique, veuillez remplir le formulaire ci-dessous.</p>
+        </div>
+        <section>
+            {{ include('admin/caracteristic/_form.html.twig') }}
+        </section>
+    </section>
+{% endblock %}

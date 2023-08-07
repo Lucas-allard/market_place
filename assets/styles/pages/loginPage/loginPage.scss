@@ -1,0 +1,141 @@
+@import '../../_variables.scss';
+
+.login-page-section {
+  padding: $spacing-xxxl;
+  color: $color-blue;
+
+  h1 {
+    margin-bottom: $spacing-lg;
+    color: $color-blue-darker;
+    font-size: $font-size-xxl;
+  }
+
+  > p {
+    margin-bottom: $spacing-xxl;
+
+
+    @media (min-width: $breakpoint-desktop) {
+      max-width: 50%;
+    }
+  }
+
+  a {
+    color: $color-blue;
+    font-weight: $font-weight-bold;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      color: $color-orange;
+    }
+  }
+
+  .content-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .row-section {
+      width: 100%;
+      h2 {
+        margin-bottom: $spacing-lg;
+        color: $color-blue-darker;
+        font-size: $font-size-xl;
+      }
+
+      ul {
+        margin-bottom: $spacing-xxl;
+        margin-left: $spacing-lg;
+        list-style: disc;
+
+        li {
+          margin-bottom: $spacing-md;
+          color: $color-blue-darker;
+          font-size: $font-size-xs;
+        }
+      }
+
+      .form {
+        margin-bottom: $spacing-xxl;
+        width: 100%;
+
+        .form-field {
+          margin-bottom: $spacing-lg;
+          display: flex;
+          align-items: center;
+
+          label {
+            color: $color-blue-darker;
+            font-size: $font-size-md;
+            width: 120px;
+          }
+
+          input {
+            padding: $spacing-sm;
+            border: 1px solid $color-gray;
+            margin-left: $spacing-sm;
+            border-radius: $border-radius-md;
+            width: 100%;
+            flex: 1;
+            font-size: $font-size-sm;
+            transition: all 0.3s ease-in-out;
+
+            &:focus {
+              border-color: $color-blue;
+
+            }
+          }
+
+
+          .form-button {
+            margin-top: $spacing-md;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+
+          }
+        }
+
+        .form-field input[type="checkbox"] {
+          order: 1;
+          flex: initial;
+          margin-left: 0;
+          width: auto;
+        }
+
+        .form-field label[for="customer_registration_agreeTerms"], .form-field label[for="remember_me"] {
+          order: 2;
+          margin-left: $spacing-sm;
+          flex: 1;
+        }
+
+        p {
+          margin-top: $spacing-md;
+          color: $color-blue;
+          font-size: $font-size-xs;
+        }
+
+        @media (min-width: $breakpoint-desktop) {
+          width: 50%;
+        }
+      }
+
+      @media (min-width: $breakpoint-desktop) {
+        width: 50%;
+      }
+    }
+
+    .login-image-container {
+      display: none;
+      flex: 1;
+      margin-left: $spacing-xxl;
+
+      img {
+        margin: 0 auto;
+      }
+
+      @media (min-width: $breakpoint-desktop) {
+        display: block;
+      }
+    }
+  }
+}

@@ -94,7 +94,6 @@ class ResetPasswordRequestController extends AbstractController
      * @param string $token
      * @param Request $request
      * @param UserRepository $userRepository
-     * @param EntityManagerInterface $entityManager
      * @param UserPasswordHasherInterface $passwordHasher
      * @return Response
      */
@@ -132,7 +131,6 @@ class ResetPasswordRequestController extends AbstractController
 
     /**
      * @param Request $request
-     * @param UserInterface $user
      * @param UserPasswordHasherInterface $passwordHasher
      * @return Response
      */

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Caracteristic;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -52,28 +53,19 @@ class CaracteristicRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Caracteristic[] Returns an array of Caracteristic objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @param string $sort
+     * @param string $order
+     * @return QueryBuilder
+     */
+    public function findAllQueryBuilder(string $sort, string $order): QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('c');
 
-//    public function findOneBySomeField($value): ?Caracteristic
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($sort && $order) {
+            $queryBuilder->orderBy('c.' . $sort, $order);
+        }
+
+        return $queryBuilder;
+    }
 }

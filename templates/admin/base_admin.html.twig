@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    <title>{% block title %}Espace administration{% endblock %}</title>
+    <script src="https://kit.fontawesome.com/46eab4e946.js" crossorigin="anonymous"></script>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('appAdmin') }}
+    {% endblock %}
+
+</head>
+<body>
+
+<!-- Body -->
+<main>
+    {% include 'components/_admin_sidebar.html.twig' %}
+
+    <section class="admin-section">
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert" data-type="{{ type }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <div class="logout-container dropdown">
+            <span class="dropdown-icon">
+                <i class="fas fa-user"></i>
+                {{ app.user.userIdentifier }}
+            </span>
+            <div class="dropdown-menu hidden">
+                <ul class="dropdown-list">
+                    <li class="dropdown-item">
+                        <a href="{{ path('app_logout') }}" class="dropdown-link">Déconnexion</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% block body %}{% endblock %}
+    </section>
+</main>
+{% block javascripts %}
+    {{ encore_entry_script_tags('appAdmin') }}
+{% endblock %}
+</body>
+</html>
