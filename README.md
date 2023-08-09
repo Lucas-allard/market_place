@@ -49,7 +49,9 @@ symfony console doctrine:migrations:migrate
 Vous pouvez vous connecter avec les comptes suivants :
 
 Admin : admin@email.com / admin
+
 Vendeur : andre.mahe@live.com / seller
+
 Client : paul.danielle@orange.fr / customer
 
 Ou vous pouvez créer votre propre compte selon le rôle que vous souhaitez.

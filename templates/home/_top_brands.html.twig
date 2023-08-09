@@ -23,9 +23,9 @@
     <div class="swiper top-brands__slider">
         <div class="swiper-wrapper">
             <div class="swiper-slide">
-                <article class="swiper-slider-wrapper">
+                <div class="swiper-slider-wrapper">
                     {% for brand in topBrands|slice(0,10) %}
-                        <div class="slider-item">
+                        <article class="slider-item">
                             <div class="product-picture">
                                 <a href="{{ path('app_product_show', {'categorySlug': brand.products[0].categories[0].slug, 'subCategorySlug': brand.products[0].categories[1].slug, 'productSlug': brand.products[0].slug }) }}">
                                     <img src="{{ brand.products[0].pictures[0].path }}"
@@ -54,9 +54,45 @@
                                 </p>
                                 {{ include('components/_cart_button.html.twig', {'product': brand.products[0], 'buttonLabel': 'Ajouter au panier', 'className': 'button button-dark-blue'}) }}
                             </div>
-                        </div>
+                        </article>
                     {% endfor %}
-                </article>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="swiper-slider-wrapper">
+                    {% for brand in topBrands|slice(10, 20) %}
+                        <article class="slider-item">
+                            <div class="product-picture">
+                                <a href="{{ path('app_product_show', {'categorySlug': brand.products[0].categories[0].slug, 'subCategorySlug': brand.products[0].categories[1].slug, 'productSlug': brand.products[0].slug }) }}">
+                                    <img src="{{ brand.products[0].pictures[0].path }}"
+                                         alt="{{ brand.products[0].pictures[0].alt }}">
+                                </a>
+                            </div>
+                            <div class="product-content">
+                                <div class="product-content-header">
+                                    <h4 class="product-content-brand">{{ brand.name }}</h4>
+                                    <p class="product-content-categories">
+                                        {% for category in brand.products[0].categories %}
+                                            {% if category.parent is null %}
+                                                <a
+                                                href="{{ path('app_product_index', {'categorySlug': category.slug }) }}">{{ category.name }} </a>{% if not loop.last %},{% endif %}
+                                            {% else %}
+                                                <a
+                                                href="{{ path('app_product_index', {'categorySlug': category.parent.slug, 'subCategorySlug': category.slug }) }}">{{ category.name }} </a>{% if not loop.last %},{% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                                <hr>
+                                <p class="product-content-discount">
+                                    Jusqu'à
+                                    <span>- {{ brand.products[0].discount }}%</span>
+                                </p>
+                                {{ include('components/_cart_button.html.twig', {'product': brand.products[0], 'buttonLabel': 'Ajouter au panier', 'className': 'button button-dark-blue'}) }}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
             </div>
 
         </div>
