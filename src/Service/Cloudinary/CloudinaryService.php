@@ -3,6 +3,7 @@
 namespace App\Service\Cloudinary;
 
 use App\Config\Cloudinary\CloudinaryConnexion;
+use Cloudinary\Api\ApiResponse;
 use Cloudinary\Api\Exception\ApiError;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -25,5 +26,12 @@ class CloudinaryService
 
 
         return $result['secure_url'];
+    }
+
+    public function delete(?string $getPath): ApiResponse
+    {
+        $cloudinary = CloudinaryConnexion::getCloudinary();
+
+        return $cloudinary->uploadApi()->destroy($getPath);
     }
 }
