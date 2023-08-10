@@ -97,6 +97,11 @@ class AddPictureFieldListener implements EventSubscriberInterface
             return;
         }
 
+        if ($picture->getId() !== null) {
+            $this->cloudinaryService->delete($picture->getPath());
+            $this->cloudinaryService->delete($picture->getThumbnail());
+        }
+
         $file = $picture->getFile();
         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $uniqueFileName = $originalFileName . '_' . uniqid();
@@ -113,7 +118,6 @@ class AddPictureFieldListener implements EventSubscriberInterface
                 ]
             );
 
-            // the height must be fixed with the width
 
             $imageThumbnailUrl = $this->cloudinaryService->upload(
                 $file,
@@ -129,8 +133,11 @@ class AddPictureFieldListener implements EventSubscriberInterface
             $picture->setPath($imageUrl);
             $picture->setThumbnail($imageThumbnailUrl);
 
-            $this->entityManager->persist($picture);
-            $this->entityManager->flush();
+            if ($picture->getId() === null) {
+                $this->entityManager->persist($picture);
+            }
+
+
         } catch (ApiError $e) {
             $form->addError(new FormError($e->getMessage()));
         }

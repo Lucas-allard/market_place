@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Interface\UserInterface;
+use App\Entity\User;
 use App\Service\User\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,11 +52,11 @@ class UserController extends AbstractController
 
     /**
      * @param Request $request
-     * @param UserInterface $user
+     * @param User $user
      * @return JsonResponse
      */
     #[Route('/supprimer/{id}', name: '_delete')]
-    public function delete(Request $request, UserInterface $user): JsonResponse
+    public function delete(Request $request, User $user): JsonResponse
     {
         $token = $request->headers->get('X-CSRF-Token');
 

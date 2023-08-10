@@ -61,7 +61,7 @@ class Category extends AbstractEntity
     /**
      * @var ArrayCollection|Collection
      */
-    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'categories')]
+    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'categories', cascade: ['persist', 'remove'])]
     private Collection|ArrayCollection $products;
 
     public function __construct()
