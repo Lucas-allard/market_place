@@ -3,6 +3,7 @@ namespace App\Tests\EventListener;
 
 use App\Repository\CategoryRepository;
 use App\EventListener\NavbarListener;
+use App\Service\Category\CategoryService;
 use PHPUnit\Framework\TestCase;
 use Twig\Environment;
 
@@ -16,9 +17,9 @@ class NavbarListenerTest extends TestCase
     public function testOnKernelRequest()
     {
         $twig = $this->createMock(Environment::class);
-        $categoryRepository = $this->createMock(CategoryRepository::class);
+        $categoryService = $this->createMock(CategoryService::class);
 
-        $navbarListener = new NavbarListener($twig, $categoryRepository);
+        $navbarListener = new NavbarListener($twig, $categoryService);
 
         $twig->expects($this->once())
             ->method('addGlobal')
